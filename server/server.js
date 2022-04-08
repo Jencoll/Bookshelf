@@ -3,19 +3,32 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const morgan = require("morgan");
-// const cors = require("cors");
+const cors = require("cors");
 const helmet = require("helmet");
-const axios = require("axios");
 const PORT = 8000;
 
+// users handlers
+const {
+  getUsers,
+  getUser,
+  addUser,
+  modifyUser,
+  deleteUser,
+  addBookToUserLibrary,
+  addUserBookshelf,
+} = require("./userHandlers");
 
-const { getUsers, getUser, addUser, modifyUser, deleteUser } = require("./handlers");
+// books handlers
+const { searchBook, addBook, getBooks, getBook } = require("./booksHandlers");
+
+// user personal library handlers
+const { getUserLibrary } = require("./userLibrariesHandlers");
 const app = express();
 
 app.use(morgan("tiny"));
 app.use(helmet());
-// app.use(cors());
-app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json());
 
 // Endpoints
 
@@ -25,23 +38,33 @@ app.use(bodyParser.json());
 app.get("/api/get-users", getUsers); // get a list of all users
 app.get("/api/get-user", getUser); // get a user by its ID
 app.post("/api/add-user", addUser); // create a user
-app.patch("/api/modify-user", modifyUser); // modify user information
-app.delete("/api/delete-user", deleteUser); // delete a user from the list of users
+app.patch("/api/modify-user/:_id", modifyUser); // modify user information
+app.delete("/api/delete-user/:_id", deleteUser); // delete a user from the list of users
+app.post("/api/add-book-to-user-library/:_id", addBookToUserLibrary);
+// app.post("/api/add-bookshelf/:_id", addUserBookshelf); 
 
-/*-------------------------
-| bookshelves db endpoints |
---------------------------*/
-app.get("/api/get-books"); // get a list of all books, with many options in the query
-app.get("/api/get-book"); // get a book by its ID
-app.post("/api/add-book"); // add a book
+/*-------------------
+| books db endpoints |
+--------------------*/
+app.get("/api/get-books", getBooks); // get a list of all books, with many options in the query
+app.get("/api/get-book", getBook); // get a book by its ID
+app.post("/api/add-book", addBook); // add a book
 app.patch("/api/modify-book"); // modify values of a single book
 app.delete("/api/delete-book"); // delete a book from the bookshelves(not sure it's useful; maybe in the case where a fake book is created)
 
 /*-------------------------
 | Google Books API db endpoints |
 --------------------------*/
-axios.get(`https://www.googleapis.com/books/v1/volumes?q=search+terms`);
+app.get("/api/search-book", searchBook);
 
+/*-------------------
+| books db endpoints |
+--------------------*/
+app.get("/api/get-user-libraries"); // get a list of user libraries
+app.get("/api/get-user-library", getUserLibrary); // get a user's personal library
+app.post("/api/create-user-library"); // create a user's personal library
+app.patch("/api/modify-user-library"); // modify one or many elements in the user's library
+app.delete("/api/delete-user-library"); // delete a user's library when he/she deletes his/her account
 
 
 
