@@ -16,6 +16,7 @@ const db = client.db("bookshelf");
 // Endpoints for accessing Users Collection
 /* user format:
     {
+        avatar: "img",
         firstName: "First name",
         lastName: "Last name",
         email: "email",
@@ -80,7 +81,7 @@ const getUser = async ({ query: { userId } }, res) => {
 
 // add a user
 const addUser = async (req, res) => {
-  const { firstName, lastName, email, city, province, country, language } =
+  const { avatar, firstName, lastName, email, city, province, country, language } =
     req.body;
 
   if ((!firstName, !lastName, !email, !city, !language)) {
@@ -142,6 +143,7 @@ const modifyUser = async (req, res) => {
       const newValues = {
         $set: {
           _id: userId,
+          "info.avatar": avatar,
           "info.firstName": firstName,
           "info.lastName": lastName,
           "info.email": email,

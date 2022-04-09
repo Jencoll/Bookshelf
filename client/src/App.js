@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import GlobalStyles from "./GlobalStyles";
 import Header from "./components/Header/Header";
 import Menu from "./components/Menu/Menu";
+import Contacts from "./components/Contacts/Contacts";
 
 const App = () => {
   return (
@@ -10,7 +11,8 @@ const App = () => {
       <GlobalStyles />
       <Main>
         <Header /> 
-        <Menu />   
+        <Menu />  
+        <Contacts /> 
 
       </Main>
 
@@ -21,6 +23,7 @@ const App = () => {
 
 
 const Main = styled.div`
+  position: relative;
   /* background-color: blanchedalmond; */
 `;
 

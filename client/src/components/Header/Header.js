@@ -22,18 +22,23 @@ const Header = () => {
 
 const Headerwrapper = styled.header`
   display: flex;
+  flex-direction: column-reverse;
   width: calc(100%);
-  height: 70px;
+  height: 140px;
   /* line-height: 70px; */
-  margin-left: auto;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   padding-left: 24px;
   box-shadow: 2px -1px 11px #e5e5e5;
 
   @media (min-width: 770px) {
     width: calc(100% - 125px);
+    height: 70px;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-left: 125px;
   }
+
 `;
 
 const Title = styled.h2`
