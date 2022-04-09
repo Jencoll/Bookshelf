@@ -63,6 +63,7 @@ const getUsers = async (req, res) => {
 const getUser = async ({ query: { userId } }, res) => {
   try {
     await client.connect();
+    console.log("connected");
     const singleUser = await userCollection.findOne({ _id: userId });
     if (!singleUser) {
       res.status(404).json({ status: 404, message: "User not found." });
@@ -73,6 +74,7 @@ const getUser = async ({ query: { userId } }, res) => {
     console.log(err.message);
   } finally {
     client.close();
+    console.log("disconnected");
   }
 };
 
@@ -193,8 +195,12 @@ const addBookToUserLibrary = async (req, res) => {
  
   try {
     await client.connect();
-
+    console.log("connected");
     // find user with ID
+    const existingUser = await userCollection.findOne({ _id: userId });
+    if (!existingUser) {
+      return res.status(404).json({ status: 404, message: "User not found." });
+    }
 
     // add a book to user library
     // userLibrary: [
@@ -202,9 +208,11 @@ const addBookToUserLibrary = async (req, res) => {
     //     ],
 
   } catch (err) {
+    console.log("Something went wrong: ", err.message);
 
   } finally {
-
+    client.close();
+    console.log("disconnected");
   }
 };
 
