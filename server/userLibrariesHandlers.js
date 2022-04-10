@@ -14,7 +14,7 @@ const db = client.db("bookshelf");
 
 // Endpoints for accessing userLibraries Collection
 /* userLibrary format: 
-    {_id: userLibrary,
+    {_id: userId,
         books: [   
             book1: {
                 _id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: bookshelfId, category: "category", tags: ["tag1", "tag2"],

@@ -17,29 +17,26 @@ const db = client.db("bookshelf");
 const booksCollection = db.collection("books");
 
 // get an array of books with many options in the query (to filter the books depending on the option chosen)
-const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
-
-};
+const getBooks = async ({ query: { start, limit, type, filter } }, res) => {};
 
 // get a book by its isbn
 const getBook = async ({ query: { isbn } }, res) => {
-
-    try {
-        await client.connect();
-        console.log("connected");
-        const singleBook = await booksCollection.findOne({ isbn });
-        console.log(singleBook)
-        if (!singleBook) {
-            res.status(404).json({ status: 404, message: "Book not found." });
-        } else {
-            res.status(200).json({ status: 200, book: singleBook });
-        }
-    } catch (err) {
-        console.log("Something went wrong: ", err.message);
-    } finally {
-        client.close();
-        console.log("disconnected");
-    };
+  try {
+    await client.connect();
+    console.log("connected");
+    const singleBook = await booksCollection.findOne({ isbn });
+    console.log(singleBook);
+    if (!singleBook) {
+      res.status(404).json({ status: 404, message: "Book not found." });
+    } else {
+      res.status(200).json({ status: 200, book: singleBook });
+    }
+  } catch (err) {
+    console.log("Something went wrong: ", err.message);
+  } finally {
+    client.close();
+    console.log("disconnected");
+  }
 };
 
 // const getUser = async ({ query: { userId } }, res) => {
@@ -82,7 +79,7 @@ const addBook = async (req, res) => {
     description,
     stars,
     comments,
-    quotes
+    quotes,
   } = req.body;
   const newId = uuidv4();
 
@@ -115,7 +112,7 @@ const addBook = async (req, res) => {
         description,
         stars,
         comments,
-        quotes
+        quotes,
       };
 
       const book = await booksCollection.insertOne(newBook);
@@ -165,7 +162,46 @@ const addBook = async (req, res) => {
 
 // Endpoint for performing a search request to Google Books API
 const searchBook = async (req, res) => {
-  axios.get(`https://www.googleapis.com/books/v1/volumes?q=inauthor:keyes&key=${key}`);
+  try {
+    let response = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&key=${key}`
+    );
+
+    let items = response.data.items;
+    let books = items?.map((item) => {
+      let longestIsbn = item.volumeInfo.industryIdentifiers
+        ? item.volumeInfo.industryIdentifiers[
+            item.volumeInfo.industryIdentifiers.length - 1
+          ]
+        : "";
+
+      // return a book format from Google API (create a function that converts the response to a book format)
+      return {
+        isbn: longestIsbn,
+        title: item.volumeInfo.title,
+        subtitle: item.volumeInfo.subtitle,
+        authors: item.volumeInfo.authors,
+        translators: "",
+        publisher: item.volumeInfo.publisher,
+        collection: "",
+        yearOfPublication: item.volumeInfo.publishedDate,
+        firstYearOfPub: "",
+        language: item.volumeInfo.language,
+        country: "",
+        price: "",
+        imageSrc: item.volumeInfo.imageLinks.medium,
+        pages: item.volumeInfo.pageCount,
+        format: "",
+        description: item.volumeInfo.description,
+        comments: [],
+        quotes: [],
+      };
+    });
+
+    res.status(200).json({ status: 200, books });
+  } catch (err) {
+    console.log("Something went wrong: ", err.message);
+  }
 };
 
 // End of endpoints

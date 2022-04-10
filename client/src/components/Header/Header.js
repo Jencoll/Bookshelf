@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import { useState } from "react";
 import LoginBox from "../Login/LoginBox";
 import Searchbar from "../Search/Searchbar";
 import { BiBookAdd } from "react-icons/bi";
 
 const Header = () => {
+  const [foundBooks, setFoundBooks] = useState([]);
+
   return (
     <Headerwrapper>
       <Title>Home</Title>
@@ -13,7 +16,12 @@ const Header = () => {
         <ActionBtn>
           <BiBookAdd />
         </ActionBtn>
-        <Searchbar />
+        <Searchbar foundBooks={foundBooks} setFoundBooks={setFoundBooks} />
+        <ul>
+          {foundBooks.map(foundBook => (
+            <li>{foundBook.title}</li>
+          ))}
+        </ul>
       </BookActionWrapper>
       <LoginBox />
     </Headerwrapper>
