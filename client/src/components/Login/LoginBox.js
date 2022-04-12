@@ -1,12 +1,15 @@
 import styled from "styled-components";
+import { useContext } from "react";
+import { UsersContext } from "../UsersContext";
 import Avatar from "./Avatar";
 import Login from "./Login";
 
 const LoginBox = () => {
+    const { currentUserProfile } = useContext(UsersContext);
 
     return (
         <Boxwrapper>
-            <Avatar />
+            <Avatar userProfile={currentUserProfile} showOnlineStatus="false" />
             <Login />
         </Boxwrapper>
     )

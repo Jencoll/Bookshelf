@@ -74,6 +74,7 @@ a,
 li,
 blockquote,
 input {
+  color: #000;
   font-family: var(--font-body);
 }
 

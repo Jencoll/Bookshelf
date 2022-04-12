@@ -1,32 +1,39 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import LoginBox from "../Login/LoginBox";
 import Searchbar from "../Search/Searchbar";
 import { BiBookAdd } from "react-icons/bi";
+import SearchResult from "../Search/SearchResult";
+import { BooksContext } from "../BooksContext";
 
 const Header = () => {
-  const [foundBooks, setFoundBooks] = useState([]);
-
+  const { foundBooks, setFoundBooks, selectBook } = useContext(BooksContext);
+  // console.log(foundBooks);
   return (
     <Headerwrapper>
-      <Title>Home</Title>
+      <TitleLink to="/">Home</TitleLink>
       <BookActionWrapper>
         {/* onclick, opens a modal form where the user is asked to enter manually
         or with scanned image the information about the book */}
         <ActionBtn>
           <BiBookAdd />
         </ActionBtn>
-        <Searchbar foundBooks={foundBooks} setFoundBooks={setFoundBooks} />
-        <ul>
-          {foundBooks.map(foundBook => (
-            <li>{foundBook.title}</li>
-          ))}
-        </ul>
+        <Searchbar />
+        <BookList>
+          {foundBooks.map((foundBook) => (
+           
+           <SearchResult foundBook={foundBook} key={foundBook.isbn} />
+          ))} 
+        </BookList>
       </BookActionWrapper>
       <LoginBox />
     </Headerwrapper>
   );
 };
+
+
+  // onClick={() => {close()}}
 
 const Headerwrapper = styled.header`
   display: flex;
@@ -46,16 +53,18 @@ const Headerwrapper = styled.header`
     flex-direction: row;
     margin-left: 125px;
   }
-
 `;
 
-const Title = styled.h2`
-    display: none;
+const TitleLink = styled(Link)`
+  display: none;
 
-    @media (min-width: 830px) {
-        display: block;
-        font-size: 1.3em;
-    }
+  @media (min-width: 830px) {
+    display: block;
+    font-size: 1.3em;
+    text-decoration: none;
+    color: #000;
+    font-weight: 600;
+  }
 `;
 
 const BookActionWrapper = styled.div` 
@@ -75,6 +84,14 @@ export const ActionBtn = styled.button`
   border: 0.5px solid #000;
   border-radius: 5px;
   cursor: pointer;
+`;
+
+const BookList = styled.ul`
+  position: absolute;
+  top: 70px;
+  z-index: 3;
+  box-shadow: 1px 1px 3px aliceblue;
+  padding: 1em;
 `;
 
 export default Header;

@@ -16,23 +16,92 @@ const db = client.db("bookshelf");
 // Endpoint for accessing bookshelves collection
 const booksCollection = db.collection("books");
 
+// A function to convert Google Book API response into our book format
+const googleBookToBook = (googleBook) => {
+  let industryIdentifiers = googleBook.volumeInfo.industryIdentifiers;
+  // setting isbn
+  let isbn = "";
+  industryIdentifiers?.map((industryIdentifier) => {
+    if (industryIdentifier.type === "ISBN_13") {
+      return (isbn = industryIdentifier.identifier);
+    } else if (industryIdentifier.type === "ISBN_10") {
+      return (isbn = industryIdentifier.identifier);
+    } else {
+      return (isbn = industryIdentifier.identifier);
+    }
+  });
+
+  // setting images options
+  let imageLinks = googleBook.volumeInfo.imageLinks;
+  let imageUrl = null;
+  if (!imageLinks) {
+    imageUrl = null;
+  }
+  // Select the medium size before any other sizes
+  else if (imageLinks.medium) {
+    imageUrl = imageLinks.medium;
+  } else if (imageLinks.small) {
+    imageUrl = imageLinks.small;
+  } else if (imageLinks.thumbnail) {
+    imageUrl = imageLinks.thumbnail;
+  } else if (imageLinks.smallThumbnail) {
+    imageUrl = imageLinks.smallThumbnail;
+  } else if (imageLinks.large) {
+    imageUrl = imageLinks.large;
+  } else if (imageLinks.extraLarge) {
+    imageUrl = imageLinks.extraLarge;
+  } else {
+    console.log("No image provided.");
+  }
+
+  // return a book format from Google API (create a function that converts the response to a book format)
+  return {
+    isbn,
+    title: googleBook.volumeInfo.title,
+    subtitle: googleBook.volumeInfo.subtitle,
+    authors: googleBook.volumeInfo.authors,
+    translators: "",
+    stars: googleBook.volumeInfo.averageRating,
+    publisher: googleBook.volumeInfo.publisher,
+    collection: "",
+    yearOfPublication: googleBook.volumeInfo.publishedDate,
+    firstYearOfPub: "",
+    language: googleBook.volumeInfo.language,
+    country: "",
+    price: "",
+    imageSrc: imageUrl,
+    pages: googleBook.volumeInfo.pageCount,
+    format: "",
+    description: googleBook.volumeInfo.description,
+    comments: [],
+    quotes: [],
+  };
+};
+
 // get an array of books with many options in the query (to filter the books depending on the option chosen)
 const getBooks = async ({ query: { start, limit, type, filter } }, res) => {};
 
 // get a book by its isbn
-const getBook = async ({ query: { isbn } }, res) => {
+const getBook = async (req, res) => {
+  let { isbn } = req.params;
+  console.log(isbn);
   try {
     await client.connect();
     console.log("connected");
-    const singleBook = await booksCollection.findOne({ isbn });
-    console.log(singleBook);
-    if (!singleBook) {
+    // const singleBook = await booksCollection.findOne({ isbn });
+    const bookData = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
+    );
+    console.log(bookData.data.items[0].volumeInfo);
+    if (!bookData) {
       res.status(404).json({ status: 404, message: "Book not found." });
     } else {
-      res.status(200).json({ status: 200, book: singleBook });
+      res
+        .status(200)
+        .json({ status: 200, book: googleBookToBook(bookData.data.items[0]) });
     }
   } catch (err) {
-    console.log("Something went wrong: ", err.message);
+    console.log("Something went wrong: ", err.stack);
   } finally {
     client.close();
     console.log("disconnected");
@@ -160,49 +229,88 @@ const addBook = async (req, res) => {
 
  */
 
+
 // Endpoint for performing a search request to Google Books API
 const searchBook = async (req, res) => {
+  // maxresults = 10 for now;
+  // set language restrictions to allow other languages than just English, when there are translations
+
   try {
     let response = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=15&key=${key}`
     );
 
-    let items = response.data.items;
-    let books = items?.map((item) => {
-      let longestIsbn = item.volumeInfo.industryIdentifiers
-        ? item.volumeInfo.industryIdentifiers[
-            item.volumeInfo.industryIdentifiers.length - 1
-          ]
-        : "";
+    let items = await response.data.items;
 
-      // return a book format from Google API (create a function that converts the response to a book format)
-      return {
-        isbn: longestIsbn,
-        title: item.volumeInfo.title,
-        subtitle: item.volumeInfo.subtitle,
-        authors: item.volumeInfo.authors,
-        translators: "",
-        publisher: item.volumeInfo.publisher,
-        collection: "",
-        yearOfPublication: item.volumeInfo.publishedDate,
-        firstYearOfPub: "",
-        language: item.volumeInfo.language,
-        country: "",
-        price: "",
-        imageSrc: item.volumeInfo.imageLinks.medium,
-        pages: item.volumeInfo.pageCount,
-        format: "",
-        description: item.volumeInfo.description,
-        comments: [],
-        quotes: [],
-      };
+    let books = items.map((item) => {
+      return googleBookToBook(item);
+      // let industryIdentifiers = item.volumeInfo.industryIdentifiers;
+      // // setting isbn
+      // let isbn = "";
+      // industryIdentifiers?.map((industryIdentifier) => {
+      //   if (industryIdentifier.type === "ISBN_13") {
+      //     return (isbn = industryIdentifier.identifier);
+      //   } else if (industryIdentifier.type === "ISBN_10") {
+      //     return (isbn = industryIdentifier.identifier);
+      //   } else {
+      //     return (isbn = industryIdentifier.identifier);
+      //   }
+      // });
+
+      // // setting images options
+      // let imageLinks = item.volumeInfo.imageLinks;
+      // let imageUrl = null;
+      // if (!imageLinks) {
+      //   imageUrl = null;
+      // } else 
+      // // Select the medium size before any other sizes
+      // if (imageLinks.medium) {
+      //   imageUrl = imageLinks.medium;
+      // } else if (imageLinks.small) {
+      //   imageUrl = imageLinks.small;
+      // } else if (imageLinks.thumbnail) {
+      //   imageUrl = imageLinks.thumbnail;
+      // } else if (imageLinks.smallThumbnail) {
+      //   imageUrl = imageLinks.smallThumbnail;
+      // } else if (imageLinks.large) {
+      //   imageUrl = imageLinks.large;
+      // } else if (imageLinks.extraLarge) {
+      //   imageUrl = imageLinks.extraLarge;
+      // } else {
+      //   console.log("No image provided.");
+      // }
+
+      // // return a book format from Google API (create a function that converts the response to a book format)
+      // return {
+      //   isbn,
+      //   title: item.volumeInfo.title,
+      //   subtitle: item.volumeInfo.subtitle,
+      //   authors: item.volumeInfo.authors,
+      //   translators: "",
+      //   publisher: item.volumeInfo.publisher,
+      //   collection: "",
+      //   yearOfPublication: item.volumeInfo.publishedDate,
+      //   firstYearOfPub: "",
+      //   language: item.volumeInfo.language,
+      //   country: "",
+      //   price: "",
+      //   imageSrc: imageUrl,
+      //   pages: item.volumeInfo.pageCount,
+      //   format: "",
+      //   description: item.volumeInfo.description,
+      //   comments: [],
+      //   quotes: [],
+      // };
     });
 
+    console.log(books);
     res.status(200).json({ status: 200, books });
   } catch (err) {
     console.log("Something went wrong: ", err.message);
   }
 };
+
+
 
 // End of endpoints
 module.exports = {

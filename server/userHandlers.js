@@ -46,6 +46,7 @@ const userCollection = db.collection("users");
 
 // get an array of all users
 const getUsers = async (req, res) => {
+  console.log(req.query); // query selon le type de requête (nom, prénom)
   try {
     await client.connect();
     console.log("Connected.");
@@ -60,8 +61,26 @@ const getUsers = async (req, res) => {
   }
 };
 
+// // get the current user profile
+// const getCurrentUser = async (req, res) => {
+//  console.log(req.query);
+//   try {
+//     await client.connect();
+//     console.log("connected");
+//     const foundCurrentUser = await userCollection.findOne({ "info.firstName": req.query.firstName });
+//     console.log(foundCurrentUser);
+//   } catch (err) {
+//     console.log("Something went wrong: ", err.message);
+//   } finally {
+//     client.close();
+//     console.log("disconnected");
+//   }
+// };
+
 // get a user with its ID
-const getUser = async ({ query: { userId } }, res) => {
+const getUser = async (req, res) => {
+  let userId = req.params._id;
+
   try {
     await client.connect();
     console.log("connected");
@@ -79,26 +98,76 @@ const getUser = async ({ query: { userId } }, res) => {
   }
 };
 
+// generate a list of random online users
+// const getRandOnlineUsers = async (req, res) => {
+  
+//   try {
+//     await client.connect();
+//     console.log("connected");
+//     const allUsers = await userCollection.find().toArray();
+//     if (allUsers.length < 5) {
+//       res.status(200).json({ status: 200, onlineUsers: allUsers });
+//     } else {
+//       let randomIndex = Math.random(Math.floor() * allUsers.length - 5);
+//       res.status(200).json({ status: 200, onlineUsers: allUsers.slice(randomIndex, 5) });
+//     }; 
+//   } catch (err) {
+//     console.log("Something went wrong: ", err.message);
+//   } finally {
+//     client.close();
+//     console.log("disconnected");
+//   }
+// };
+
+
 // add a user
 const addUser = async (req, res) => {
-  const { avatar, firstName, lastName, email, city, province, country, language } =
-    req.body;
+   const {
+     _id: username,
+     info: {
+       avatarUrl,
+       firstName,
+       lastName,
+       email,
+       city,
+       province,
+       country,
+       language,
+     },
+     isOnline,
+     userLibrary,
+     bookshelves,
+     tags,
+     categories,
+     wishlist,
+     contacts,
+   } = req.body;
 
-  if ((!firstName, !lastName, !email, !city, !language)) {
+  if (!firstName || !lastName || !email || !city || !language) {
     return res.status(400).json({ status: 400, message: "Incomplete request" });
-  }
+  };
 
   try {
-    const newId = uuidv4();
     await client.connect();
     const existingUser = await userCollection.findOne({ "info.email": email });
     if (!existingUser) {
       let newUser = {
-        _id: newId,
-        info: req.body,
-        // exchange: [{ bookId: _id }],
+        _id: username,
+        info: {
+          avatarUrl, 
+          firstName, 
+          lastName,
+          email,
+          city,
+          province, 
+          country,
+          language,
+        },
+        isOnline,
         userLibrary: [],
         bookshelves: [],
+        tags: [],
+        categories: [],
         wishlist: [],
         contacts: [],
       };
@@ -130,8 +199,25 @@ const addUser = async (req, res) => {
 // modify user info
 const modifyUser = async (req, res) => {
   const userId = req.params._id;
-  const { info: {firstName, lastName, email, city, province, country, language}, tags, bookshelves, wishlist, contacts  } =
-    req.body;
+  const {
+    info: {
+      avatarUrl,
+      firstName,
+      lastName,
+      email,
+      city,
+      province,
+      country,
+      language,
+    },
+    isOnline, 
+    userLibrary,
+    bookshelves,
+    tags,
+    categories,
+    wishlist,
+    contacts,
+  } = req.body;
 
   try {
     await client.connect();
@@ -140,10 +226,10 @@ const modifyUser = async (req, res) => {
     if (!existingUser) {
       return res.status(404).json({ status: 404, message: "User not found." });
     } else {
-      const newValues = {
+      let newValues = {
         $set: {
           _id: userId,
-          "info.avatar": avatar,
+          "info.avatarUrl": avatarUrl,
           "info.firstName": firstName,
           "info.lastName": lastName,
           "info.email": email,
@@ -151,10 +237,13 @@ const modifyUser = async (req, res) => {
           "info.province": province,
           "info.country": country,
           "info.language": language,
-          tags,
-          bookshelves,
-          wishlist,
-          contacts
+          isOnline,
+          userLibrary: [],
+          bookshelves: [],
+          tags: [],
+          categories: [],
+          wishlist: [],
+          contacts: [],
         },
       };
 
@@ -234,5 +323,7 @@ module.exports = {
   modifyUser,
   deleteUser,
   addBookToUserLibrary,
+  // getRandOnlineUsers,
+  // getCurrentUser,
   // addUserBookshelf,
 };

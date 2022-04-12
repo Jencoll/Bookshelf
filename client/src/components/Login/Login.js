@@ -1,9 +1,11 @@
 import styled from "styled-components";
+import { useContext } from "react";
 import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { ActionBtn } from "../Header/Header";
+import { UsersContext } from "../UsersContext";
 
 const Login = () => {
-
+  const { setCurrentUserId } = useContext(UsersContext);
     // on click, a modal is displayed to show a form for the login process or the sign up process, in the form, there will be a link to another form if the user account is not created yet
 
     // when a user is not logged in, login appears; otherwise, it's logout

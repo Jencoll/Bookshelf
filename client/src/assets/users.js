@@ -1,6 +1,6 @@
 export const users = [
   {
-    _id: "7d75f6a3-4e45-4904-a0f4-05dce2bbf0e4",
+    _id: "Jencol",
     info: {
       avatarUrl:
         "https://images.unsplash.com/photo-1530577197743-7adf14294584?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzZ8fHBlcnNvbnxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60",
@@ -22,7 +22,7 @@ export const users = [
     contacts: [],
   },
   {
-    _id: "4f4195e4-f3fc-4ab9-a2b4-f2d5345a9b89",
+    _id: "Nick",
     info: {
       avatarUrl:
         "https://images.unsplash.com/photo-1484684096794-03e03b5e713e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjh8fHBlcnNvbnxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60",
@@ -44,7 +44,7 @@ export const users = [
     contacts: [],
   },
   {
-    _id: "d896dc31-818b-453f-966e-7b4ec7829ab4",
+    _id: "Vinny",
     info: {
       avatarUrl:
         "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8MnwwfHw%3D&auto=format&fit=crop&w=500&q=60",
