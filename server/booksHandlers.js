@@ -20,16 +20,27 @@ const booksCollection = db.collection("books");
 const googleBookToBook = (googleBook) => {
   let industryIdentifiers = googleBook.volumeInfo.industryIdentifiers;
   // setting isbn
-  let isbn = "";
-  industryIdentifiers?.map((industryIdentifier) => {
-    if (industryIdentifier.type === "ISBN_13") {
-      return (isbn = industryIdentifier.identifier);
-    } else if (industryIdentifier.type === "ISBN_10") {
-      return (isbn = industryIdentifier.identifier);
-    } else {
-      return (isbn = industryIdentifier.identifier);
-    }
-  });
+  // let isbn = "";
+
+  // forEach ou for ordinaire
+  let ii = industryIdentifiers.find(x => x.type === "ISBN_13");
+  if (!ii)
+    ii = industryIdentifiers.find((x) => x.type === "ISBN_10");
+  if (!ii)
+    ii = industryIdentifiers[0];
+
+  let isbn = ii ? ii.identifier : "not found";
+
+  // industryIdentifiers?.map((industryIdentifier) => {
+  //   if (industryIdentifier.type === "ISBN_13") {
+  //     return (isbn = industryIdentifier.identifier);
+  //   } else if (industryIdentifier.type === "ISBN_10") {
+  //     return (isbn = industryIdentifier.identifier);
+  //   } else {
+  //     // modifier le : pour un tiret dans le ISBN
+  //     return (isbn = industryIdentifier.identifier);
+  //   }
+  // });
 
   // setting images options
   let imageLinks = googleBook.volumeInfo.imageLinks;
@@ -84,16 +95,15 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {};
 // get a book by its isbn
 const getBook = async (req, res) => {
   let { isbn } = req.params;
-  console.log(isbn);
+  console.log("Simon va être content", isbn);
   try {
     await client.connect();
     console.log("connected");
     // const singleBook = await booksCollection.findOne({ isbn });
     const bookData = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q=isbn:"${isbn}"&key=${key}`
     );
-    console.log(bookData.data.items[0].volumeInfo);
-    if (!bookData) {
+    if (!bookData || bookData.data.totalItems === 0) {
       res.status(404).json({ status: 404, message: "Book not found." });
     } else {
       res
@@ -234,10 +244,10 @@ const addBook = async (req, res) => {
 const searchBook = async (req, res) => {
   // maxresults = 10 for now;
   // set language restrictions to allow other languages than just English, when there are translations
-
+  console.log(req.query);
   try {
     let response = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=15&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q="${req.query.q}"&maxResults=15&key=${key}`
     );
 
     let items = await response.data.items;
@@ -303,7 +313,7 @@ const searchBook = async (req, res) => {
       // };
     });
 
-    console.log(books);
+    // console.log(books);
     res.status(200).json({ status: 200, books });
   } catch (err) {
     console.log("Something went wrong: ", err.message);

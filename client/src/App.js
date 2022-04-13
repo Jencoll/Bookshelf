@@ -6,9 +6,10 @@ import Header from "./components/Header/Header";
 import Menu from "./components/Menu/Menu";
 import Contacts from "./components/Contacts/Contacts";
 import SingleBook from "./components/Books/SingleBook";
+import Homepage from "./Homepage";
+import AddBookForm from "./components/Header/AddBookForm";
 
 const App = () => {
-  const [foundBooks, setFoundBooks] = useState([]);
 
   return (
     <BrowserRouter>
@@ -19,14 +20,16 @@ const App = () => {
         <Contacts /> 
         <Switch>
           <Route exact path="/">
-            {/* homepage */}
+            <Homepage />
           </Route>
           <Route path="/book/:isbn">
             <SingleBook />
           </Route>
+          <Route path="/add-book-form">
+            <AddBookForm />
+          </Route>
         </Switch>
       </Main>
-
    </BrowserRouter>
   )
   

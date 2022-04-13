@@ -2,14 +2,20 @@ import styled from "styled-components";
 import { useEffect, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BooksContext } from "../BooksContext";
+import { UsersContext } from "../UsersContext";
+import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
+import BookActions from "./BookActions";
 
 const SingleBook = () => {
     const {isbn} = useParams();
-    const {foundBook} = useContext(BooksContext);
+    const {foundBook, count, setBookIsbn, bookIsbn} = useContext(BooksContext);
     const [book, setBook] = useState(null);
+    const { currentUserId } = useContext(UsersContext);
     
     // get a book from its ISBN (with the Google API)
     useEffect(() => {
+      setBookIsbn(isbn);
+      
       const displayBook = async () => {
         try {
             let response = await fetch(`/api/get-book/${isbn}`);
@@ -24,7 +30,31 @@ const SingleBook = () => {
       displayBook();
     }, [isbn])
     
-    console.log(book)
+    // console.log(book)
+
+    // add book to the user library
+    // useEffect(() => {
+    //   const addBookToUserLibrary = async () => {
+    //     try {
+    //       const response = await fetch(
+    //         `/api/add-book-to-user-library/${currentUserId}`,
+    //         {
+    //           method: "PATCH",
+    //           body: JSON.stringify({
+    //             isbn,
+    //           }),
+    //         }
+    //       );
+    //       console.log(isbn);
+    //       let data = await response.json();
+    //       console.log(data.user);
+    //       // setCurrentUserProfile(data.user)
+    //     } catch (err) {
+    //       console.log("Error: ", err.message);
+    //     }
+    //   };
+    //   addBookToUserLibrary();
+    // }, [count]);
     
     // convert year of publication, language, stars
 
@@ -39,6 +69,9 @@ const SingleBook = () => {
                 <BookTitle>{book.title}</BookTitle>
                 {book.subtitle && <BookSubtitle>{book.subtitle}</BookSubtitle>}
                 <Authors>{book.authors}</Authors>
+                
+                   {/* {book.stars * <Stars>{BsStarFill}</Stars>} */}
+               
                 <Stars>{book.stars} stars</Stars>
                 <Infos>Publisher: {book.publisher}</Infos>
                 {book.collection && <Infos>Collection: {book.collection}</Infos>}
@@ -47,7 +80,7 @@ const SingleBook = () => {
                 <Infos>{book.pages} pages</Infos>
                 {book.format && <Infos>{book.format}</Infos>}
                 <Infos>{book.description}</Infos>
-                <AddBook>Add</AddBook>
+                <BookActions />
             </BookDetails>
           </SingleBookWrapper>
         ) : (
@@ -55,8 +88,6 @@ const SingleBook = () => {
         )}
       </>
     );
-
-
 
 };
 

@@ -3,9 +3,9 @@ import { Link, useHistory } from "react-router-dom";
 import { useState, useContext } from "react";
 import { BooksContext } from "../BooksContext";
 
-const SearchResult = ({ foundBook }) => {
+const SearchResult = ({ foundBook, setIsClosed }) => {
   // const [author, setAuthor] = useState("");
-  const { setSelectBook, selectBook } = useContext(BooksContext);
+  const { setSelectBook, selectBook, setSearchQuery, setFoundBooks } = useContext(BooksContext);
   console.log(foundBook.isbn);
   let history = useHistory();
 
@@ -18,7 +18,13 @@ const SearchResult = ({ foundBook }) => {
         //   history.push(`/book/${foundBook.isbn}`);
         // }}
         to={`/book/${foundBook.isbn}`}
+        onClick={() => {
+          // setIsClosed(true);
+          setSearchQuery("");
+          setFoundBooks(null);
+        }}
         // Close the UL on click
+        
       >
         {foundBook?.title}
       </ResultLink>

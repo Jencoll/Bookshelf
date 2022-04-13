@@ -25,17 +25,19 @@ const db = client.db("bookshelf");
         province: "Province name",
         country: "Country name",
         language: "User language",
+        isOnline,
         exchange: [
                 {bookId: "book ID"},
         ], 
+        userLibrary: [
+          {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
+        ],
+        bookshelves: [{_id: "bookshelfId", name: "bookshelf name"}],
         tags: [{
             tagId: tag ID,  // can create own ID 1001 1= category 2= subcategory 3&4= tag#
             tagName: "tag name"
         }, {tagID, tagName}],
-        userLibrary: [
-            {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
-        ],
-        bookshelves: [{_id: "bookshelfId", name: "bookshelf name"}],
+        categories: [],
         wishlist: [{_id: bookId}],
         contacts: [
             {contactId: "user ID"},           
@@ -283,21 +285,33 @@ const deleteUser = async (req, res) => {
 // add a book in the user's library
 const addBookToUserLibrary = async (req, res) => {
   const userId = req.params._id;
- 
+  const { isbn } = req.body;
   try {
     await client.connect();
     console.log("connected");
     // find user with ID
+
+    console.log(req.body);
+    console.log(isbn)
+
     const existingUser = await userCollection.findOne({ _id: userId });
     if (!existingUser) {
       return res.status(404).json({ status: 404, message: "User not found." });
     }
-
+    let userLibrary = existingUser.userLibrary;
     // add a book to user library
-    // userLibrary: [
-    //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
-    //     ],
-
+    let bookAlreadyExists = userLibrary.find(e => e.isbn === isbn);
+    if (bookAlreadyExists) {
+      console.log("book is there")
+      return res.status(400).json({ status: 400, message: "Book is already in the user library" });
+    } else {
+      // if userLibrary contains the isbn, do not push it
+      existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
+      //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
+      //     ],
+      await userCollection.updateOne({_id: userId}, {$set: existingUser});
+      res.status(200).json({ status: 200, message: "user library added", user: existingUser });
+    }
   } catch (err) {
     console.log("Something went wrong: ", err.message);
 

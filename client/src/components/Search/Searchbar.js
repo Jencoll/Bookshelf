@@ -6,7 +6,12 @@ import { ActionBtn } from "../Header/Header";
 import { BooksContext } from "../BooksContext";
 
 const Searchbar = () => {
-  const { foundBooks, setFoundBooks, setSearchQuery, setExecuteQuery } = useContext(BooksContext);
+  const {
+    foundBooks,
+    setFoundBooks,
+    searchQuery, setSearchQuery,
+    setExecuteQuery,
+  } = useContext(BooksContext);
 
   // const [searchQuery, setSearchQuery] = useState("");
   // const [executeQuery, setExecuteQuery] = useState(false);
@@ -37,6 +42,7 @@ const Searchbar = () => {
     return (
       <Searchform action="" method="" role="search">
         <Searchinput
+          value={searchQuery}
           type="search"
           name="q"
           placeholder="Search for a book..."
