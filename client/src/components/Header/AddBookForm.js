@@ -1,125 +1,154 @@
 import styled from "styled-components";
+import { useContext } from "react";
 import { BsAsterisk } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
+import { BooksContext } from "../BooksContext";
 
 const AddBookForm = () => {
-    
+    const { addBookToUserLibrary, addBookToDatabase, setFormElements } = useContext(BooksContext);
 
     // I want two columns. Now!
     return (
-      <BookInfoForm action="" method="post">
+      <FormWrapper>
         <FormTitle>Enter your book information</FormTitle>
-        <Infodiv>
-          <Label for="isbn">
-            <BsAsterisk style={{ fontSize: "14px" }} /> ISBN
-          </Label>
-          <Input type="text" name="isbn" required></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="title">
-            <BsAsterisk style={{ fontSize: "14px" }} /> Title
-          </Label>
-          <Input
-            type="text"
-            name="title"
-            required
-          ></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="author">
-            <BsAsterisk style={{ fontSize: "14px" }} /> Author
-          </Label>
-          <Input type="text" name="author" required></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="subtitle">Subtitle</Label>
-          <Input type="text" name="subtitle"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="publisher">Publisher</Label>
-          <Input type="text" name="publisher"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="collection">Collection</Label>
-          <Input type="text" name="collection"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="translator">Translator</Label>
-          <Input type="text" name="translator"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="yearOfPublication">Published</Label>
-          <Input type="number" name="yearOfPublication"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="firstYearOfPub">First Edition</Label>
-          <Input type="number" name="firstYearOfPub"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="language">Language</Label>
-          <Input type="text" name="language"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="country">Country</Label>
-          <Input type="text" name="country"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="pages">Pages</Label>
-          <Input type="text" name="pages"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="format">Format</Label>
-          <Input type="text" name="format"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="imageSrc">Cover</Label>
-          <Input type="image" name="imageSrc" src=""></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="description">Description</Label>
-          <Input type="text" name="description"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="stars">Rating (/5)</Label>
-          <Input type="number" min="0" max="5" name="stars"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="comment">Comment</Label>
-          <Input type="text" name="comment"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="quotes">Quotes</Label>
-          <Input type="text" name="quotes"></Input>
-        </Infodiv>
-        <Infodiv>
-          <Label for="price">Price</Label>
-          <Input type="text" name="price"></Input>
-        </Infodiv>
-        <ActionBtn><BiBookAdd /></ActionBtn>
-      </BookInfoForm>
+        <BookInfoForm 
+        action="" 
+        method="post"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setFormElements(e.target.elements);
+        }}
+        >
+          <Column>
+            <Infodiv>
+              <Label htmlFor="isbn">
+                <BsAsterisk style={{ fontSize: "14px" }} /> ISBN
+              </Label>
+              <Input type="text" name="isbn" placeholder="No need of the hyphens" required></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="title">
+                <BsAsterisk style={{ fontSize: "14px" }} /> Title
+              </Label>
+              <Input type="text" name="title" required></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="author">
+                <BsAsterisk style={{ fontSize: "14px" }} /> Author
+              </Label>
+              <Input type="text" name="author" required></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="subtitle">Subtitle</Label>
+              <Input type="text" name="subtitle"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="publisher">Publisher</Label>
+              <Input type="text" name="publisher"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="collection">Collection</Label>
+              <Input type="text" name="collection"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="translator">Translator</Label>
+              <Input type="text" name="translator"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="yearOfPublication">Published</Label>
+              <Input type="number" name="yearOfPublication"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="firstYearOfPub">First Edition</Label>
+              <Input type="number" name="firstYearOfPub"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="language">Language</Label>
+              <Input type="text" name="language"></Input>
+            </Infodiv>
+          </Column>
+
+          <Column>
+            <Infodiv>
+              <Label htmlFor="country">Country</Label>
+              <Input type="text" name="country"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="pages">Pages</Label>
+              <Input type="text" name="pages"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="format">Format</Label>
+              <Input type="text" name="format"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="imageSrc">Cover</Label>
+              <Input type="file" name="imageSrc" accept="image/*"></Input>
+              <Input type="submit" value="Upload"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="description">Description</Label>
+              <Input type="text" name="description"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="stars">Rating (/5)</Label>
+              <Input type="number" min="0" max="5" name="stars"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="comment">Comment</Label>
+              <Input type="text" name="comment"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="quotes">Quotes</Label>
+              <Input type="text" name="quotes"></Input>
+            </Infodiv>
+            <Infodiv>
+              <Label htmlFor="price">Price</Label>
+              <Input type="text" name="price"></Input>
+            </Infodiv>
+            <AddBookBtn onClick={() => {
+              // addBookToUserLibrary();
+              addBookToDatabase();
+            }}>
+              <BiBookAdd />
+            </AddBookBtn>
+          </Column>
+        </BookInfoForm>
+      </FormWrapper>
     );
 };
 
+const FormWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 70px;
+  left: 125px;
+  width: calc(100% - 400px);
+  height: calc(100% - 70px);
+  padding: 24px;
+`;
+
 const BookInfoForm = styled.form` 
-    position: absolute;
     display: flex;
-    flex-direction: column;
     justify-content: space-evenly;
-    top: 70px;
-    left: 125px;
-    width: calc(100% - 400px);
-    height: fit-content;
     padding: 24px;
-    height: calc(100% - 70px);
-
-
-
+    min-height: 600px;
 `;
 
 const FormTitle = styled.h2`
     font-weight: 600;
     font-size: 24px;
+    padding: 24px;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 50%;
+
 `;
 
 const Infodiv = styled.div`
@@ -135,6 +164,10 @@ const Label = styled.label`
 
 const Input = styled.input`
 
+`;
+
+const AddBookBtn = styled(ActionBtn)`
+  margin: 0 auto;
 `;
 
 export default AddBookForm;

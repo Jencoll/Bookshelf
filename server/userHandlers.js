@@ -289,23 +289,22 @@ const addBookToUserLibrary = async (req, res) => {
   try {
     await client.connect();
     console.log("connected");
+    // console.log(req.body);
+    // console.log(isbn);
+    
     // find user with ID
-
-    console.log(req.body);
-    console.log(isbn)
-
     const existingUser = await userCollection.findOne({ _id: userId });
     if (!existingUser) {
       return res.status(404).json({ status: 404, message: "User not found." });
     }
     let userLibrary = existingUser.userLibrary;
     // add a book to user library
-    let bookAlreadyExists = userLibrary.find(e => e.isbn === isbn);
+    let bookAlreadyExists = userLibrary.find(book => book.isbn === isbn);
     if (bookAlreadyExists) {
-      console.log("book is there")
+      // if userLibrary contains the isbn, do not push it
+      // console.log("book is there")
       return res.status(400).json({ status: 400, message: "Book is already in the user library" });
     } else {
-      // if userLibrary contains the isbn, do not push it
       existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
       //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
       //     ],
@@ -314,11 +313,41 @@ const addBookToUserLibrary = async (req, res) => {
     }
   } catch (err) {
     console.log("Something went wrong: ", err.message);
-
   } finally {
     client.close();
     console.log("disconnected");
   }
+};
+
+const removeBookFromUserLibrary = async (req, res) => {
+  const userId = req.params._id;
+  const { isbn } = req.body;
+
+  try {
+    await client.connect();
+    console.log("connected");
+    // find user with ID
+    const existingUser = await userCollection.findOne({ _id: userId });
+    if (!existingUser) {
+      return res.status(404).json({ status: 404, message: "User not found." });
+    }
+    let userLibrary = existingUser.userLibrary;
+    let bookFound = userLibrary.find(book => book.isbn === isbn);
+    if (!bookFound) {
+      return res.status(404).json({ status: 404, message: "Book not found" });
+    }
+    console.log(userLibrary.indexOf(bookFound));
+    let bookFoundIndex = userLibrary.indexOf(bookFound);
+    // remove book from user library
+    userLibrary.splice(bookFoundIndex, 1);
+    // udpate user info
+    await userCollection.updateOne({ _id: userId }, { $set: existingUser });
+    res.status(200).json({ status: 200, message: "Book removed from library", user: existingUser });
+  } catch (err) {
+    console.log("Something went wrong: ", err.message);
+  } finally {
+    client.close("disconnected");
+  };
 };
 
 // const addUserBookshelf = async (req, res) => {
@@ -337,6 +366,7 @@ module.exports = {
   modifyUser,
   deleteUser,
   addBookToUserLibrary,
+  removeBookFromUserLibrary,
   // getRandOnlineUsers,
   // getCurrentUser,
   // addUserBookshelf,

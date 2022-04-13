@@ -17,6 +17,7 @@ const {
   getRandOnlineUsers,
   // getCurrentUser,
   addBookToUserLibrary,
+  removeBookFromUserLibrary,
   // addUserBookshelf,
 } = require("./userHandlers");
 
@@ -48,6 +49,7 @@ app.post("/api/add-user", addUser); // create a user
 app.patch("/api/modify-user/:_id", modifyUser); // modify user information
 app.delete("/api/delete-user/:_id", deleteUser); // delete a user from the list of users
 app.patch("/api/add-book-to-user-library/:_id", addBookToUserLibrary);
+app.patch("/api/remove-book-from-user-library/:_id", removeBookFromUserLibrary);
 // app.post("/api/add-bookshelf/:_id", addUserBookshelf); 
 
 /*-------------------
@@ -55,7 +57,7 @@ app.patch("/api/add-book-to-user-library/:_id", addBookToUserLibrary);
 --------------------*/
 app.get("/api/get-books", getBooks); // get a list of all books, with many options in the query
 app.get("/api/get-book/:isbn", getBook); // get a book by its isbn
-app.post("/api/add-book", addBook); // add a book
+app.post("/api/add-book", addBook); // add a book to the database
 app.patch("/api/modify-book"); // modify values of a single book
 app.delete("/api/delete-book"); // delete a book from the bookshelves(not sure it's useful; maybe in the case where a fake book is created)
 

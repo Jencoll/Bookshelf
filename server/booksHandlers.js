@@ -95,13 +95,13 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {};
 // get a book by its isbn
 const getBook = async (req, res) => {
   let { isbn } = req.params;
-  console.log("Simon va être content", isbn);
+  // console.log("Simon va être content", isbn);
   try {
     await client.connect();
     console.log("connected");
     // const singleBook = await booksCollection.findOne({ isbn });
     const bookData = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=isbn:"${isbn}"&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
     );
     if (!bookData || bookData.data.totalItems === 0) {
       res.status(404).json({ status: 404, message: "Book not found." });
@@ -134,7 +134,7 @@ const getBook = async (req, res) => {
 //   }
 // };
 
-// add a book in the home library
+// add a book in the database
 const addBook = async (req, res) => {
   // use a switch to add a book whether manually or by search in the database and/or in Google Books API
   // in fact, the search in the database should be performed first, and then, if no book is found, the search is performed in the Google Books API (does it make sense?)
@@ -242,75 +242,18 @@ const addBook = async (req, res) => {
 
 // Endpoint for performing a search request to Google Books API
 const searchBook = async (req, res) => {
-  // maxresults = 10 for now;
+  // maxresults = 15
   // set language restrictions to allow other languages than just English, when there are translations
   console.log(req.query);
   try {
     let response = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q="${req.query.q}"&maxResults=15&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=15&key=${key}`
     );
 
     let items = await response.data.items;
 
     let books = items.map((item) => {
       return googleBookToBook(item);
-      // let industryIdentifiers = item.volumeInfo.industryIdentifiers;
-      // // setting isbn
-      // let isbn = "";
-      // industryIdentifiers?.map((industryIdentifier) => {
-      //   if (industryIdentifier.type === "ISBN_13") {
-      //     return (isbn = industryIdentifier.identifier);
-      //   } else if (industryIdentifier.type === "ISBN_10") {
-      //     return (isbn = industryIdentifier.identifier);
-      //   } else {
-      //     return (isbn = industryIdentifier.identifier);
-      //   }
-      // });
-
-      // // setting images options
-      // let imageLinks = item.volumeInfo.imageLinks;
-      // let imageUrl = null;
-      // if (!imageLinks) {
-      //   imageUrl = null;
-      // } else 
-      // // Select the medium size before any other sizes
-      // if (imageLinks.medium) {
-      //   imageUrl = imageLinks.medium;
-      // } else if (imageLinks.small) {
-      //   imageUrl = imageLinks.small;
-      // } else if (imageLinks.thumbnail) {
-      //   imageUrl = imageLinks.thumbnail;
-      // } else if (imageLinks.smallThumbnail) {
-      //   imageUrl = imageLinks.smallThumbnail;
-      // } else if (imageLinks.large) {
-      //   imageUrl = imageLinks.large;
-      // } else if (imageLinks.extraLarge) {
-      //   imageUrl = imageLinks.extraLarge;
-      // } else {
-      //   console.log("No image provided.");
-      // }
-
-      // // return a book format from Google API (create a function that converts the response to a book format)
-      // return {
-      //   isbn,
-      //   title: item.volumeInfo.title,
-      //   subtitle: item.volumeInfo.subtitle,
-      //   authors: item.volumeInfo.authors,
-      //   translators: "",
-      //   publisher: item.volumeInfo.publisher,
-      //   collection: "",
-      //   yearOfPublication: item.volumeInfo.publishedDate,
-      //   firstYearOfPub: "",
-      //   language: item.volumeInfo.language,
-      //   country: "",
-      //   price: "",
-      //   imageSrc: imageUrl,
-      //   pages: item.volumeInfo.pageCount,
-      //   format: "",
-      //   description: item.volumeInfo.description,
-      //   comments: [],
-      //   quotes: [],
-      // };
     });
 
     // console.log(books);
@@ -319,8 +262,6 @@ const searchBook = async (req, res) => {
     console.log("Something went wrong: ", err.message);
   }
 };
-
-
 
 // End of endpoints
 module.exports = {

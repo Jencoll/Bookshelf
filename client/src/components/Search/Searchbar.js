@@ -9,31 +9,10 @@ const Searchbar = () => {
   const {
     foundBooks,
     setFoundBooks,
-    searchQuery, setSearchQuery,
-    setExecuteQuery,
+    searchQuery,
+    setSearchQuery,
+    searchBook,
   } = useContext(BooksContext);
-
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [executeQuery, setExecuteQuery] = useState(false);
-
-  // useEffect(() => {
-  //   const searchBook = async () => {
-  //     try {
-  //       console.log(searchQuery);
-  //       const response = await fetch(`/api/search-book?q=${searchQuery}`);
-  //       let data = await response.json();
-  //       let books = data.books;
-  //       console.log(books);
-  //       setFoundBooks(books);
-  //     } catch (err) {
-  //       console.log("Something went wrong: ", err.message);
-  //     }
-  //   }
-  //   if (executeQuery) {
-  //     searchBook();
-  //   };
-  //   setExecuteQuery(false);
-  // }, [executeQuery]);
 
   const handleUserInput = (e) => {
     setSearchQuery(e.target.value);
@@ -52,7 +31,7 @@ const Searchbar = () => {
         ></Searchinput>
         <ActionBtn onClick={(e) => {
           e.preventDefault();
-          setExecuteQuery(true);
+          searchBook();
         }}>
           <IconContext.Provider value={{ size: "1.5em" }}>
             <BiSearchAlt />
