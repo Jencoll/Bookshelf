@@ -22,7 +22,13 @@ const {
 } = require("./userHandlers");
 
 // books handlers
-const { searchBook, addBook, getBooks, getBook } = require("./booksHandlers");
+const {
+  searchBook,
+  addBook,
+  getBooks,
+  getBook,
+  editBook,
+} = require("./booksHandlers");
 
 // user personal library handlers
 const {
@@ -58,7 +64,7 @@ app.patch("/api/remove-book-from-user-library/:_id", removeBookFromUserLibrary);
 app.get("/api/get-books", getBooks); // get a list of all books, with many options in the query
 app.get("/api/get-book/:isbn", getBook); // get a book from Google API by its isbn
 app.post("/api/add-book", addBook); // add a book to the database
-app.patch("/api/modify-book"); // modify values of a single book
+app.patch("/api/modify-book", editBook); // modify values of a single book
 app.delete("/api/delete-book"); // delete a book from the bookshelves(not sure it's useful; maybe in the case where a fake book is created)
 
 /*-------------------------

@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 const BookThumbnail = ({displayBook}) => {
-
+    // console.log(displayBook)
     return (
         <BookLi>
+            {displayBook?.imageSrc}
             {displayBook?.title}
         </BookLi>
     )

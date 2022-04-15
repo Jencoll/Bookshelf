@@ -9,6 +9,7 @@ import SingleBook from "./components/Books/SingleBook";
 import Homepage from "./Homepage";
 import AddBookForm from "./components/Header/AddBookForm";
 import UserLibrary from "./components/Books/UserLibrary";
+import CloudinaryUpdloadWidget from "./components/CloudinaryUploadWidget";
 
 const App = () => {
 
@@ -21,7 +22,7 @@ const App = () => {
         <Contacts /> 
         <Switch>
           <Route exact path="/">
-         
+            {/* <CloudinaryUpdloadWidget /> */}
             <UserLibrary />
             {/* <Homepage /> */}
           </Route>

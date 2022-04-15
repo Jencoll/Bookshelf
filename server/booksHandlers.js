@@ -43,7 +43,7 @@ const googleBookToBook = (googleBook) => {
   // });
 
   // setting images options
-  let imageLinks = googleBook.volumeInfo.imageLinks;
+  let imageLinks = googleBook.volumeInfo?.imageLinks;
   let imageUrl = null;
   if (!imageLinks) {
     imageUrl = null;
@@ -80,7 +80,7 @@ const googleBookToBook = (googleBook) => {
     language: googleBook.volumeInfo.language,
     country: "",
     price: "",
-    imageSrc: imageUrl,
+    imageSrc: googleBook.volumeInfo.imageLinks.thumbnail,
     pages: googleBook.volumeInfo.pageCount,
     format: "",
     description: googleBook.volumeInfo.description,
@@ -252,6 +252,62 @@ const addBook = async (req, res) => {
     console.log("disconnected");
   }
 };
+
+const editBook = async (req, res) => {
+  // const isbn = req.params.isbn;
+  const {
+    isbn,
+    // title,
+    // subtitle,
+    // authors,
+    // translators,
+    // publisher,
+    // collection,
+    // yearOfPublication,
+    // firstYearOfPub,
+    // language,
+    // country,
+    // price,
+    // imageSrc,
+    // pages,
+    // format,
+    // description,
+    // stars,
+    // comments,
+    // quotes,
+  } = req.body;
+
+  if (!isbn) {
+    return res.status(400).json({ status: 400, message: "Incomplete request" });
+  }
+
+  try {
+    await client.connect();
+    console.log("connected");
+    const existingBook = await booksCollection.findOne({ isbn });
+    if (existingBook) {
+      const book = await booksCollection.updateOne({ isbn }, { $set: req.body });
+      console.log(book);
+      res.status(200).json({
+        status: 200,
+        data: existingBook,
+        message: "Book edited successfully",
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        message: "Book doesn't exist",
+        data: isbn,
+      });
+    } 
+  } catch (err) {
+    console.log("Cannot modify book: ", err.message);
+  } finally {
+    client.close();
+    console.log("disconnected");
+  }
+};
+
 /* book format
  {
     isbn: "isbn",
@@ -306,4 +362,5 @@ module.exports = {
   addBook,
   getBooks,
   getBook,
+  editBook,
 };

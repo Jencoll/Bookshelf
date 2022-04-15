@@ -67,7 +67,7 @@ export const BooksProvider = ({ children }) => {
 
   // add a foundBook to the database
   const addFoundBookToDatabase = async () => {
-      console.log("This is the book: ", book);
+      console.log("This is the book: ", book, "and its image: ", book.imageSrc);
     try {
       const response = await fetch("/api/add-book", {
         method: "POST",
@@ -84,7 +84,7 @@ export const BooksProvider = ({ children }) => {
           language: book.language,
           country: book.country,
           price: book.price,
-          // imageSrc: book.imageSrc,
+          imageSrc: book.imageSrc,
           pages: book.pages,
           format: book.format,
           description: book.description,
@@ -109,6 +109,50 @@ export const BooksProvider = ({ children }) => {
 
   };
 
+  const addOrModifyBook = async (book, isAdding) =>
+  {
+  // faire le meme chose que dans le useEffect
+      try {
+        const response = await fetch(
+          isAdding ? "/api/add-book" : "/api/modify-book",
+          {
+            method: isAdding ? "POST" : "PATCH",
+            body: JSON.stringify({
+              isbn: book.isbn?.value,
+              title: book.title?.value,
+              subtitle: book.subtitle.value,
+              authors: book.author?.value,
+              translators: book.translator.value,
+              publisher: book.publisher.value,
+              collection: book.collection.value,
+              yearOfPublication: book.yearOfPublication.value,
+              firstYearOfPub: book.firstYearOfPub.value,
+              language: book.language.value,
+              country: book.country.value,
+              price: book.price.value,
+              imageSrc: book.imageSrc.value,
+              pages: book.pages.value,
+              format: book.format.value,
+              description: book.description.value,
+              stars: book.stars.value,
+              comments: book.comment.value,
+              quotes: book.quotes.value,
+            }),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // console.log(response);
+        let data = await response.json();
+        let createdBook = data.data;
+        setBook(createdBook);
+      } catch (err) {
+        console.log(err.message);
+      }
+  };
+
   // add to the database a book that was manually created by the user with the Form
   useEffect(() => {
     const addBookToDatabase = async () => {
@@ -128,7 +172,7 @@ export const BooksProvider = ({ children }) => {
             language: formElements.language.value,
             country: formElements.country.value,
             price: formElements.price.value,
-            // imageSrc: formElements.imageSrc.value,
+            imageSrc: formElements.imageSrc.value,
             pages: formElements.pages.value,
             format: formElements.format.value,
             description: formElements.description.value,

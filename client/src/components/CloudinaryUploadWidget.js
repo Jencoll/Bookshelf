@@ -1,31 +1,63 @@
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
-const CloudinaryUpdloadWidget = () => {
+export const CloudinaryContext = createContext();
 
-    // useEffect(() => {
-    const cloud = () => {
-        const cloudinaryWidget = window.cloudinary.createUploadWidget({
-            cloudName: "jencol",
-        },
-        (error, result) => {
-            if (!error && result && result.event === "success") {
-                console.log("Done! Here is the image info: ", result.info);
-            }
-          }
-        );
-        
-        cloudinaryWidget.open();
-    }
-    
-    //   cloudinaryWidget();
-      
-    // }, [])
-    
+export const CloudinaryProvider = ({ children }) => {
+  const [cloudinaryWidget, setCloudinaryWidget] = useState(null);
+  const [fileUrlUploaded, setFileUrlUploaded] = useState(null);
 
-    return (
-        <button onClick={cloud()}>Click here</button>
+  useEffect(() => {
+    const cw = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "jencol",
+        uploadPreset: "rqdhvstd",
+        folder: "Bookshelf",
+        multiple: false,
+        resourceType: "image",
+        maxFileSize: 5500000,
+        cropping: true,
+      },
+      (error, result) => {
+        if (
+          result?.event === "queues-end" &&
+          result.info?.files &&
+          result.info?.files.length > 0
+        ) {
+          console.log(
+            "On a enfin un fichier: ",
+            result.info.files[0].uploadInfo.secure_url
+          );
+          setFileUrlUploaded(result.info?.files[0].uploadInfo.secure_url);
+        } else {
+            console.log("An error occurred during the image upload: ", error);
+        };
+      }
     )
+    setCloudinaryWidget(cw);
+  }, []);
 
-}
+  const openUpload = () => {
+    cloudinaryWidget?.open();
+  };
 
-export default CloudinaryUpdloadWidget;
+  useEffect(() => {
+    console.log("Le fichier qui a été uploadé est : ", fileUrlUploaded);
+  }, [fileUrlUploaded]);
+
+  return (
+    <CloudinaryContext.Provider
+      value={{ fileUrlUploaded, openUpload, cloudinaryWidget }}
+    >
+      {children}
+    </CloudinaryContext.Provider>
+  );
+};
+
+// return <Button onClick={openUpload}>Upload your image</Button>;
+// const CloudinaryUpdloadWidget = () => {
+// };
+// const Button = styled.button`
+//     width: 200px;
+//     height: 30px;
+// `;
+// export default CloudinaryUpdloadWidget;
