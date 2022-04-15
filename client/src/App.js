@@ -13,13 +13,15 @@ import CloudinaryUpdloadWidget from "./components/CloudinaryUploadWidget";
 
 const App = () => {
 
+ 
+
   return (
     <BrowserRouter>
       <GlobalStyles />
       <Main>
-        <Header /> 
-        <Menu />  
-        <Contacts /> 
+        <Header />
+        <Menu />
+        <Contacts />
         <Switch>
           <Route exact path="/">
             {/* <CloudinaryUpdloadWidget /> */}
@@ -30,12 +32,15 @@ const App = () => {
             <SingleBook />
           </Route>
           <Route path="/add-book-form">
-            <AddBookForm />
+            <AddBookForm toEdit={false} />
+          </Route>
+          <Route path="/modify-book-form">
+            <AddBookForm toEdit={true} />
           </Route>
         </Switch>
       </Main>
-   </BrowserRouter>
-  )
+    </BrowserRouter>
+  );
   
 };
 

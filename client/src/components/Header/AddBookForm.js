@@ -1,33 +1,53 @@
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { BsAsterisk } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
 import openUpload from "../CloudinaryUploadWidget";
 import { CloudinaryContext } from "../CloudinaryUploadWidget";
-import { addBook } from "../../../../server/booksHandlers";
 
-const AddBookForm = () => {
-  const { addBookToUserLibrary, formElements, setFormElements } =
-    useContext(BooksContext);
+const AddBookForm = ({ toEdit }) => {
+  const {
+    addBookToUserLibrary,
+    formElements,
+    setFormElements,
+    book,
+    addOrModifyBook,
+  } = useContext(BooksContext);
   const { setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
   const [bookIsbn, setBookIsbn] = useState(null);
-  let addedIsbn = null;
+  // let addedIsbn = null;
+  // const { isbnToEdit } = useParams();
+  let [titleValue, setTitleValue] = useState("debut");
+
+  useEffect(() => {
+    console.log(toEdit, " = toEdit");
+    console.log(book);
+    if (!toEdit) {
+      return;
+    }
+
+    setTitleValue("coucou!");
+  }, []);
 
   return (
     <FormWrapper>
-      <FormTitle>Enter your book information</FormTitle>
+      <FormTitle>
+        {toEdit ? "Edit your book information" : "Add your book information"}
+      </FormTitle>
       <BookInfoForm
         action=""
-        method="post"
+        method={toEdit ? "patch" : "post"}
         onSubmit={(e) => {
           e.preventDefault();
           //setFormElements(e.target.elements);
-          addOrModifyBook(e.target.elements, true);
-          let isbn = document.getElementById("isbn").value;
-          addBookToUserLibrary(isbn);
-          // history.push("/library")
+          addOrModifyBook(e.target.elements, !toEdit);
+          if (!toEdit) {
+            let isbn = document.getElementById("isbn").value;
+            addBookToUserLibrary(isbn);
+          }
         }}
       >
         <Column>
@@ -47,7 +67,7 @@ const AddBookForm = () => {
             <Label htmlFor="title">
               <BsAsterisk style={{ fontSize: "14px" }} /> Title
             </Label>
-            <Input type="text" name="title" required></Input>
+            <Input value={titleValue} type="text" name="title" required></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="author">
@@ -100,8 +120,12 @@ const AddBookForm = () => {
           </Infodiv>
           <Infodiv>
             <Label htmlFor="imageSrc">Upload cover</Label>
-            <Button onClick={openUpload} name="imageSrc" type="button" placeholder="Upload your image">
-            </Button>
+            <Button
+              onClick={openUpload}
+              name="imageSrc"
+              type="button"
+              placeholder="Upload your image"
+            ></Button>
             {/* <Input type="file" name="imageSrc" accept="image/*"></Input>
               <Input type="submit" value="Upload"></Input> */}
           </Infodiv>

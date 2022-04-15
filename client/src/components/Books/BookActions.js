@@ -10,51 +10,50 @@ import { BiBookAdd, BiBookReader, BiBookAlt, BiBookHeart } from "react-icons/bi"
 const BookActions = () => {
     const {
       handleToggleAction,
-      count,
-      setCount,
       addFoundBookToDatabase, addBookToUserLibrary,
       bookIsbn,
     } = useContext(BooksContext);
-    let history = useHistory();
-    
+    let history = useHistory();    
     
     return (
       <ActionsWrapper>
         <ActionBtndiv>
-            {/* Add book to user library */}
-          <ActionBtn onClick={() => {
-               addBookToUserLibrary(bookIsbn);
-               addFoundBookToDatabase();
-              // added.then(() => {history.push("/")})
+          {/* Add book to user library */}
+          <ActionBtn
+            onClick={() => {
+              addBookToUserLibrary(bookIsbn);
+              addFoundBookToDatabase();
               history.push("/");
-              // window.location.reload();
-            //   display messages : in the library already or book added (and redirect to the bookshelf)
-
-            }}>
+              //   display messages : in the library already or book added (and redirect to the bookshelf)
+            }}
+          >
             <BiBookAdd />
           </ActionBtn>
           <span>Library</span>
         </ActionBtndiv>
         <ActionBtndiv>
-            {/* set book to is reading */}
+          {/* set book to is reading */}
           <ActionBtn>
             <BiBookReader />
           </ActionBtn>
           <span>Reading</span>
         </ActionBtndiv>
         <ActionBtndiv>
-            {/* set book to read */}
+          {/* set book to read */}
           <ActionBtn>
             <BiBookAlt />
           </ActionBtn>
           <span>Read</span>
         </ActionBtndiv>
         <ActionBtndiv>
-            {/* add book to wishlist */}
+          {/* add book to wishlist */}
           <ActionBtn>
             <BiBookHeart />
           </ActionBtn>
           <span>Wishlist</span>
+          <ActionBtn onClick={() => {history.push(`/modify-book-form`)}}>
+            Edit
+          </ActionBtn>
         </ActionBtndiv>
         {/* <Action onClick={(e) => handleToggleAction(e, "inUserLibrary")}> */}
         {/* <BookActionIcon kind="addToLibrary" /> */}

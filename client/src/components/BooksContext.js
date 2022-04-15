@@ -17,7 +17,7 @@ export const BooksProvider = ({ children }) => {
   const [inUserLibrary, setInUserLibrary] = useState(false);
   const { currentUserId, setCurrentUserProfile } = useContext(UsersContext);
   const [count, setCount] = useState(0);
-  const [formElements, setFormElements] = useState(null);
+  // const [formElements, setFormElements] = useState(null);
 
   //   search books from Google API (for now)
   const searchBook = async () => {
@@ -109,9 +109,7 @@ export const BooksProvider = ({ children }) => {
 
   };
 
-  const addOrModifyBook = async (book, isAdding) =>
-  {
-  // faire le meme chose que dans le useEffect
+  const addOrModifyBook = async (book, isAdding) => {
       try {
         const response = await fetch(
           isAdding ? "/api/add-book" : "/api/modify-book",
@@ -154,51 +152,51 @@ export const BooksProvider = ({ children }) => {
   };
 
   // add to the database a book that was manually created by the user with the Form
-  useEffect(() => {
-    const addBookToDatabase = async () => {
-      try {
-        const response = await fetch("/api/add-book", {
-          method: "POST",
-          body: JSON.stringify({
-            isbn: formElements.isbn?.value,
-            title: formElements.title?.value,
-            subtitle: formElements.subtitle.value,
-            authors: formElements.author?.value,
-            translators: formElements.translator.value,
-            publisher: formElements.publisher.value,
-            collection: formElements.collection.value,
-            yearOfPublication: formElements.yearOfPublication.value,
-            firstYearOfPub: formElements.firstYearOfPub.value,
-            language: formElements.language.value,
-            country: formElements.country.value,
-            price: formElements.price.value,
-            imageSrc: formElements.imageSrc.value,
-            pages: formElements.pages.value,
-            format: formElements.format.value,
-            description: formElements.description.value,
-            stars: formElements.stars.value,
-            comments: formElements.comment.value,
-            quotes: formElements.quotes.value,
-          }),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-        // console.log(response);
-        let data = await response.json();
-        let createdBook = data.data;
-        setBook(createdBook);
+  // useEffect(() => {
+  //   const addBookToDatabase = async () => {
+  //     try {
+  //       const response = await fetch("/api/add-book", {
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           isbn: formElements.isbn?.value,
+  //           title: formElements.title?.value,
+  //           subtitle: formElements.subtitle.value,
+  //           authors: formElements.author?.value,
+  //           translators: formElements.translator.value,
+  //           publisher: formElements.publisher.value,
+  //           collection: formElements.collection.value,
+  //           yearOfPublication: formElements.yearOfPublication.value,
+  //           firstYearOfPub: formElements.firstYearOfPub.value,
+  //           language: formElements.language.value,
+  //           country: formElements.country.value,
+  //           price: formElements.price.value,
+  //           imageSrc: formElements.imageSrc.value,
+  //           pages: formElements.pages.value,
+  //           format: formElements.format.value,
+  //           description: formElements.description.value,
+  //           stars: formElements.stars.value,
+  //           comments: formElements.comment.value,
+  //           quotes: formElements.quotes.value,
+  //         }),
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
+  //       // console.log(response);
+  //       let data = await response.json();
+  //       let createdBook = data.data;
+  //       setBook(createdBook);
 
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
+  //     } catch (err) {
+  //       console.log(err.message);
+  //     }
+  //   };
   
-    if (formElements) {
-      addBookToDatabase();
-    }
-  }, [formElements]);
+  //   if (formElements) {
+  //     addBookToDatabase();
+  //   }
+  // }, [formElements]);
 
   // retrieve books from database, using options (all books, with start and limit, by category, by tag)
   useEffect(() => {
@@ -255,10 +253,11 @@ export const BooksProvider = ({ children }) => {
         searchBook,
         setBookIsbn,
         bookIsbn,
-        setFormElements,
+        // setFormElements,
         books,
         addFoundBookToDatabase,
         // openForm,
+        addOrModifyBook,
       }}
     >
       {children}

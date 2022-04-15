@@ -148,7 +148,6 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
 // get a book by its isbn
 const getBook = async (req, res) => {
   let { isbn } = req.params;
-  // console.log("Simon va être content", isbn);
   try {
     await client.connect();
     console.log("connected");
