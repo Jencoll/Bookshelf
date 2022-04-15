@@ -23,9 +23,10 @@ export const BooksProvider = ({ children }) => {
   const searchBook = async () => {
     try {
       const response = await fetch(`/api/search-book?q=${searchQuery}`);
+      console.log("on tente de faire une autre recherche");
       let data = await response.json();
-      let books = data.books;
-      setFoundBooks(books);
+      console.log("la recherche donne ", data.books);
+      setFoundBooks(data.books);
     } catch (err) {
       console.log("Something went wrong: ", err.message);
     }
