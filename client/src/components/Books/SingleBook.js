@@ -8,8 +8,8 @@ import BookActions from "./BookActions";
 
 const SingleBook = () => {
     const {isbn} = useParams();
-    const {foundBook, count, setBookIsbn, bookIsbn} = useContext(BooksContext);
-    const [book, setBook] = useState(null);
+    const {foundBook, book, setBook, setBookIsbn, bookIsbn} = useContext(BooksContext);
+    // const [book, setBook] = useState(null);
     const { currentUserId } = useContext(UsersContext);
     
     // get a book from its ISBN (with the Google API)
@@ -29,32 +29,6 @@ const SingleBook = () => {
 
       displayBook();
     }, [isbn])
-    
-    // console.log(book)
-
-    // add book to the user library
-    // useEffect(() => {
-    //   const addBookToUserLibrary = async () => {
-    //     try {
-    //       const response = await fetch(
-    //         `/api/add-book-to-user-library/${currentUserId}`,
-    //         {
-    //           method: "PATCH",
-    //           body: JSON.stringify({
-    //             isbn,
-    //           }),
-    //         }
-    //       );
-    //       console.log(isbn);
-    //       let data = await response.json();
-    //       console.log(data.user);
-    //       // setCurrentUserProfile(data.user)
-    //     } catch (err) {
-    //       console.log("Error: ", err.message);
-    //     }
-    //   };
-    //   addBookToUserLibrary();
-    // }, [count]);
     
     // convert year of publication, language, stars
 
@@ -80,7 +54,7 @@ const SingleBook = () => {
                 <Infos>{book.pages} pages</Infos>
                 {book.format && <Infos>{book.format}</Infos>}
                 <Infos>{book.description}</Infos>
-                <BookActions />
+                <BookActions book={book} />
             </BookDetails>
           </SingleBookWrapper>
         ) : (
@@ -93,9 +67,9 @@ const SingleBook = () => {
 
 const SingleBookWrapper = styled.div`  
     position: absolute;
+    position: relative;
     display: flex;
     justify-content: space-evenly;
-    top: 70px;
     left: 125px;
     width: calc(100% - 400px);
     padding: 2em;

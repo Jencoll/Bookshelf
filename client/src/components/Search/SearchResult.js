@@ -6,28 +6,19 @@ import { BooksContext } from "../BooksContext";
 const SearchResult = ({ foundBook, setIsClosed }) => {
   // const [author, setAuthor] = useState("");
   const { setSelectBook, selectBook, setSearchQuery, setFoundBooks } = useContext(BooksContext);
-  console.log(foundBook.isbn);
+  // console.log(foundBook.isbn);
   let history = useHistory();
-
+  console.log(foundBook, "is found book")
   return (
-    <Result>
-      {/* set the corresponding link */}
-      <ResultLink
-        // onClick={() => {
-        //   setSelectBook(foundBook);
-        //   history.push(`/book/${foundBook.isbn}`);
-        // }}
-        to={`/book/${foundBook.isbn}`}
-        onClick={() => {
-          // setIsClosed(true);
-          setSearchQuery("");
-          setFoundBooks(null);
-        }}
-        // Close the UL on click
-        
-      >
-        {foundBook?.title}
-      </ResultLink>
+    <Result
+      onClick={() => {
+        history.push(`/book/${foundBook.isbn}`);
+        console.log("this is the isbn: ", foundBook.isbn);
+        setSearchQuery("");
+        setFoundBooks(null);
+      }}
+    >
+      {foundBook?.title}
       <Bookdiv>
         <Cover src={foundBook.imageSrc}></Cover>
         <Title>{foundBook.title}</Title>

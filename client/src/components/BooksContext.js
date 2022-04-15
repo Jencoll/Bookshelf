@@ -8,6 +8,8 @@ export const BooksProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [foundBooks, setFoundBooks] = useState([]);
   const [foundBook, setFoundBook] = useState(null);
+  const [books, setBooks] = useState([]);
+  const [book, setBook] = useState(null);
   const [bookIsbn, setBookIsbn] = useState(null);
   const [inWishlist, setInWishlist] = useState(false);
   const [isRead, setIsRead] = useState(false);
@@ -20,11 +22,9 @@ export const BooksProvider = ({ children }) => {
   //   search books from Google API (for now)
   const searchBook = async () => {
     try {
-      // console.log(searchQuery);
       const response = await fetch(`/api/search-book?q=${searchQuery}`);
       let data = await response.json();
       let books = data.books;
-      // console.log(books);
       setFoundBooks(books);
     } catch (err) {
       console.log("Something went wrong: ", err.message);
@@ -52,31 +52,73 @@ export const BooksProvider = ({ children }) => {
           },
         }
       );
-      // console.log(response);
       if (response.status === 400) {
         // return Error with this message: <p>This book is already in your library.</p>;
         alert("This book is already in your library!");
       }
-      // console.log(isbn);
       let data = await response.json();
-      // console.log(data.user);
-      // setCurrentUserProfile(data.user);
+      console.log("data is: ", data);
+      setCurrentUserProfile(data.user);
     } catch (err) {
       console.log("Error: ", err.message);
     }
   };
 
-  // add book to the database
+  // add a foundBook to the database
+  const addFoundBookToDatabase = async () => {
+      console.log("This is the book: ", book);
+    try {
+      const response = await fetch("/api/add-book", {
+        method: "POST",
+        body: JSON.stringify({
+          isbn: book.isbn,
+          title: book.title,
+          subtitle: book.subtitle,
+          authors: book.authors,
+          translators: book.translator,
+          publisher: book.publisher,
+          collection: book.collection,
+          yearOfPublication: book.yearOfPublication,
+          firstYearOfPub: book.firstYearOfPub,
+          language: book.language,
+          country: book.country,
+          price: book.price,
+          // imageSrc: book.imageSrc,
+          pages: book.pages,
+          format: book.format,
+          description: book.description,
+          stars: book.stars,
+          comments: book.comment,
+          quotes: book.quotes,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      let data = await response.json();
+      let foundBookAdded = data;
+      console.log(foundBookAdded, " is book added");
+      // foundBookAdded.then(() => {setBook(foundBookAdded)})
+      setBook(foundBookAdded);
+    } catch (err) {
+      console.log("Something went wrong: ", err.message);
+    }  
+
+  };
+
+  // add to the database a book that was manually created by the user with the Form
   useEffect(() => {
     const addBookToDatabase = async () => {
       try {
         const response = await fetch("/api/add-book", {
           method: "POST",
           body: JSON.stringify({
-            isbn: formElements.isbn.value,
-            title: formElements.title.value,
+            isbn: formElements.isbn?.value,
+            title: formElements.title?.value,
             subtitle: formElements.subtitle.value,
-            authors: formElements.author.value,
+            authors: formElements.author?.value,
             translators: formElements.translator.value,
             publisher: formElements.publisher.value,
             collection: formElements.collection.value,
@@ -85,12 +127,12 @@ export const BooksProvider = ({ children }) => {
             language: formElements.language.value,
             country: formElements.country.value,
             price: formElements.price.value,
-            imageSrc: formElements.imageSrc.value,
+            // imageSrc: formElements.imageSrc.value,
             pages: formElements.pages.value,
             format: formElements.format.value,
             description: formElements.description.value,
             stars: formElements.stars.value,
-            comments: formElements.comments.value,
+            comments: formElements.comment.value,
             quotes: formElements.quotes.value,
           }),
           headers: {
@@ -98,26 +140,36 @@ export const BooksProvider = ({ children }) => {
             "Content-Type": "application/json",
           },
         });
+        // console.log(response);
         let data = await response.json();
-        console.log(data);
+        let createdBook = data.data;
+        setBook(createdBook);
 
       } catch (err) {
         console.log(err.message);
       }
-
-    } 
-    
+    };
+  
     if (formElements) {
       addBookToDatabase();
     }
   }, [formElements]);
-  
-  console.log("form is: ", formElements);
-  // useEffect(() => {
-  //   const addBookToDatabase = async () => {
 
-  // }
-  // })
+  // retrieve books from database, using options (all books, with start and limit, by category, by tag)
+  useEffect(() => {
+    const retrieveBooks = async () => {
+      try {
+        const response = await fetch("/api/get-books");
+        let data = await response.json();
+        console.log(data.books, " set books here");
+        setBooks(data.books);
+      } catch (err) {
+        console.log(err.message);
+      };
+    };
+    retrieveBooks();
+
+  }, [book]);
 
   // const handleToggleAction = (e, kind) => {
   //   // let kind = null;
@@ -147,8 +199,10 @@ export const BooksProvider = ({ children }) => {
         setFoundBooks,
         searchQuery,
         setSearchQuery,
-       
+        // addBookToDatabase,
         selectBook,
+        book,
+        setBook,
         // handleToggleAction,
         count,
         setCount,
@@ -157,6 +211,8 @@ export const BooksProvider = ({ children }) => {
         setBookIsbn,
         bookIsbn,
         setFormElements,
+        books,
+        addFoundBookToDatabase,
         // openForm,
       }}
     >

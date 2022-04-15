@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { BooksContext } from "../BooksContext";
 import Action from "./Action";
 import BookActionIcon from "./BookActionIcon";
@@ -7,19 +8,29 @@ import { ActionBtn } from "../Header/Header";
 import { BiBookAdd, BiBookReader, BiBookAlt, BiBookHeart } from "react-icons/bi";
 
 const BookActions = () => {
-    const { handleToggleAction, count, setCount, addBookToUserLibrary, bookIsbn } =
-      useContext(BooksContext);
-
+    const {
+      handleToggleAction,
+      count,
+      setCount,
+      addFoundBookToDatabase, addBookToUserLibrary,
+      bookIsbn,
+    } = useContext(BooksContext);
+    let history = useHistory();
+    
+    
     return (
       <ActionsWrapper>
         <ActionBtndiv>
             {/* Add book to user library */}
           <ActionBtn onClick={() => {
-              addBookToUserLibrary(bookIsbn);
-            //   display messages : in the library already or book added
-            //   setCount(count + 1);
-            //   console.log(count);
-              }}>
+               addBookToUserLibrary(bookIsbn);
+               addFoundBookToDatabase();
+              // added.then(() => {history.push("/")})
+              history.push("/");
+              // window.location.reload();
+            //   display messages : in the library already or book added (and redirect to the bookshelf)
+
+            }}>
             <BiBookAdd />
           </ActionBtn>
           <span>Library</span>

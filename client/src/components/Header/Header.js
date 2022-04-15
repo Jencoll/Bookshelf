@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import LoginBox from "../Login/LoginBox";
 import Searchbar from "../Search/Searchbar";
@@ -8,23 +8,34 @@ import SearchResult from "../Search/SearchResult";
 import { BooksContext } from "../BooksContext";
 
 const Header = () => {
-  const { foundBooks, setFoundBooks, selectBook, searchQuery } = useContext(BooksContext);
+  const { foundBooks, setFoundBooks, selectBook, searchQuery, setSearchQuery } = useContext(BooksContext);
   const [isClosed, setIsClosed] = useState(false);
   let history = useHistory();
-  // console.log(foundBooks);
+  let booksRef = useRef(null);
+  
+  // does not work properly
+  const handleToggleList = (e) => {
+    // let list = document.getElementById("list");
+    // if (list && e.target !== list) {
+    //   setIsClosed();
+    //   list.style.display = "none";
+    //   setSearchQuery("");
+    //   setFoundBooks(null);
+    // }
+    if (booksRef.current && !booksRef.current.contains(e.target)) {
+        setSearchQuery("");
+        setFoundBooks(null);
+    }
+  };
 
-  //  const openForm = () => {
-  //    console.log("form open");
-
-  //   //  fetch("/add-book-form", {
-  //   //    method: "POST", 
-  //   //    headers: {
-  //   //      "Accept": "application/json",
-  //   //      "Content-Type": "application/json",
-  //   //    },
-  //   //    body: JSON.stringify()
-  //   //  })
-  //  };
+  useEffect(() => {
+    window.addEventListener("click", handleToggleList)
+  
+    return () => {
+      window.removeEventListener("click", handleToggleList);
+    }
+  }, [])
+  
 
   return (
     <Headerwrapper>
@@ -32,21 +43,27 @@ const Header = () => {
       <BookActionWrapper>
         {/* onclick, opens a modal form where the user is asked to enter manually
         or with scanned image the information about the book */}
-        <ActionBtn onClick={(e) => {
-          e.stopPropagation();
-          history.push("/add-book-form")
-        }}>
+        <ActionBtn
+          onClick={(e) => {
+            e.stopPropagation();
+            history.push("/add-book-form");
+          }}
+        >
           <BiBookAdd />
         </ActionBtn>
         <Searchbar />
         {/* as foundBooks is an empty array that always exists, it will always display, but we can ask it not to display if its length is more than 0 */}
-        {foundBooks && foundBooks.length > 0 ? (
-          <BookList enabled>
+        {foundBooks && foundBooks.length > 0 && (
+          <BookList
+            ref={booksRef}
+            id="list"
+            enabled
+          >
             {foundBooks.map((foundBook) => (
               <SearchResult foundBook={foundBook} key={foundBook.isbn} />
             ))}
           </BookList>
-        ) : <BookList></BookList>}
+        )}
       </BookActionWrapper>
       <LoginBox />
     </Headerwrapper>

@@ -1,14 +1,15 @@
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { BsAsterisk } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
 
 const AddBookForm = () => {
-    const { addBookToUserLibrary, addBookToDatabase, setFormElements } = useContext(BooksContext);
+    const { addBookToUserLibrary, formElements, setFormElements } = useContext(BooksContext);
+   const [bookIsbn, setBookIsbn] = useState(null);
+   let addedIsbn = null;
 
-    // I want two columns. Now!
     return (
       <FormWrapper>
         <FormTitle>Enter your book information</FormTitle>
@@ -18,6 +19,9 @@ const AddBookForm = () => {
         onSubmit={(e) => {
           e.preventDefault();
           setFormElements(e.target.elements);
+          let isbn = document.getElementById("isbn").value;
+          addBookToUserLibrary(isbn);
+          // history.push("/library")
         }}
         >
           <Column>
@@ -25,7 +29,7 @@ const AddBookForm = () => {
               <Label htmlFor="isbn">
                 <BsAsterisk style={{ fontSize: "14px" }} /> ISBN
               </Label>
-              <Input type="text" name="isbn" placeholder="No need of the hyphens" required></Input>
+              <Input type="text" name="isbn" id="isbn" placeholder="No need of the hyphens" required></Input>
             </Infodiv>
             <Infodiv>
               <Label htmlFor="title">
@@ -107,10 +111,7 @@ const AddBookForm = () => {
               <Label htmlFor="price">Price</Label>
               <Input type="text" name="price"></Input>
             </Infodiv>
-            <AddBookBtn onClick={() => {
-              // addBookToUserLibrary();
-              addBookToDatabase();
-            }}>
+            <AddBookBtn>
               <BiBookAdd />
             </AddBookBtn>
           </Column>
@@ -120,10 +121,9 @@ const AddBookForm = () => {
 };
 
 const FormWrapper = styled.div`
-  position: absolute;
+  position: relative;
   display: flex;
   flex-direction: column;
-  top: 70px;
   left: 125px;
   width: calc(100% - 400px);
   height: calc(100% - 70px);

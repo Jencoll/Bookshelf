@@ -90,7 +90,60 @@ const googleBookToBook = (googleBook) => {
 };
 
 // get an array of books with many options in the query (to filter the books depending on the option chosen)
-const getBooks = async ({ query: { start, limit, type, filter } }, res) => {};
+const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
+  // start = parseInt(req.query.start);
+  // limit = parseInt(req.query.limit);
+  let range = start + limit;
+
+  try {
+    await client.connect();
+    console.log("connected");
+    let matchedBooks = null;
+    switch (type) {
+      case "category": 
+        matchedBooks = await booksCollection.find( {category: filter} ).toArray();
+        break;
+      case "wishlist":
+        matchedBooks = await booksCollection.find({ wishlist: filter }).toArray();
+        break;
+      case "tag": 
+        matchedBooks = await booksCollection.find({ tag: filter }).toArray();
+        break;
+      case "bookshelf":
+        matchedBooks = await booksCollection.find({ bookshelf: filter }).toArray();
+        break;
+      default: 
+        matchedBooks = await booksCollection.find().toArray();
+        break;
+    }
+    // const allBooks = await booksCollection.find().toArray();
+    // let length = allBooks.length; 
+    // console.log(allBooks, length);
+    // res.status(200).json({ status: 200, "number of books": length, books: allBooks });
+    if (matchedBooks.length > 24 && !start && !limit) {
+      res.status(200).json({ status: 200, books: matchedBooks.slice(0, 24) });
+    } else if (start && limit) {
+      res.status(200).json({ status: 200, start, limit, books: matchedBooks.slice(start, limit)});
+    } else if (start && !limit) {
+      limit = start + 24;
+      res.status(200).json({ status: 200, start, limit, books: matchedBooks.slice(start, limit)});
+    } else if (!start && limit) {
+      start = 0;
+      res.status(200).json({ status: 200, start, limit, books: matchedBooks.slice(start, limit) });
+    } else if (range && matchedBooks.length < range && start && limit) {
+      let gap = matchedBooks.length - start;
+      res.status(200).json({ status: 200, start, limit: gap, books: matchedBooks.slice(start, limit) });
+    } else if (matchedBooks.length > 0 && matchedBooks.length <= 24) {
+      res.status(200).json({ status: 200, books: matchedBooks });
+    }
+  } catch (err) {
+    console.log("Something went wrong: ", err.message);
+  } finally {
+    client.close();
+    console.log("disconnected");
+  };
+
+};
 
 // get a book by its isbn
 const getBook = async (req, res) => {
@@ -100,6 +153,7 @@ const getBook = async (req, res) => {
     await client.connect();
     console.log("connected");
     // const singleBook = await booksCollection.findOne({ isbn });
+
     const bookData = await axios.get(
       `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
     );
@@ -113,26 +167,10 @@ const getBook = async (req, res) => {
   } catch (err) {
     console.log("Something went wrong: ", err.stack);
   } finally {
-    client.close();
+    // client.close();
     console.log("disconnected");
   }
 };
-
-// const getUser = async ({ query: { userId } }, res) => {
-//   try {
-//     await client.connect();
-//     const singleUser = await userCollection.findOne({ _id: userId });
-//     if (!singleUser) {
-//       res.status(404).json({ status: 404, message: "User not found." });
-//     } else {
-//       res.status(200).json({ status: 200, user: singleUser });
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//   } finally {
-//     client.close();
-//   }
-// };
 
 // add a book in the database
 const addBook = async (req, res) => {
@@ -197,7 +235,7 @@ const addBook = async (req, res) => {
       const book = await booksCollection.insertOne(newBook);
       res.status(201).json({
         status: 201,
-        data: book,
+        data: newBook,
         message: "Book created successfully",
       });
     } else {
@@ -242,12 +280,12 @@ const addBook = async (req, res) => {
 
 // Endpoint for performing a search request to Google Books API
 const searchBook = async (req, res) => {
-  // maxresults = 15
+  //&langRestrict=${language}
   // set language restrictions to allow other languages than just English, when there are translations
-  console.log(req.query);
+  console.log("voici mon req.query: ", req.query);
   try {
     let response = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=15&key=${key}`
+      `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=20&key=${key}`
     );
 
     let items = await response.data.items;
@@ -256,7 +294,6 @@ const searchBook = async (req, res) => {
       return googleBookToBook(item);
     });
 
-    // console.log(books);
     res.status(200).json({ status: 200, books });
   } catch (err) {
     console.log("Something went wrong: ", err.message);

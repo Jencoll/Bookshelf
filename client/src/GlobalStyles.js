@@ -43,8 +43,9 @@ export default createGlobalStyle`
       display: block;
   }
   body {
+    max-width: 1440px;
+    height: 100vh;
       line-height: 1;
-      max-width: 1440px;
       margin: 0 auto;
   }
   ol, ul {

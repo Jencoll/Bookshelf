@@ -290,7 +290,7 @@ const addBookToUserLibrary = async (req, res) => {
     await client.connect();
     console.log("connected");
     // console.log(req.body);
-    // console.log(isbn);
+    console.log(isbn);
     
     // find user with ID
     const existingUser = await userCollection.findOne({ _id: userId });
@@ -305,6 +305,7 @@ const addBookToUserLibrary = async (req, res) => {
       // console.log("book is there")
       return res.status(400).json({ status: 400, message: "Book is already in the user library" });
     } else {
+      console.log(isbn);
       existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
       //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
       //     ],

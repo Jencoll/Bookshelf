@@ -19,7 +19,7 @@ export const UsersProvider = ({ children }) => {
               let data = await response.json();
             //   console.log(data.user);
               setCurrentUserProfile(data.user);
-              setContacts(data.user.contacts); // contacts id : endpoint pour les profils
+              // setContacts(data.user.contacts); // contacts id : endpoint pour les profils
             //   const onlineContactsResponse = await fetch(`/api/get-online-users`); // à modifier selon le currentUserId
             //   if (onlineContactsResponse.status !== 200) {
             //       throw new Error("Cannot fetch data.");
@@ -35,13 +35,14 @@ export const UsersProvider = ({ children }) => {
         getCurrentUser();
     }, [currentUserId]);
 
+
     // useEffect(() => {
 
     // }, []);
 
 
     return (
-        <UsersContext.Provider value={{ currentUserId, setCurrentUserId, currentUserProfile, contacts, onlineContacts }}>{children}</UsersContext.Provider>
+        <UsersContext.Provider value={{ currentUserId, setCurrentUserId, currentUserProfile, setCurrentUserProfile, contacts, onlineContacts }}>{children}</UsersContext.Provider>
     )
 };
 
