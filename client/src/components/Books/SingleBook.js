@@ -71,7 +71,8 @@ const SingleBookWrapper = styled.div`
     display: flex;
     justify-content: space-evenly;
     left: 125px;
-    width: calc(100% - 400px);
+    /* width: calc(100% - 400px); */
+    width: calc(100% - 125px);
     padding: 2em;
 `;
 

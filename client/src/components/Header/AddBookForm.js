@@ -7,6 +7,7 @@ import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
 import openUpload from "../CloudinaryUploadWidget";
 import { CloudinaryContext } from "../CloudinaryUploadWidget";
+// import { useForm } from "react-hook-form";
 
 const AddBookForm = ({ toEdit }) => {
   const {
@@ -16,21 +17,14 @@ const AddBookForm = ({ toEdit }) => {
     book,
     addOrModifyBook,
   } = useContext(BooksContext);
-  const { setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
-  const [bookIsbn, setBookIsbn] = useState(null);
-  // let addedIsbn = null;
-  // const { isbnToEdit } = useParams();
-  let [titleValue, setTitleValue] = useState("debut");
+  const { fileUrlUploaded, setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
+  const [bookEdited, setBookEdited] = useState(toEdit ? book : {});
+  let uploadFieldRef = useRef();
 
   useEffect(() => {
-    console.log(toEdit, " = toEdit");
-    console.log(book);
-    if (!toEdit) {
-      return;
-    }
+    setBookEdited({...bookEdited, imageSrc: fileUrlUploaded})
+  }, [fileUrlUploaded]);
 
-    setTitleValue("coucou!");
-  }, []);
 
   return (
     <FormWrapper>
@@ -42,8 +36,9 @@ const AddBookForm = ({ toEdit }) => {
         method={toEdit ? "patch" : "post"}
         onSubmit={(e) => {
           e.preventDefault();
+          console.log(bookEdited, " est ce livre édité");
           //setFormElements(e.target.elements);
-          addOrModifyBook(e.target.elements, !toEdit);
+          addOrModifyBook(bookEdited, toEdit);
           if (!toEdit) {
             let isbn = document.getElementById("isbn").value;
             addBookToUserLibrary(isbn);
@@ -56,6 +51,10 @@ const AddBookForm = ({ toEdit }) => {
               <BsAsterisk style={{ fontSize: "14px" }} /> ISBN
             </Label>
             <Input
+              value={bookEdited?.isbn}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, isbn: e.target.value });
+              }}
               type="text"
               name="isbn"
               id="isbn"
@@ -67,87 +66,222 @@ const AddBookForm = ({ toEdit }) => {
             <Label htmlFor="title">
               <BsAsterisk style={{ fontSize: "14px" }} /> Title
             </Label>
-            <Input value={titleValue} type="text" name="title" required></Input>
+            <Input
+              value={bookEdited?.title}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, title: e.target.value });
+              }}
+              type="text"
+              name="title"
+              required
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="author">
               <BsAsterisk style={{ fontSize: "14px" }} /> Author
             </Label>
-            <Input type="text" name="author" required></Input>
+            <Input
+              value={bookEdited?.authors}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, authors: [e.target.value] });
+              }}
+              type="text"
+              name="author"
+              required
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="subtitle">Subtitle</Label>
-            <Input type="text" name="subtitle"></Input>
+            <Input
+              value={bookEdited?.subtitle}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, subtitle: e.target.value });
+              }}
+              type="text"
+              name="subtitle"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="publisher">Publisher</Label>
-            <Input type="text" name="publisher"></Input>
+            <Input
+              value={bookEdited?.publisher}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, publisher: e.target.value });
+              }}
+              type="text"
+              name="publisher"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="collection">Collection</Label>
-            <Input type="text" name="collection"></Input>
+            <Input
+              value={bookEdited?.collection}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, collection: e.target.value });
+              }}
+              type="text"
+              name="collection"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="translator">Translator</Label>
-            <Input type="text" name="translator"></Input>
+            <Input
+              value={bookEdited?.translators}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, translators: [e.target.value] });
+              }}
+              type="text"
+              name="translator"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="yearOfPublication">Published</Label>
-            <Input type="number" name="yearOfPublication"></Input>
+            <Input
+              value={bookEdited?.yearOfPublication}
+              onChange={(e) => {
+                setBookEdited({
+                  ...bookEdited,
+                  yearOfPublication: e.target.value,
+                });
+              }}
+              type="number"
+              name="yearOfPublication"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="firstYearOfPub">First Edition</Label>
-            <Input type="number" name="firstYearOfPub"></Input>
+            <Input
+              value={bookEdited?.firstYearOfPub}
+              onChange={(e) => {
+                setBookEdited({
+                  ...bookEdited,
+                  firstYearOfPub: e.target.value,
+                });
+              }}
+              type="number"
+              name="firstYearOfPub"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="language">Language</Label>
-            <Input type="text" name="language"></Input>
+            <Input
+              value={bookEdited?.language}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, language: e.target.value });
+              }}
+              type="text"
+              name="language"
+            ></Input>
           </Infodiv>
         </Column>
 
         <Column>
           <Infodiv>
             <Label htmlFor="country">Country</Label>
-            <Input type="text" name="country"></Input>
+            <Input
+              value={bookEdited?.country}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, country: e.target.value });
+              }}
+              type="text"
+              name="country"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="pages">Pages</Label>
-            <Input type="text" name="pages"></Input>
+            <Input
+              value={bookEdited?.pages}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, pages: e.target.value });
+              }}
+              type="text"
+              name="pages"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="format">Format</Label>
-            <Input type="text" name="format"></Input>
+            <Input
+              value={bookEdited?.format}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, format: e.target.value });
+              }}
+              type="text"
+              name="format"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="imageSrc">Upload cover</Label>
             <Button
-              onClick={openUpload}
+              ref={uploadFieldRef}
+              value={bookEdited?.imageSrc}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, imageSrc: e.target.value });
+              }}
+              // onClick={openUpload}
               name="imageSrc"
-              type="button"
+              type="text"
               placeholder="Upload your image"
             ></Button>
+            <button onClick={openUpload}>Upload</button>
             {/* <Input type="file" name="imageSrc" accept="image/*"></Input>
               <Input type="submit" value="Upload"></Input> */}
           </Infodiv>
           <Infodiv>
             <Label htmlFor="description">Description</Label>
-            <Input type="text" name="description"></Input>
+            <Input
+              value={bookEdited?.description}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, description: e.target.value });
+              }}
+              type="text"
+              name="description"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="stars">Rating (/5)</Label>
-            <Input type="number" min="0" max="5" name="stars"></Input>
+            <Input
+              value={bookEdited?.stars}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, stars: e.target.value });
+              }}
+              type="number"
+              min="0"
+              max="5"
+              name="stars"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="comment">Comment</Label>
-            <Input type="text" name="comment"></Input>
+            <Input
+              value={bookEdited?.comments}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, comments: e.target.value });
+              }}
+              type="text"
+              name="comment"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="quotes">Quotes</Label>
-            <Input type="text" name="quotes"></Input>
+            <Input
+              value={bookEdited?.quotes}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, quotes: [e.target.value] });
+              }}
+              type="text"
+              name="quotes"
+            ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="price">Price</Label>
-            <Input type="text" name="price"></Input>
+            <Input
+              value={bookEdited?.price}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, price: e.target.value });
+              }}
+              type="text"
+              name="price"
+            ></Input>
           </Infodiv>
           <AddBookBtn>
             <BiBookAdd />
@@ -163,7 +297,8 @@ const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   left: 125px;
-  width: calc(100% - 400px);
+  /* width: calc(100% - 400px); */
+  width: calc(100% - 125px);
   height: calc(100% - 70px);
   padding: 24px;
 `;

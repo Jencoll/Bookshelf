@@ -109,32 +109,32 @@ export const BooksProvider = ({ children }) => {
 
   };
 
-  const addOrModifyBook = async (book, isAdding) => {
+  const addOrModifyBook = async (book, toEdit) => {
       try {
         const response = await fetch(
-          isAdding ? "/api/add-book" : "/api/modify-book",
+          toEdit ? "/api/modify-book" : "/api/add-book",
           {
-            method: isAdding ? "POST" : "PATCH",
+            method: toEdit ? "PATCH" : "POST",
             body: JSON.stringify({
-              isbn: book.isbn?.value,
-              title: book.title?.value,
-              subtitle: book.subtitle.value,
-              authors: book.author?.value,
-              translators: book.translator.value,
-              publisher: book.publisher.value,
-              collection: book.collection.value,
-              yearOfPublication: book.yearOfPublication.value,
-              firstYearOfPub: book.firstYearOfPub.value,
-              language: book.language.value,
-              country: book.country.value,
-              price: book.price.value,
-              imageSrc: book.imageSrc.value,
-              pages: book.pages.value,
-              format: book.format.value,
-              description: book.description.value,
-              stars: book.stars.value,
-              comments: book.comment.value,
-              quotes: book.quotes.value,
+              isbn: book.isbn,
+              title: book.title,
+              subtitle: book.subtitle,
+              authors: book.author,
+              translators: book.translator,
+              publisher: book.publisher,
+              collection: book.collection,
+              yearOfPublication: book.yearOfPublication,
+              firstYearOfPub: book.firstYearOfPub,
+              language: book.language,
+              country: book.country,
+              price: book.price,
+              imageSrc: book.imageSrc,
+              pages: book.pages,
+              format: book.format,
+              description: book.description,
+              stars: book.stars,
+              comments: book.comment,
+              quotes: book.quotes,
             }),
             headers: {
               Accept: "application/json",

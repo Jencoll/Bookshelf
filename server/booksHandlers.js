@@ -120,8 +120,9 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
     // let length = allBooks.length; 
     // console.log(allBooks, length);
     // res.status(200).json({ status: 200, "number of books": length, books: allBooks });
-    if (matchedBooks.length > 24 && !start && !limit) {
-      res.status(200).json({ status: 200, books: matchedBooks.slice(0, 24) });
+    // console.log("les matches sont: ", matchedBooks)
+    if (matchedBooks.length > 24 && matchedBooks.length < 100 && !start && !limit) {
+      res.status(200).json({ status: 200, books: matchedBooks.slice(0, 99) });
     } else if (start && limit) {
       res.status(200).json({ status: 200, start, limit, books: matchedBooks.slice(start, limit)});
     } else if (start && !limit) {
@@ -151,18 +152,28 @@ const getBook = async (req, res) => {
   try {
     await client.connect();
     console.log("connected");
-    // const singleBook = await booksCollection.findOne({ isbn });
+    const singleBook = await booksCollection.findOne({ isbn });
 
-    const bookData = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
-    );
-    if (!bookData || bookData.data.totalItems === 0) {
-      res.status(404).json({ status: 404, message: "Book not found." });
+    if (singleBook) {
+      res.status(200).json({ status: 200, book: singleBook });
     } else {
-      res
-        .status(200)
-        .json({ status: 200, book: googleBookToBook(bookData.data.items[0]) });
+      const bookData = await axios.get(
+        `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${key}`
+      );
+      if (!bookData || bookData.data.totalItems === 0) {
+        res.status(404).json({ status: 404, message: "Book not found from Google Search nor local search." });
+      } else {
+        res
+          .status(200)
+          .json({
+            status: 200,
+            book: googleBookToBook(bookData.data.items[0]),
+          });
+      }
+
     }
+
+     
   } catch (err) {
     console.log("Something went wrong: ", err.stack);
   } finally {
@@ -275,7 +286,7 @@ const editBook = async (req, res) => {
     // comments,
     // quotes,
   } = req.body;
-
+  console.log("mon req.body est ", req.body);
   if (!isbn) {
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   }
