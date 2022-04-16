@@ -1,24 +1,22 @@
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 
-
-const BookThumbnail = ({displayBook}) => {
-
-    let history = useHistory();
-    console.log(displayBook.imageSrc, " est l'image source")
-    return (
-      <BookLi
-        onClick={() => {
-          history.push(`/book/${displayBook.isbn}`);
-        }}
-      >
-        {displayBook.imageSrc ? (
-          <img alt="book cover" src={displayBook?.imageSrc}></img>
-        ) : (
-          <EmptyCover>{displayBook?.title}</EmptyCover>
-        )}
-      </BookLi>
-    );
+const BookThumbnail = ({ displayBook }) => {
+  let history = useHistory();
+  console.log(displayBook.imageSrc, " est l'image source");
+  return (
+    <BookLi
+      onClick={() => {
+        history.push(`/book/${displayBook.isbn}`);
+      }}
+    >
+      {displayBook.imageSrc ? (
+        <img alt="book cover" src={displayBook?.imageSrc}></img>
+      ) : (
+        <EmptyCover>{displayBook?.title}</EmptyCover>
+      )}
+    </BookLi>
+  );
 };
 
 const BookLi = styled.li`
@@ -54,15 +52,14 @@ const BookLi = styled.li`
   }
 `;
 
-const EmptyCover = styled.div` 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 180px;
-    height: 260px;
-    border-radius: 5px;
-    padding: 5px;
-    
+const EmptyCover = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 260px;
+  border-radius: 5px;
+  padding: 5px;
 `;
 
 export default BookThumbnail;
