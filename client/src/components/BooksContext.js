@@ -16,7 +16,10 @@ export const BooksProvider = ({ children }) => {
   const [reading, setReading] = useState(false);
   const [inUserLibrary, setInUserLibrary] = useState(false);
   const { currentUserId, setCurrentUserProfile } = useContext(UsersContext);
-  const [count, setCount] = useState(0);
+  const [type, setType] = useState(null);
+  const [filter, setFilter] = useState(null);
+  const [start, setStart] = useState(0);
+  const [limit, setLimit] = useState(0);
   // const [formElements, setFormElements] = useState(null);
 
   //   search books from Google API (for now)
@@ -38,15 +41,13 @@ export const BooksProvider = ({ children }) => {
   };
 
   // add book to the user library with its ISBN
-  const addBookToUserLibrary = async (isbn) => {
+  const addOrModifyUserBook = async (userBook) => {
     try {
       const response = await fetch(
-        `/api/add-book-to-user-library/${currentUserId}`,
+        `/api/add-or-modify-user-book/${currentUserId}`,
         {
-          method: "PATCH",
-          body: JSON.stringify({
-            isbn,
-          }),
+          method: "PUT",
+          body: JSON.stringify(userBook),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -82,6 +83,7 @@ export const BooksProvider = ({ children }) => {
           yearOfPublication: book.yearOfPublication,
           firstYearOfPub: book.firstYearOfPub,
           language: book.language,
+          category: book.mainCategory,
           country: book.country,
           price: book.price,
           imageSrc: book.imageSrc,
@@ -127,6 +129,7 @@ export const BooksProvider = ({ children }) => {
               firstYearOfPub: book.firstYearOfPub,
               language: book.language,
               country: book.country,
+              category: book.mainCategory,
               price: book.price,
               imageSrc: book.imageSrc,
               pages: book.pages,
@@ -204,7 +207,7 @@ export const BooksProvider = ({ children }) => {
       try {
         const response = await fetch("/api/get-books");
         let data = await response.json();
-        console.log(data.books, " set books here");
+        // console.log(data.books, " set books here");
         setBooks(data.books);
       } catch (err) {
         console.log(err.message);
@@ -247,9 +250,7 @@ export const BooksProvider = ({ children }) => {
         book,
         setBook,
         // handleToggleAction,
-        count,
-        setCount,
-        addBookToUserLibrary,
+        addOrModifyUserBook,
         searchBook,
         setBookIsbn,
         bookIsbn,
@@ -258,6 +259,14 @@ export const BooksProvider = ({ children }) => {
         addFoundBookToDatabase,
         // openForm,
         addOrModifyBook,
+        type,
+        setType,
+        filter,
+        setFilter,
+        limit,
+        setLimit,
+        start,
+        setStart,
       }}
     >
       {children}

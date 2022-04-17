@@ -10,7 +10,7 @@ const SingleBook = () => {
     const {isbn} = useParams();
     const {foundBook, book, setBook, setBookIsbn, bookIsbn} = useContext(BooksContext);
     // const [book, setBook] = useState(null);
-    const { currentUserId } = useContext(UsersContext);
+    const { currentUserId, currentUserProfile } = useContext(UsersContext);
     
     // get a book from its ISBN (with the Google API)
     useEffect(() => {
@@ -30,6 +30,8 @@ const SingleBook = () => {
       displayBook();
     }, [isbn])
     
+    let userBook = currentUserProfile?.userLibrary.find(b => b.isbn === book?.isbn);
+    
     // convert year of publication, language, stars
 
     return (
@@ -37,24 +39,25 @@ const SingleBook = () => {
         {book ? (
           <SingleBookWrapper>
             <Coverwrapper>
-                <Cover src={book.imageSrc}></Cover>
+              <Cover src={book.imageSrc}></Cover>
             </Coverwrapper>
             <BookDetails>
-                <BookTitle>{book.title}</BookTitle>
-                {book.subtitle && <BookSubtitle>{book.subtitle}</BookSubtitle>}
-                <Authors>{book.authors}</Authors>
-                
-                   {/* {book.stars * <Stars>{BsStarFill}</Stars>} */}
-               
-                <Stars>{book.stars} stars</Stars>
-                <Infos>Publisher: {book.publisher}</Infos>
-                {book.collection && <Infos>Collection: {book.collection}</Infos>}
-                <Infos>Publication: {book.yearOfPublication}</Infos> 
-                <Infos>Language: {book.language}</Infos>
-                <Infos>{book.pages} pages</Infos>
-                {book.format && <Infos>{book.format}</Infos>}
-                <Infos>{book.description}</Infos>
-                <BookActions book={book} />
+              <BookTitle>{book.title}</BookTitle>
+              {book.subtitle && <BookSubtitle>{book.subtitle}</BookSubtitle>}
+              <Authors>{book.authors}</Authors>
+
+              {/* {book.stars * <Stars>{BsStarFill}</Stars>} */}
+
+              <Stars>{book.stars} stars</Stars>
+              <Infos>Category: {userBook.category}</Infos>
+              <Infos>Publisher: {book.publisher}</Infos>
+              {book.collection && <Infos>Collection: {book.collection}</Infos>}
+              <Infos>Publication: {book.yearOfPublication}</Infos>
+              <Infos>Language: {book.language}</Infos>
+              <Infos>{book.pages} pages</Infos>
+              {book.format && <Infos>{book.format}</Infos>}
+              <Infos>{book.description}</Infos>
+              <BookActions book={book} />
             </BookDetails>
           </SingleBookWrapper>
         ) : (

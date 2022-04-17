@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 const BookThumbnail = ({ displayBook }) => {
   let history = useHistory();
-  console.log(displayBook.imageSrc, " est l'image source");
+//   console.log(displayBook.imageSrc, " est l'image source");
   return (
     <BookLi
       onClick={() => {

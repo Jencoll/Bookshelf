@@ -12,9 +12,10 @@ const UserLibrary = () => {
 
   useEffect(() => {
     if (userBooks && books) {
-        console.log(books, " sont les livres")
+        // console.log(books, " sont les livres")
       let db = userBooks
         .map((userBook) => {
+          // console.log(userBook.category, " est la catégorie du livre", " et isbn est ", userBook.isbn)
           return books.find((b) => b.isbn === userBook.isbn);
         })
         .filter((b) => b !== undefined);

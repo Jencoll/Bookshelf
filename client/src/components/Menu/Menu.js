@@ -22,6 +22,7 @@ const MenuWrapper = styled.aside`
   height: 70px;
   width: 100%;
   gap: 30px;
+  z-index: 3;
   /* flex-direction: column; */
   /* width: 125px;
   height: 100vh; */

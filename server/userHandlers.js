@@ -282,15 +282,16 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// add a book in the user's library
-const addBookToUserLibrary = async (req, res) => {
+// add or modify a book in the user's library
+const addOrModifyUserBook = async (req, res) => {
   const userId = req.params._id;
-  const { isbn } = req.body;
+  // const { isbn } = req.body;
+
   try {
     await client.connect();
     console.log("connected");
     // console.log(req.body);
-    console.log(isbn);
+    console.log(req.body, "est le req body");
     
     // find user with ID
     const existingUser = await userCollection.findOne({ _id: userId });
@@ -299,19 +300,35 @@ const addBookToUserLibrary = async (req, res) => {
     }
     let userLibrary = existingUser.userLibrary;
     // add a book to user library
-    let bookAlreadyExists = userLibrary.find(book => book.isbn === isbn);
-    if (bookAlreadyExists) {
-      // if userLibrary contains the isbn, do not push it
-      // console.log("book is there")
-      return res.status(400).json({ status: 400, message: "Book is already in the user library" });
-    } else {
-      console.log(isbn);
-      existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
+    let userBookIndex = userLibrary.findIndex(book => book.isbn === req.body.isbn);
+    
+    if (userBookIndex === -1) {
+      // console.log(isbn);
+      existingUser.userLibrary.push(req.body);
+      // existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
       //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
       //     ],
-      await userCollection.updateOne({_id: userId}, {$set: existingUser});
-      res.status(200).json({ status: 200, message: "user library added", user: existingUser });
-    }
+    } else {
+      existingUser.userLibrary[userBookIndex] = req.body;
+    };
+    await userCollection.updateOne({_id: userId}, {$set: existingUser});
+    res.status(200).json({ status: 200, message: "user library added", user: existingUser });
+    
+    
+    // if (bookAlreadyExists) {
+    //   // if userLibrary contains the isbn, do not push it
+    //   // console.log("book is there")
+      
+    //   return res.status(400).json({ status: 400, message: "Book is already in the user library" });
+    // else } 
+    //  {
+      // console.log(isbn);
+      // existingUser.userLibrary.push({ isbn, borrowed: false, lent: false, bookshelf: "", category: "", tags: [], read: false, reading: false, wishlist: false });
+      // //         {_id: bookId, borrowed: "boolean", lent: "boolean", bookshelf: "bookshelfId", category: "category", tags: ["tag1", "tag2"]},
+      // //     ],
+      // await userCollection.updateOne({_id: userId}, {$set: existingUser});
+      // res.status(200).json({ status: 200, message: "user library added", user: existingUser });
+    // }
   } catch (err) {
     console.log("Something went wrong: ", err.message);
   } finally {
@@ -366,7 +383,7 @@ module.exports = {
   addUser,
   modifyUser,
   deleteUser,
-  addBookToUserLibrary,
+  addOrModifyUserBook,
   removeBookFromUserLibrary,
   // getRandOnlineUsers,
   // getCurrentUser,

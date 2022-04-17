@@ -16,7 +16,7 @@ const {
   deleteUser,
   getRandOnlineUsers,
   // getCurrentUser,
-  addBookToUserLibrary,
+  addOrModifyUserBook,
   removeBookFromUserLibrary,
   // addUserBookshelf,
 } = require("./userHandlers");
@@ -54,7 +54,7 @@ app.get("/api/get-user/:_id", getUser); // get a user by its ID
 app.post("/api/add-user", addUser); // create a user
 app.patch("/api/modify-user/:_id", modifyUser); // modify user information
 app.delete("/api/delete-user/:_id", deleteUser); // delete a user from the list of users
-app.patch("/api/add-book-to-user-library/:_id", addBookToUserLibrary);
+app.put("/api/add-or-modify-user-book/:_id", addOrModifyUserBook); // with user ID
 app.patch("/api/remove-book-from-user-library/:_id", removeBookFromUserLibrary);
 // app.post("/api/add-bookshelf/:_id", addUserBookshelf); 
 

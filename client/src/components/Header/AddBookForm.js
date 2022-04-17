@@ -1,31 +1,40 @@
 import styled from "styled-components";
 import { useContext, useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { BsAsterisk } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
 import openUpload from "../CloudinaryUploadWidget";
 import { CloudinaryContext } from "../CloudinaryUploadWidget";
+import { UsersContext } from "../UsersContext";
 // import { useForm } from "react-hook-form";
 
 const AddBookForm = ({ toEdit }) => {
-  const {
-    addBookToUserLibrary,
-    formElements,
-    setFormElements,
-    book,
-    addOrModifyBook,
-  } = useContext(BooksContext);
+  const { addOrModifyUserBook, formElements, setFormElements, book, addOrModifyBook } = useContext(BooksContext);
+  const { currentUserProfile, setCurrentUserProfile } = useContext(UsersContext);
   const { fileUrlUploaded, setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
   const [bookEdited, setBookEdited] = useState(toEdit ? book : {});
+  const userBook = currentUserProfile?.userLibrary.find(b => b.isbn === book?.isbn);
+  const [userBookEdited, setUserBookEdited] = useState(toEdit ? userBook : {});
   let uploadFieldRef = useRef();
+  let history = useHistory();
+
+  const [toot, setToot] = useState("caca");
 
   useEffect(() => {
     setBookEdited({...bookEdited, imageSrc: fileUrlUploaded})
   }, [fileUrlUploaded]);
 
 
+
+  const handleSubmit = () => {
+    addOrModifyBook(bookEdited, toEdit);
+    userBookEdited.isbn = document.getElementById("isbn").value;
+    addOrModifyUserBook(userBookEdited);
+  };
+
+  // console.log("Les catégories du user sont ", currentUserProfile.userLibrary[0].category)
   return (
     <FormWrapper>
       <FormTitle>
@@ -33,24 +42,26 @@ const AddBookForm = ({ toEdit }) => {
       </FormTitle>
       <BookInfoForm
         action=""
-        method={toEdit ? "patch" : "post"}
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log(bookEdited, " est ce livre édité");
-          //setFormElements(e.target.elements);
-          addOrModifyBook(bookEdited, toEdit);
-          if (!toEdit) {
-            let isbn = document.getElementById("isbn").value;
-            addBookToUserLibrary(isbn);
-          }
-        }}
+        method="put"
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   console.log(bookEdited, " est ce livre édité");
+        //   //setFormElements(e.target.elements);
+        //   addOrModifyBook(bookEdited, toEdit);
+        //   if (!toEdit) {
+        //     let isbn = document.getElementById("isbn").value;
+        //     addOrModifyUserBook();
+        //   }
+        // }}
       >
         <Column>
           <Infodiv>
+            <Legend>ISBN</Legend>
             <Label htmlFor="isbn">
-              <BsAsterisk style={{ fontSize: "14px" }} /> ISBN
+              {/* <BsAsterisk style={{ fontSize: "14px" }} /> ISBN */}
             </Label>
             <Input
+              readOnly={toEdit}
               value={bookEdited?.isbn}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, isbn: e.target.value });
@@ -173,9 +184,6 @@ const AddBookForm = ({ toEdit }) => {
               name="language"
             ></Input>
           </Infodiv>
-        </Column>
-
-        <Column>
           <Infodiv>
             <Label htmlFor="country">Country</Label>
             <Input
@@ -209,6 +217,42 @@ const AddBookForm = ({ toEdit }) => {
               name="format"
             ></Input>
           </Infodiv>
+        </Column>
+
+        <Column>
+          {/* <Infodiv>
+            <Label htmlFor="country">Country</Label>
+            <Input
+              value={bookEdited?.country}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, country: e.target.value });
+              }}
+              type="text"
+              name="country"
+            ></Input>
+          </Infodiv>
+          <Infodiv>
+            <Label htmlFor="pages">Pages</Label>
+            <Input
+              value={bookEdited?.pages}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, pages: e.target.value });
+              }}
+              type="text"
+              name="pages"
+            ></Input>
+          </Infodiv> */}
+          {/* <Infodiv>
+            <Label htmlFor="format">Format</Label>
+            <Input
+              value={bookEdited?.format}
+              onChange={(e) => {
+                setBookEdited({ ...bookEdited, format: e.target.value });
+              }}
+              type="text"
+              name="format"
+            ></Input>
+          </Infodiv> */}
           <Infodiv>
             <Label htmlFor="imageSrc">Upload cover</Label>
             <Button
@@ -228,14 +272,17 @@ const AddBookForm = ({ toEdit }) => {
           </Infodiv>
           <Infodiv>
             <Label htmlFor="description">Description</Label>
-            <Input
+            <TextArea
+              // maxLength={500}
+              rows={10}
+              cols={35}
               value={bookEdited?.description}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, description: e.target.value });
               }}
               type="text"
               name="description"
-            ></Input>
+            ></TextArea>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="stars">Rating (/5)</Label>
@@ -252,25 +299,29 @@ const AddBookForm = ({ toEdit }) => {
           </Infodiv>
           <Infodiv>
             <Label htmlFor="comment">Comment</Label>
-            <Input
+            <TextArea
+              rows={10}
+              cols={35}
               value={bookEdited?.comments}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, comments: e.target.value });
               }}
               type="text"
               name="comment"
-            ></Input>
+            ></TextArea>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="quotes">Quotes</Label>
-            <Input
+            <TextArea
+              rows={10}
+              cols={35}
               value={bookEdited?.quotes}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, quotes: [e.target.value] });
               }}
               type="text"
               name="quotes"
-            ></Input>
+            ></TextArea>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="price">Price</Label>
@@ -283,11 +334,37 @@ const AddBookForm = ({ toEdit }) => {
               name="price"
             ></Input>
           </Infodiv>
-          <AddBookBtn>
+          {/* <AddBookBtn>
             <BiBookAdd />
-          </AddBookBtn>
+          </AddBookBtn> */}
         </Column>
       </BookInfoForm>
+
+      {/* form to modify user book information (in userLibrary) */}
+      <UserBookForm>
+        <Infodiv>
+          <Label htmlFor="category">Category</Label>
+          <Input
+            value={userBookEdited?.category}
+            onChange={(e) => {
+              setUserBookEdited({
+                ...userBookEdited,
+                category: e.target.value,
+              });
+            }}
+            type="text"
+            name="category"
+          ></Input>
+        </Infodiv>
+      </UserBookForm>
+      <AddBookBtn
+        onClick={() => {
+          handleSubmit();
+          history.push(`/book/${book.isbn}`);
+        }}
+      >
+        <BiBookAdd />
+      </AddBookBtn>
     </FormWrapper>
   );
 };
@@ -296,18 +373,29 @@ const FormWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  left: 125px;
+  /* left: 125px; */
   /* width: calc(100% - 400px); */
-  width: calc(100% - 125px);
+  /* width: calc(100% - 125px);  */
   height: calc(100% - 70px);
   padding: 24px;
+
+  @media (min-width: 770px) {
+    left: 125px;
+  /* width: calc(100% - 400px); */
+  width: calc(100% - 125px);
+  }
 `;
 
 const BookInfoForm = styled.form`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
   padding: 24px;
-  min-height: 600px;
+  /* min-height: 600px; */
+
+  @media (min-width: 1200px) {
+    min-height: 600px;
+  }
 `;
 
 const FormTitle = styled.h2`
@@ -320,12 +408,23 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  width: 50%;
+  width: 320px;
+  min-height: 700px;
+
+  @media (min-width: 500px) {
+    width: 445px;
+  }
 `;
 
-const Infodiv = styled.div`
+const Infodiv = styled.fieldset`
   display: flex;
   align-items: center;
+`;
+
+const Legend = styled.legend`
+  background-color: #000;
+  color: #fff;
+  padding: 3px 6px;
 `;
 
 const Label = styled.label`
@@ -334,7 +433,21 @@ const Label = styled.label`
   text-align: left;
 `;
 
-const Input = styled.input``;
+const Input = styled.input`
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+
+  &:focus {
+    outline: none;
+    box-shadow: 1px 1px 5px #000;
+    border-radius: 5px;
+  }
+`;
+
+const TextArea = styled.textarea`
+
+`;
 
 const Button = styled.input`
   width: 200px;
@@ -342,6 +455,14 @@ const Button = styled.input`
 `;
 
 const AddBookBtn = styled(ActionBtn)`
+  margin: 0 auto;
+`;
+
+const UserBookForm = styled.form`
+  display: flex;
+  justify-content: left;
+  width: 445px;
+  padding: 24px 0;
   margin: 0 auto;
 `;
 

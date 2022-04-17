@@ -25,8 +25,11 @@ const App = () => {
         <Switch>
           <Route exact path="/">
             {/* <CloudinaryUpdloadWidget /> */}
+            {/* <UserLibrary /> */}
+            <Homepage />
+          </Route>
+          <Route path="/books">
             <UserLibrary />
-            {/* <Homepage /> */}
           </Route>
           <Route path="/book/:isbn">
             <SingleBook />

@@ -45,23 +45,22 @@ const googleBookToBook = (googleBook) => {
   // setting images options
   let imageLinks = googleBook.volumeInfo?.imageLinks;
   let imageUrl = null;
-  if (!imageLinks) {
-    imageUrl = null;
-  }
+
   // Select the medium size before any other sizes
-  else if (imageLinks.medium) {
+  if (imageLinks?.medium) {
     imageUrl = imageLinks.medium;
-  } else if (imageLinks.small) {
+  } else if (imageLinks?.small) {
     imageUrl = imageLinks.small;
-  } else if (imageLinks.thumbnail) {
+  } else if (imageLinks?.thumbnail) {
     imageUrl = imageLinks.thumbnail;
-  } else if (imageLinks.smallThumbnail) {
+  } else if (imageLinks?.smallThumbnail) {
     imageUrl = imageLinks.smallThumbnail;
-  } else if (imageLinks.large) {
+  } else if (imageLinks?.large) {
     imageUrl = imageLinks.large;
-  } else if (imageLinks.extraLarge) {
+  } else if (imageLinks?.extraLarge) {
     imageUrl = imageLinks.extraLarge;
   } else {
+    imageUrl = "";
     console.log("No image provided.");
   }
 
@@ -78,9 +77,10 @@ const googleBookToBook = (googleBook) => {
     yearOfPublication: googleBook.volumeInfo.publishedDate,
     firstYearOfPub: "",
     language: googleBook.volumeInfo.language,
+    // category: googleBook.volumeInfo.mainCategory,
     country: "",
     price: "",
-    imageSrc: googleBook.volumeInfo.imageLinks.thumbnail,
+    imageSrc: imageUrl,
     pages: googleBook.volumeInfo.pageCount,
     format: "",
     description: googleBook.volumeInfo.description,
@@ -136,6 +136,8 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
       res.status(200).json({ status: 200, start, limit: gap, books: matchedBooks.slice(start, limit) });
     } else if (matchedBooks.length > 0 && matchedBooks.length <= 24) {
       res.status(200).json({ status: 200, books: matchedBooks });
+    } else {
+      res.status(400).json({ status: 400, message: "Bad request", books: matchedBooks });
     }
   } catch (err) {
     console.log("Something went wrong: ", err.message);
@@ -198,6 +200,7 @@ const addBook = async (req, res) => {
     yearOfPublication,
     firstYearOfPub,
     language,
+    // category,
     country,
     price,
     imageSrc,
@@ -231,6 +234,7 @@ const addBook = async (req, res) => {
         yearOfPublication,
         firstYearOfPub,
         language,
+        // category,
         country,
         price,
         imageSrc,
@@ -362,7 +366,7 @@ const searchBook = async (req, res) => {
 
     res.status(200).json({ status: 200, books });
   } catch (err) {
-    console.log("Something went wrong: ", err.message);
+    res.status(400).json({ status: 400, message: err.message });
   }
 };
 
