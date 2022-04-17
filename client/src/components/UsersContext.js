@@ -21,7 +21,7 @@ export const UsersProvider = ({ children }) => {
       if (!currentUserId || !currentUserPassword) {
         return;
       }
-      console.log("Quand est-ce que c'est appelé? ", currentUserId, currentUserPassword);
+      // console.log("Quand est-ce que c'est appelé? ", currentUserId, currentUserPassword);
       try {
         const response = await fetch(`/api/login`, {
           method: "POST",

@@ -32,11 +32,15 @@ const AddBookForm = ({ toEdit }) => {
   }
 
   const handleSubmit = async () => {
+     console.log("0000000000000000000, authors=", bookEdited.authors);
+    
     await addOrModifyBook(bookEdited, toEdit);
     userBookEdited.isbn = isbnRef.current.value;
+    console.log("111111111111111111111");
     await addOrModifyUserBook(userBookEdited);
+     console.log("2222222222222");
     setBook(bookEdited);
-    history.push(`/book/${book.isbn}`);
+    history.push(`/book/${bookEdited.isbn}`);
   };
 
   if (!bookEdited || !userBookEdited) {
@@ -99,7 +103,7 @@ const AddBookForm = ({ toEdit }) => {
             ></Input>
           </Infodiv>
           <Infodiv>
-            <Label htmlFor="author">
+            <Label htmlFor="authors">
               <BsAsterisk style={{ fontSize: "14px" }} /> Author
             </Label>
             <Input
@@ -108,7 +112,7 @@ const AddBookForm = ({ toEdit }) => {
                 setBookEdited({ ...bookEdited, authors: [e.target.value] });
               }}
               type="text"
-              name="author"
+              name="authors"
               required
             ></Input>
           </Infodiv>
@@ -350,7 +354,9 @@ const AddBookForm = ({ toEdit }) => {
       </BookInfoForm>
 
       {/* form to modify user book information (in userLibrary) */}
-      <UserBookForm>
+      <UserBookForm onSubmit={(e) => {
+        e.preventDefault();
+      }}>
         <Infodiv>
           <Label htmlFor="category">Category</Label>
           <Input
@@ -452,7 +458,7 @@ export const Input = styled.input`
   border-radius: 0;
   height: 30px;
   padding: 0;
-  
+
   &:focus {
     outline: none;
     box-shadow: 1px 1px 5px #000;

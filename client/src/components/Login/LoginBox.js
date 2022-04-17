@@ -8,11 +8,13 @@ const LoginBox = () => {
     const { currentUserProfile } = useContext(UsersContext);
 
     return (
-        <Boxwrapper>
-            <Avatar userProfile={currentUserProfile} showOnlineStatus="false" />
-            <Login />
-        </Boxwrapper>
-    )
+      <Boxwrapper>
+        {currentUserProfile && (
+          <Avatar userProfile={currentUserProfile} showOnlineStatus="false" />
+        )}
+        <Login />
+      </Boxwrapper>
+    );
 };
 
 const Boxwrapper = styled.div`

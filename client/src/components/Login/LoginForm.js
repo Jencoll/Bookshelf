@@ -6,10 +6,48 @@ import { UsersContext } from "../UsersContext";
 
 const LoginForm = () => {
     // afficher texte du bouton et du titre en conséquence de ce qu'on veut (créer compte ou login)
-    const { setCurrentUserId, setCurrentUserPassword, status, errorMsg } = useContext(UsersContext);
+    const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
     let history = useHistory();
 
     console.log(status);
+/*
+    const loginUser = async (e) => {
+      e.preventDefault();
+      if (!currentUserId || !currentUserPassword) {
+        return;
+      }
+      console.log(
+        "Quand est-ce que c'est appelé? ",
+        currentUserId,
+        currentUserPassword
+      );
+      try {
+        const response = await fetch(`/api/login`, {
+          method: "POST",
+          body: JSON.stringify({
+            _id: e.target.elements.username.value,
+            password: e.target.elements.password.value,
+          }),
+          headers: {
+            Accepts: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status !== 200) {
+          throw new Error("Cannot fetch data.");
+        }
+        let data = await response.json();
+        setStatus("success");
+        setCurrentUserProfile(data.user);
+        history.push("/");
+      } catch (err) {
+        setStatus("error");
+        setErrorMsg("User not found");
+        // console.log("Something went wrong: ", err.message);
+      }
+    };
+*/
+
 
     return (
       <LoginFormWrapper>
@@ -18,7 +56,7 @@ const LoginForm = () => {
             e.preventDefault();
             setCurrentUserId(e.target.elements.username.value);
             setCurrentUserPassword(e.target.elements.password.value);
-            // history.push("/");
+            history.push("/");
         }}>
           <FieldSet>
             <Label htmlFor="username">Username</Label>

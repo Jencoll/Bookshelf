@@ -212,15 +212,18 @@ const addBook = async (req, res) => {
     quotes,
   } = req.body;
   const newId = uuidv4();
-
+  console.log("REQ BODY EST: ", req.body);
   if (!isbn || !title || !authors) {
+    console.log("IL MANQUE QQCHOSE: ", isbn, title, authors);
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   }
+  console.log("22222222222222222");
 
   try {
     await client.connect();
     console.log("connected");
     const existingBook = await booksCollection.findOne({ isbn });
+    console.log("3333333333 EXISTING BOOK = ", existingBook);
     if (!existingBook) {
       let newBook = {
         _id: newId,

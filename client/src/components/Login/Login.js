@@ -6,16 +6,39 @@ import { ActionBtn } from "../Header/Header";
 import { UsersContext } from "../UsersContext";
 
 const Login = () => {
-  const { setCurrentUserId } = useContext(UsersContext);
+  const { currentUserProfile, 
+    setCurrentUserProfile, currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword } = useContext(UsersContext);
   let history = useHistory();
     // on click, a modal is displayed to show a form for the login process or the sign up process, in the form, there will be a link to another form if the user account is not created yet
+
+    const handleLogInOut = (e) => {
+      e.preventDefault();
+      setCurrentUserId(null);
+      setCurrentUserProfile(null);
+      history.push("/");
+    }
+
 
     // when a user is not logged in, login appears; otherwise, it's logout
     return (
       <Loginwrapper>
-        <ActionBtn onClick={() => {
-          history.push("/login");
-        }}><BiLogInCircle /></ActionBtn>
+        {currentUserId ? (
+          <ActionBtn
+            onClick={(e) => {
+              handleLogInOut(e);
+            }}
+          >
+            <BiLogOutCircle />
+          </ActionBtn>
+        ) : (
+          <ActionBtn
+            onClick={() => {
+              history.push("/login");
+            }}
+          >
+            <BiLogInCircle />
+          </ActionBtn>
+        )}
       </Loginwrapper>
     );
 }

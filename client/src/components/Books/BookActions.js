@@ -10,7 +10,8 @@ import { BiBookAdd, BiBookReader, BiBookAlt, BiBookHeart } from "react-icons/bi"
 const BookActions = () => {
     const {
       handleToggleAction,
-      addFoundBookToDatabase, addBookToUserLibrary,
+      addFoundBookToDatabase,
+      addOrModifyUserBook,
       bookIsbn,
     } = useContext(BooksContext);
     let history = useHistory();    
@@ -21,9 +22,19 @@ const BookActions = () => {
           {/* Add book to user library */}
           <ActionBtn
             onClick={() => {
-              addBookToUserLibrary(bookIsbn);
               addFoundBookToDatabase();
-              history.push("/");
+              addOrModifyUserBook({
+                isbn: bookIsbn,
+                borrowed: false,
+                lent: false,
+                bookshelf: "",
+                category: "",
+                tags: [],
+                read: false,
+                reading: false,
+                wishlist: false,
+              });
+              history.push("/books");
               //   display messages : in the library already or book added (and redirect to the bookshelf)
             }}
           >

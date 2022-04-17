@@ -20,7 +20,7 @@ const SingleBook = () => {
         try {
             let response = await fetch(`/api/get-book/${isbn}`);
             let data = await response.json();
-            // console.log(data.book);
+            console.log(data.book);
             setBook(data.book);
         } catch (err) {
             console.log(err.message);
@@ -28,7 +28,7 @@ const SingleBook = () => {
       }
 
       displayBook();
-    }, [isbn])
+    }, [isbn]);
     
     let userBook = currentUserProfile?.userLibrary.find(b => b.isbn === book?.isbn);
     
