@@ -28,8 +28,8 @@ export const CloudinaryProvider = ({ children }) => {
             result.info.files[0].uploadInfo.secure_url
           );
           setFileUrlUploaded(result.info?.files[0].uploadInfo.secure_url);
-        } else {
-            console.log("An error occurred during the image upload: ", error);
+        } else if (error) {
+          console.log("An error occurred during the image upload: ", error);
         };
       }
     )
@@ -40,9 +40,9 @@ export const CloudinaryProvider = ({ children }) => {
     cloudinaryWidget?.open();
   };
 
-  useEffect(() => {
-    console.log("Le fichier qui a été uploadé est : ", fileUrlUploaded);
-  }, [fileUrlUploaded]);
+  // useEffect(() => {
+  //   console.log("Le fichier qui a été uploadé est : ", fileUrlUploaded);
+  // }, [fileUrlUploaded]);
 
   return (
     <CloudinaryContext.Provider

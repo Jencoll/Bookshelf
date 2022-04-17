@@ -59,7 +59,7 @@ export const BooksProvider = ({ children }) => {
         alert("This book is already in your library!");
       }
       let data = await response.json();
-      console.log("data is: ", data);
+      // console.log("data is: ", data);
       setCurrentUserProfile(data.user);
     } catch (err) {
       console.log("Error: ", err.message);

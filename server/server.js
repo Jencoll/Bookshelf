@@ -14,6 +14,7 @@ const {
   addUser,
   modifyUser,
   deleteUser,
+  loginUser,
   getRandOnlineUsers,
   // getCurrentUser,
   addOrModifyUserBook,
@@ -47,8 +48,9 @@ app.use(express.json());
 /*------------------
 | users db endpoints |
 ------------------*/
+app.post("/api/login", loginUser); // get and validate login user info
 app.get("/api/get-users", getUsers); // get a list of all users
-app.get("/api/get-user/:_id", getUser); // get a user by its ID
+// app.get("/api/get-user/:_id", getUser); // get a user by its ID
 // app.get("/api/get-online-users", getRandOnlineUsers); // get a random list of online users
 // app.get("/api/get-current-user", getCurrentUser); // get the current user profile (with his/her first name as handle)
 app.post("/api/add-user", addUser); // create a user

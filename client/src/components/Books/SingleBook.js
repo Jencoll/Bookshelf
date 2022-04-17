@@ -49,7 +49,7 @@ const SingleBook = () => {
               {/* {book.stars * <Stars>{BsStarFill}</Stars>} */}
 
               <Stars>{book.stars} stars</Stars>
-              <Infos>Category: {userBook.category}</Infos>
+              <Infos>Category: {userBook?.category}</Infos>
               <Infos>Publisher: {book.publisher}</Infos>
               {book.collection && <Infos>Collection: {book.collection}</Infos>}
               <Infos>Publication: {book.yearOfPublication}</Infos>

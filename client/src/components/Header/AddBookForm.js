@@ -11,30 +11,38 @@ import { UsersContext } from "../UsersContext";
 // import { useForm } from "react-hook-form";
 
 const AddBookForm = ({ toEdit }) => {
-  const { addOrModifyUserBook, formElements, setFormElements, book, addOrModifyBook } = useContext(BooksContext);
+  const { addOrModifyUserBook, formElements, setFormElements, book, setBook, addOrModifyBook } = useContext(BooksContext);
   const { currentUserProfile, setCurrentUserProfile } = useContext(UsersContext);
   const { fileUrlUploaded, setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
   const [bookEdited, setBookEdited] = useState(toEdit ? book : {});
   const userBook = currentUserProfile?.userLibrary.find(b => b.isbn === book?.isbn);
   const [userBookEdited, setUserBookEdited] = useState(toEdit ? userBook : {});
-  let uploadFieldRef = useRef();
   let history = useHistory();
+  const isbnRef = useRef();
 
-  const [toot, setToot] = useState("caca");
 
   useEffect(() => {
-    setBookEdited({...bookEdited, imageSrc: fileUrlUploaded})
+    if (fileUrlUploaded) {
+      setBookEdited({ ...bookEdited, imageSrc: fileUrlUploaded });
+    }
   }, [fileUrlUploaded]);
 
+  const formatField = (field) => {
+    return field ? field : "";
+  }
 
-
-  const handleSubmit = () => {
-    addOrModifyBook(bookEdited, toEdit);
-    userBookEdited.isbn = document.getElementById("isbn").value;
-    addOrModifyUserBook(userBookEdited);
+  const handleSubmit = async () => {
+    await addOrModifyBook(bookEdited, toEdit);
+    userBookEdited.isbn = isbnRef.current.value;
+    await addOrModifyUserBook(userBookEdited);
+    setBook(bookEdited);
+    history.push(`/book/${book.isbn}`);
   };
 
-  // console.log("Les catégories du user sont ", currentUserProfile.userLibrary[0].category)
+  if (!bookEdited || !userBookEdited) {
+    return <p>loading</p>;
+  } 
+
   return (
     <FormWrapper>
       <FormTitle>
@@ -43,6 +51,9 @@ const AddBookForm = ({ toEdit }) => {
       <BookInfoForm
         action=""
         method="put"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
         // onSubmit={(e) => {
         //   e.preventDefault();
         //   console.log(bookEdited, " est ce livre édité");
@@ -62,13 +73,13 @@ const AddBookForm = ({ toEdit }) => {
             </Label>
             <Input
               readOnly={toEdit}
-              value={bookEdited?.isbn}
+              value={formatField(bookEdited.isbn)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, isbn: e.target.value });
               }}
               type="text"
               name="isbn"
-              id="isbn"
+              ref={isbnRef}
               placeholder="No need of the hyphens"
               required
             ></Input>
@@ -78,7 +89,7 @@ const AddBookForm = ({ toEdit }) => {
               <BsAsterisk style={{ fontSize: "14px" }} /> Title
             </Label>
             <Input
-              value={bookEdited?.title}
+              value={formatField(bookEdited.title)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, title: e.target.value });
               }}
@@ -92,7 +103,7 @@ const AddBookForm = ({ toEdit }) => {
               <BsAsterisk style={{ fontSize: "14px" }} /> Author
             </Label>
             <Input
-              value={bookEdited?.authors}
+              value={formatField(bookEdited.authors)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, authors: [e.target.value] });
               }}
@@ -104,7 +115,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="subtitle">Subtitle</Label>
             <Input
-              value={bookEdited?.subtitle}
+              value={formatField(bookEdited.subtitle)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, subtitle: e.target.value });
               }}
@@ -115,7 +126,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="publisher">Publisher</Label>
             <Input
-              value={bookEdited?.publisher}
+              value={formatField(bookEdited.publisher)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, publisher: e.target.value });
               }}
@@ -126,7 +137,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="collection">Collection</Label>
             <Input
-              value={bookEdited?.collection}
+              value={formatField(bookEdited.collection)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, collection: e.target.value });
               }}
@@ -137,7 +148,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="translator">Translator</Label>
             <Input
-              value={bookEdited?.translators}
+              value={formatField(bookEdited.translators)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, translators: [e.target.value] });
               }}
@@ -148,35 +159,35 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="yearOfPublication">Published</Label>
             <Input
-              value={bookEdited?.yearOfPublication}
+              value={formatField(bookEdited.yearOfPublication)}
               onChange={(e) => {
                 setBookEdited({
                   ...bookEdited,
                   yearOfPublication: e.target.value,
                 });
               }}
-              type="number"
+              type="text"
               name="yearOfPublication"
             ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="firstYearOfPub">First Edition</Label>
             <Input
-              value={bookEdited?.firstYearOfPub}
+              value={formatField(bookEdited.firstYearOfPub)}
               onChange={(e) => {
                 setBookEdited({
                   ...bookEdited,
                   firstYearOfPub: e.target.value,
                 });
               }}
-              type="number"
+              type="text"
               name="firstYearOfPub"
             ></Input>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="language">Language</Label>
             <Input
-              value={bookEdited?.language}
+              value={formatField(bookEdited.language)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, language: e.target.value });
               }}
@@ -187,7 +198,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="country">Country</Label>
             <Input
-              value={bookEdited?.country}
+              value={formatField(bookEdited.country)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, country: e.target.value });
               }}
@@ -198,7 +209,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="pages">Pages</Label>
             <Input
-              value={bookEdited?.pages}
+              value={formatField(bookEdited.pages)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, pages: e.target.value });
               }}
@@ -209,7 +220,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="format">Format</Label>
             <Input
-              value={bookEdited?.format}
+              value={formatField(bookEdited.format)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, format: e.target.value });
               }}
@@ -256,8 +267,8 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="imageSrc">Upload cover</Label>
             <Button
-              ref={uploadFieldRef}
-              value={bookEdited?.imageSrc}
+              // value={bookEdited ? bookEdited.imageSrc : ""}
+              value={formatField(bookEdited.imageSrc)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, imageSrc: e.target.value });
               }}
@@ -267,8 +278,6 @@ const AddBookForm = ({ toEdit }) => {
               placeholder="Upload your image"
             ></Button>
             <button onClick={openUpload}>Upload</button>
-            {/* <Input type="file" name="imageSrc" accept="image/*"></Input>
-              <Input type="submit" value="Upload"></Input> */}
           </Infodiv>
           <Infodiv>
             <Label htmlFor="description">Description</Label>
@@ -276,7 +285,7 @@ const AddBookForm = ({ toEdit }) => {
               // maxLength={500}
               rows={10}
               cols={35}
-              value={bookEdited?.description}
+              value={formatField(bookEdited.description)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, description: e.target.value });
               }}
@@ -287,7 +296,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="stars">Rating (/5)</Label>
             <Input
-              value={bookEdited?.stars}
+              value={formatField(bookEdited.stars)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, stars: e.target.value });
               }}
@@ -302,7 +311,7 @@ const AddBookForm = ({ toEdit }) => {
             <TextArea
               rows={10}
               cols={35}
-              value={bookEdited?.comments}
+              value={formatField(bookEdited.comments)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, comments: e.target.value });
               }}
@@ -315,7 +324,7 @@ const AddBookForm = ({ toEdit }) => {
             <TextArea
               rows={10}
               cols={35}
-              value={bookEdited?.quotes}
+              value={formatField(bookEdited.quotes)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, quotes: [e.target.value] });
               }}
@@ -326,7 +335,7 @@ const AddBookForm = ({ toEdit }) => {
           <Infodiv>
             <Label htmlFor="price">Price</Label>
             <Input
-              value={bookEdited?.price}
+              value={formatField(bookEdited.price)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, price: e.target.value });
               }}
@@ -360,7 +369,7 @@ const AddBookForm = ({ toEdit }) => {
       <AddBookBtn
         onClick={() => {
           handleSubmit();
-          history.push(`/book/${book.isbn}`);
+          // history.push(`/book/${book.isbn}`);
         }}
       >
         <BiBookAdd />
@@ -369,7 +378,7 @@ const AddBookForm = ({ toEdit }) => {
   );
 };
 
-const FormWrapper = styled.div`
+export const FormWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -386,7 +395,7 @@ const FormWrapper = styled.div`
   }
 `;
 
-const BookInfoForm = styled.form`
+export const BookInfoForm = styled.form`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -398,7 +407,7 @@ const BookInfoForm = styled.form`
   }
 `;
 
-const FormTitle = styled.h2`
+export const FormTitle = styled.h2`
   font-weight: 600;
   font-size: 24px;
   padding: 24px;
@@ -419,6 +428,8 @@ const Column = styled.div`
 const Infodiv = styled.fieldset`
   display: flex;
   align-items: center;
+  min-width: 320px;
+  max-width: 400px;
 `;
 
 const Legend = styled.legend`
@@ -427,17 +438,21 @@ const Legend = styled.legend`
   padding: 3px 6px;
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
   font-size: 18px;
-  width: 150px;
   text-align: left;
+  width: fit-content;
+  padding-right: 24px;
+  line-height: 30px;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   border: none;
   border-bottom: 1px solid #000;
   border-radius: 0;
-
+  height: 30px;
+  padding: 0;
+  
   &:focus {
     outline: none;
     box-shadow: 1px 1px 5px #000;

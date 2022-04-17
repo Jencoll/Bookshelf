@@ -79,26 +79,7 @@ const getUsers = async (req, res) => {
 //   }
 // };
 
-// get a user with its ID
-const getUser = async (req, res) => {
-  let userId = req.params._id;
 
-  try {
-    await client.connect();
-    console.log("connected");
-    const singleUser = await userCollection.findOne({ _id: userId });
-    if (!singleUser) {
-      res.status(404).json({ status: 404, message: "User not found." });
-    } else {
-      res.status(200).json({ status: 200, user: singleUser });
-    }
-  } catch (err) {
-    console.log(err.message);
-  } finally {
-    client.close();
-    console.log("disconnected");
-  }
-};
 
 // generate a list of random online users
 // const getRandOnlineUsers = async (req, res) => {
@@ -368,6 +349,32 @@ const removeBookFromUserLibrary = async (req, res) => {
   };
 };
 
+const loginUser = async (req, res) => {
+  console.log(req.body);
+  try {
+    await client.connect();
+    console.log("connected");
+    const existingUser = await userCollection.findOne({ _id: req.body._id });
+    if (!existingUser) {
+      return res.status(404).json({ status: 404, message: "Invalid username or password." });
+    };
+
+    if (existingUser.password !== req.body.password) {
+      return res.status(404).json({ status: 404, message: "Invalid username or password." });
+    } else {
+      existingUser.password = "";
+      res.status(200).json({ status: 200, user: existingUser });
+    }
+
+  } catch (err) {
+    console.log("Something went wrong: ", err.message);
+  } finally {
+    client.close();
+    console.log("disconnected");
+  }
+
+}
+
 // const addUserBookshelf = async (req, res) => {
 //   const userId = req.params._id;
 
@@ -379,12 +386,12 @@ const removeBookFromUserLibrary = async (req, res) => {
 // End of endpoints
 module.exports = {
   getUsers,
-  getUser,
   addUser,
   modifyUser,
   deleteUser,
   addOrModifyUserBook,
   removeBookFromUserLibrary,
+  loginUser,
   // getRandOnlineUsers,
   // getCurrentUser,
   // addUserBookshelf,
