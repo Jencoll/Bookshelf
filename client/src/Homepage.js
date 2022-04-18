@@ -2,40 +2,47 @@ import styled from "styled-components";
 import UserLibrary from "./components/Books/UserLibrary";
 import { useContext, useEffect } from "react";
 import { BooksContext } from "./components/BooksContext";
+import { UsersContext } from "./components/UsersContext";
 import { useParams } from "react-router-dom";
+import Category from "./components/Books/Category";
 
 const Homepage = () => {
 
     const { books, setType, setFilter, } = useContext(BooksContext);
+    const { currentUserProfile } = useContext(UsersContext);
     const { type, filter } = useParams();
+    const userLibrary = currentUserProfile?.userLibrary;
+    let categories = [];
+
+    // useEffect(() => {
+    //   if (!type || !filter) {
+    //       setType("");
+    //       setFilter("");
+    //   } else {
+    //       setType(type);
+    //       setFilter(filter);
+    //   }
     
-    useEffect(() => {
-      if (!type || !filter) {
-          setType("");
-          setFilter("");
-      } else {
-          setType(type);
-          setFilter(filter);
-      }
-    
-      
-    }, [type, filter, books]);
+    // }, [type, filter, books]);
 
-    // console.log(books[0].category, " est-ce que j'ai une catégorie?")
+    // console.log(userLibrary, " est la user library");
 
+    userLibrary?.forEach((b) => {
+      categories.push(b.category);
+    })
 
+    let uniqueCategories = [...new Set(categories)];
+    // console.log("Et enfin les catégories uniques : ", uniqueCategories)
 
     return (
       <Homewrapper>
-        {/* <Categories /> */}
-        <Categorywrapper>
-          {/* {books?.map((book) => ( */}
-            
-            <Category>
-                {/* {book?.category} */}
-            </Category>
-          {/* ))} */}
-        </Categorywrapper>
+        <Type>Categories</Type>
+        <Categorylist>
+          {uniqueCategories.map((category) => (
+            <Category category={category} key={category} />
+        ))}
+        </Categorylist>
+
       </Homewrapper>
     );
 }
@@ -43,26 +50,32 @@ const Homepage = () => {
 const Homewrapper = styled.div`
     position: relative;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px 24px 12px;
     top: 70px;
     left: 125px;
     /* width: calc(100% - 400px); */
     width: calc(100% - 125px);
     height: calc(100% - 70px);
-    background-color: whitesmoke;
+
+
+
+    /* background-color: whitesmoke; */
 `;
 
-const Categorywrapper = styled.ul` 
-    display: flex;
-    width: 100%;
-
+const Type = styled.h3`
+  font-size: 22px;
+  padding: 16px;
 `;
 
-const Category = styled.li`
+const Categorylist = styled.ul` 
     display: flex;
-    width: 150px;
-    height: 40px;
-    background-color: pink;
-    border-radius: 5px;
+    width: 75%;
+    gap: 16px;
+    margin-top: 16px;
+
 `;
 
 export default Homepage;

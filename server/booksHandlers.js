@@ -212,18 +212,14 @@ const addBook = async (req, res) => {
     quotes,
   } = req.body;
   const newId = uuidv4();
-  console.log("REQ BODY EST: ", req.body);
   if (!isbn || !title || !authors) {
-    console.log("IL MANQUE QQCHOSE: ", isbn, title, authors);
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   }
-  console.log("22222222222222222");
 
   try {
     await client.connect();
     console.log("connected");
     const existingBook = await booksCollection.findOne({ isbn });
-    console.log("3333333333 EXISTING BOOK = ", existingBook);
     if (!existingBook) {
       let newBook = {
         _id: newId,
@@ -325,6 +321,26 @@ const editBook = async (req, res) => {
   }
 };
 
+const deleteBook = async (req, res) => {
+  const { isbn } = req.body;
+  try {
+    await client.connect();
+    console.log("connected");
+    const existingBook = await booksCollection.findOne({ isbn });
+    if (!existingBook) {
+      return res.status(404).json({ status: 404, message: "Book not found." });
+    } else {
+      await booksCollection.deleteOne({ _id: isbn });
+      res.status(200).json({ status: 200, message: "Book deleted from database." });
+    }
+  } catch (err) {
+    res.status(400).json({ status: 400, message: "An error occurred: ", err });
+  } finally {
+    client.close();
+    console.log("disconnected");
+  }
+}
+
 /* book format
  {
     isbn: "isbn",
@@ -380,4 +396,5 @@ module.exports = {
   getBooks,
   getBook,
   editBook,
+  deleteBook,
 };

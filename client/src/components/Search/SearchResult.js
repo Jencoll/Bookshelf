@@ -36,9 +36,12 @@ const Result = styled.li`
   padding: 0.5em;
   line-height: 1.2;
   border-radius: 5px;
+  cursor: pointer;
 
   &:hover {
-    background-color: goldenrod;
+    background-color: #9bbbae;
+    color: #fff;
+    font-weight: 600;
   }
 
   &:hover > div {
@@ -69,10 +72,12 @@ const Bookdiv = styled.div`
     position: absolute;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     top: 0;
     left: -250px;
     width: 200px;
+    height: 300px;
+    background-color: #fff;
 
     /* z-index: 5; */
 

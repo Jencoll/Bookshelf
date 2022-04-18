@@ -12,7 +12,7 @@ const UserLibrary = () => {
 
   useEffect(() => {
 
-    console.log(currentUserProfile, " sont les livres de l'utilisateur")
+    console.log(currentUserProfile?.userLibrary, " sont les livres de l'utilisateur")
     if (userBooks && books) {
         // console.log(books, " sont les livres")
       let db = userBooks

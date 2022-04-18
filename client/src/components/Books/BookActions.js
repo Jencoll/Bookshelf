@@ -7,12 +7,15 @@ import BookActionIcon from "./BookActionIcon";
 import { ActionBtn } from "../Header/Header";
 import { BiBookAdd, BiBookReader, BiBookAlt, BiBookHeart } from "react-icons/bi";
 
+
+
 const BookActions = () => {
     const {
-      handleToggleAction,
+      // handleToggleAction,
       addFoundBookToDatabase,
       addOrModifyUserBook,
       bookIsbn,
+      deleteBookFromUserLibrary,
     } = useContext(BooksContext);
     let history = useHistory();    
     
@@ -62,9 +65,17 @@ const BookActions = () => {
             <BiBookHeart />
           </ActionBtn>
           <span>Wishlist</span>
-          <ActionBtn onClick={() => {history.push(`/modify-book-form`)}}>
+          <ActionBtn
+            onClick={() => {
+              history.push(`/modify-book-form`);
+            }}
+          >
             Edit
           </ActionBtn>
+          <ActionBtn onClick={() => {
+            deleteBookFromUserLibrary({isbn: bookIsbn});
+            history.push("/books");
+          }}>Delete</ActionBtn>
         </ActionBtndiv>
         {/* <Action onClick={(e) => handleToggleAction(e, "inUserLibrary")}> */}
         {/* <BookActionIcon kind="addToLibrary" /> */}

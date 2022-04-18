@@ -19,7 +19,7 @@ const LoginForm = () => {
             e.preventDefault();
             setCurrentUserId(e.target.elements.username.value);
             setCurrentUserPassword(e.target.elements.password.value);
-            history.push("/");
+            // history.push("/");
           }}
         >
           <FieldSet>
@@ -85,16 +85,12 @@ export const UserLoginForm = styled.form`
 `;
 
 export const FieldSet = styled.fieldset`
+    position: relative;
     display: flex;
     align-items: center;
     margin: 24px 0;
 
 `;
-
-// const LoginInput = styled.input`
-//     border: none;
-
-// `;
 
 export const LoginButton = styled.button`
     width: 50%;
@@ -104,20 +100,19 @@ export const LoginButton = styled.button`
 
 const ErrorParagraph = styled.p`
   text-align: center;
-  margin-top: 8px;
+  margin: 8px;
   color: red;
   font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid var(--primary-color);
-  border-radius: 5px;
   padding: 8px;
   font-size: 16px;
   text-transform: uppercase;
-  text-shadow: 1px 1px var(--primary-color);
 `;
 
 const CreateAccountLink = styled(Link)`
-    text-align: center;
+  text-align: center;
+  text-decoration: underline #9bbbae;
+  text-decoration-thickness: 3px;
+  padding: 8px;
 `;  
 
 export default LoginForm;

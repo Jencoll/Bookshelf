@@ -1,17 +1,16 @@
 import styled from "styled-components";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { BsAsterisk } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
 import openUpload from "../CloudinaryUploadWidget";
 import { CloudinaryContext } from "../CloudinaryUploadWidget";
 import { UsersContext } from "../UsersContext";
-// import { useForm } from "react-hook-form";
+import Spinner from "../StateHandling/Spinner";
 
 const AddBookForm = ({ toEdit }) => {
-  const { addOrModifyUserBook, formElements, setFormElements, book, setBook, addOrModifyBook } = useContext(BooksContext);
+  const { addOrModifyUserBook, book, setBook, addOrModifyBook } = useContext(BooksContext);
   const { currentUserProfile, setCurrentUserProfile } = useContext(UsersContext);
   const { fileUrlUploaded, setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
   const [bookEdited, setBookEdited] = useState(toEdit ? book : {});
@@ -40,7 +39,7 @@ const AddBookForm = ({ toEdit }) => {
   };
 
   if (!bookEdited || !userBookEdited) {
-    return <p>loading</p>;
+    return <Spinner />
   } 
 
   return (
@@ -57,10 +56,7 @@ const AddBookForm = ({ toEdit }) => {
       >
         <Column>
           <Infodiv>
-            <Legend>ISBN</Legend>
-            <Label htmlFor="isbn">
-              {/* <BsAsterisk style={{ fontSize: "14px" }} /> ISBN */}
-            </Label>
+            <Label htmlFor="isbn">* ISBN</Label>
             <Input
               readOnly={toEdit}
               value={formatField(bookEdited.isbn)}
@@ -70,14 +66,12 @@ const AddBookForm = ({ toEdit }) => {
               type="text"
               name="isbn"
               ref={isbnRef}
-              placeholder="No need of the hyphens"
+              placeholder="hyphens not required"
               required
             ></Input>
           </Infodiv>
           <Infodiv>
-            <Label htmlFor="title">
-              <BsAsterisk style={{ fontSize: "14px" }} /> Title
-            </Label>
+            <Label htmlFor="title">* Title</Label>
             <Input
               value={formatField(bookEdited.title)}
               onChange={(e) => {
@@ -89,9 +83,7 @@ const AddBookForm = ({ toEdit }) => {
             ></Input>
           </Infodiv>
           <Infodiv>
-            <Label htmlFor="authors">
-              <BsAsterisk style={{ fontSize: "14px" }} /> Author
-            </Label>
+            <Label htmlFor="authors">* Author</Label>
             <Input
               value={formatField(bookEdited.authors)}
               onChange={(e) => {
@@ -220,11 +212,10 @@ const AddBookForm = ({ toEdit }) => {
           </Infodiv>
         </Column>
 
-        <Column>
+        <Column2>
           <Infodiv>
             <Label htmlFor="imageSrc">Upload cover</Label>
             <Input
-              // value={bookEdited ? bookEdited.imageSrc : ""}
               value={formatField(bookEdited.imageSrc)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, imageSrc: e.target.value });
@@ -241,7 +232,7 @@ const AddBookForm = ({ toEdit }) => {
             <TextArea
               // maxLength={500}
               rows={10}
-              cols={35}
+              cols={40}
               value={formatField(bookEdited.description)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, description: e.target.value });
@@ -267,7 +258,7 @@ const AddBookForm = ({ toEdit }) => {
             <Label htmlFor="comment">Comment</Label>
             <TextArea
               rows={10}
-              cols={35}
+              cols={40}
               value={formatField(bookEdited.comments)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, comments: e.target.value });
@@ -280,7 +271,7 @@ const AddBookForm = ({ toEdit }) => {
             <Label htmlFor="quotes">Quotes</Label>
             <TextArea
               rows={10}
-              cols={35}
+              cols={40}
               value={formatField(bookEdited.quotes)}
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, quotes: [e.target.value] });
@@ -300,39 +291,43 @@ const AddBookForm = ({ toEdit }) => {
               name="price"
             ></Input>
           </Infodiv>
-          {/* <AddBookBtn>
-            <BiBookAdd />
-          </AddBookBtn> */}
-        </Column>
-      </BookInfoForm>
 
+        </Column2>
+      </BookInfoForm>
       {/* form to modify user book information (in userLibrary) */}
-      <UserBookForm onSubmit={(e) => {
-        e.preventDefault();
-      }}>
-        <Infodiv>
-          <Label htmlFor="category">Category</Label>
-          <Input
-            value={userBookEdited?.category}
-            onChange={(e) => {
-              setUserBookEdited({
-                ...userBookEdited,
-                category: e.target.value,
-              });
+      <Actionwrapper>
+        <UserBookForm
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <Infodiv>
+            <Label htmlFor="category">Category</Label>
+            <Input
+              value={userBookEdited?.category}
+              onChange={(e) => {
+                setUserBookEdited({
+                  ...userBookEdited,
+                  category: e.target.value,
+                });
+              }}
+              type="text"
+              name="category"
+            ></Input>
+          </Infodiv>
+        </UserBookForm>
+        <Btndiv>
+          <ActionText>Add book to the library</ActionText>
+          <ActionBtn
+            onClick={() => {
+              handleSubmit();
+              // history.push(`/book/${book.isbn}`);
             }}
-            type="text"
-            name="category"
-          ></Input>
-        </Infodiv>
-      </UserBookForm>
-      <AddBookBtn
-        onClick={() => {
-          handleSubmit();
-          // history.push(`/book/${book.isbn}`);
-        }}
-      >
-        <BiBookAdd />
-      </AddBookBtn>
+          >
+            <BiBookAdd />
+          </ActionBtn>
+        </Btndiv>
+      </Actionwrapper>
     </FormWrapper>
   );
 };
@@ -341,15 +336,11 @@ export const FormWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  /* left: 125px; */
-  /* width: calc(100% - 400px); */
-  /* width: calc(100% - 125px);  */
   height: calc(100% - 70px);
   padding: 24px;
 
   @media (min-width: 770px) {
     left: 125px;
-  /* width: calc(100% - 400px); */
   width: calc(100% - 125px);
   }
 `;
@@ -359,7 +350,6 @@ export const BookInfoForm = styled.form`
   flex-wrap: wrap;
   justify-content: space-evenly;
   padding: 24px;
-  /* min-height: 600px; */
 
   @media (min-width: 1200px) {
     min-height: 600px;
@@ -378,6 +368,20 @@ export const Column = styled.div`
   justify-content: space-evenly;
   width: 320px;
   min-height: 700px;
+  gap: 30px;
+
+  @media (min-width: 500px) {
+    width: 445px;
+  }
+`;
+
+const Column2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 320px;
+  min-height: 700px;
+  gap: 60px;
 
   @media (min-width: 500px) {
     width: 445px;
@@ -385,24 +389,22 @@ export const Column = styled.div`
 `;
 
 const Infodiv = styled.fieldset`
+  position: relative;
   display: flex;
   align-items: center;
   min-width: 320px;
   max-width: 400px;
 `;
 
-const Legend = styled.legend`
-  background-color: #000;
-  color: #fff;
-  padding: 3px 6px;
-`;
 
 export const Label = styled.label`
+  position: absolute;
+  bottom: -28px;
+  left: 0;
   font-size: 18px;
   text-align: left;
   width: fit-content;
   padding-right: 24px;
-  /* line-height: 30px; */
 
   @media (min-width: 510px) {
     line-height: 30px;
@@ -433,21 +435,33 @@ const TextArea = styled.textarea`
 
 `;
 
-const Button = styled.input`
-  width: 200px;
-  height: 40px;
-`;
-
-const AddBookBtn = styled(ActionBtn)`
-  margin: 0 auto;
-`;
-
 const UserBookForm = styled.form`
   display: flex;
   justify-content: left;
-  width: 445px;
   padding: 24px 0;
+`;
+
+const Actionwrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  max-width: 900px;
+  gap: 24px;
   margin: 0 auto;
+`;
+
+const ActionText = styled.span`
+  font-family: "Esteban";
+  font-size: 18px;
+`;
+
+const Btndiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  width: 320px;
 `;
 
 export default AddBookForm;

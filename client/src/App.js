@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { useState } from "react";
 import GlobalStyles from "./GlobalStyles";
 import Header from "./components/Header/Header";
 import Menu from "./components/Menu/Menu";
@@ -57,7 +56,8 @@ const App = () => {
 
 const Main = styled.div`
   position: relative;
-  /* background-color: blanchedalmond; */
+  height: 100vh;
+  box-shadow: 2px -1px 11px #e5e5e5;
 `;
 
 export default App;

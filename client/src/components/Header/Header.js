@@ -132,7 +132,28 @@ const BookList = styled.ul`
   box-shadow: 1px 1px 3px aliceblue;
   padding: 1em;
   border-radius: 5px;
-  background-color: blanchedalmond;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 10%), 0 0 40px rgb(0 0 0 / 1%) inset;
+  border-radius: 10px / 10px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    box-shadow: 0 0 10px rgb(0 0 0 / 20%);
+    top: 0;
+    bottom: 0;
+    left: 1%;
+    right: 1%;
+    border-radius: 10px / 10px;
+  }
+
+  &::after {
+    right: 10px;
+    left: auto;
+    transform: skew(8deg) rotate(3deg);
+  }
 
   display: ${(props) => (props.enabled ? "block" : "none")};
 `;

@@ -23,21 +23,27 @@ const Login = () => {
     return (
       <Loginwrapper>
         {currentUserId ? (
-          <ActionBtn
-            onClick={(e) => {
-              handleLogInOut(e);
-            }}
-          >
-            <BiLogOutCircle />
-          </ActionBtn>
+          <Btndiv>
+            <ActionBtn
+              onClick={(e) => {
+                handleLogInOut(e);
+              }}
+            >
+              <BiLogOutCircle />
+            </ActionBtn>
+            <Span>Logout</Span>
+          </Btndiv>
         ) : (
-          <ActionBtn
-            onClick={() => {
-              history.push("/login");
-            }}
-          >
-            <BiLogInCircle />
-          </ActionBtn>
+          <Btndiv>
+            <ActionBtn
+              onClick={() => {
+                history.push("/login");
+              }}
+            >
+              <BiLogInCircle />
+            </ActionBtn>
+            <Span>Login</Span>
+          </Btndiv>
         )}
       </Loginwrapper>
     );
@@ -51,5 +57,15 @@ const Loginwrapper = styled.div`
     height: 45px;
 `;
 
+const Btndiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Span = styled.span`
+  font-size: 12px;
+  padding: 4px 0;
+  text-align: center;
+`;
 
 export default Login;

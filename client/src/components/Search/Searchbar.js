@@ -7,8 +7,6 @@ import { BooksContext } from "../BooksContext";
 
 const Searchbar = () => {
   const {
-    foundBooks,
-    setFoundBooks,
     searchQuery,
     setSearchQuery,
     searchBook,
@@ -53,12 +51,17 @@ const Searchform = styled.form`
 `;
 
 const Searchinput = styled.input`
-    width: 175px;
+  width: 175px;
+  border: none;
+  box-shadow: 1px 1px 1px 2px #9bbbae;
+
+  &:focus {
+    outline: 3px solid #9bbbae;
+  }
 
   @media (min-width: 600px) {
     width: 250px;
   }
 `;
-
 
 export default Searchbar;

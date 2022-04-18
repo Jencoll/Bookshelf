@@ -14,21 +14,18 @@ export const BooksProvider = ({ children }) => {
   const [inWishlist, setInWishlist] = useState(false);
   const [isRead, setIsRead] = useState(false);
   const [reading, setReading] = useState(false);
-  const [inUserLibrary, setInUserLibrary] = useState(false);
   const { currentUserId, setCurrentUserProfile } = useContext(UsersContext);
-  const [type, setType] = useState(null);
+  const [type, setType] = useState("category");
   const [filter, setFilter] = useState(null);
   const [start, setStart] = useState(0);
-  const [limit, setLimit] = useState(0);
-  // const [formElements, setFormElements] = useState(null);
+  const [limit, setLimit] = useState(100);
+  const [resultsLength, setResultsLength] = useState(0);
 
   //   search books from Google API (for now)
   const searchBook = async () => {
     try {
       const response = await fetch(`/api/search-book?q=${searchQuery}`);
-      console.log("on tente de faire une autre recherche");
       let data = await response.json();
-      console.log("la recherche donne ", data.books);
       setFoundBooks(data.books);
     } catch (err) {
       console.log("Something went wrong: ", err.message);
@@ -59,14 +56,39 @@ export const BooksProvider = ({ children }) => {
         alert("This book is already in your library!");
       }
       let data = await response.json();
-      // console.log("data is: ", data);
       setCurrentUserProfile(data.user);
     } catch (err) {
       console.log("Error: ", err.message);
     }
   };
 
-  // add a foundBook to the database
+  // remove a book from a user's library (but the book stays in the database for other users use)
+  const deleteBookFromUserLibrary = async (bookIsbn) => {
+    try {
+      const response = fetch(
+        `/api/remove-book-from-user-library/${currentUserId}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(bookIsbn),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error! Status: ${response.status}`);
+      }
+      // console.log(response)
+      let data = await response.json();
+      // console.log("voici la data: ", data);
+      setCurrentUserProfile(data.user);
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
+  }
+
+  // add a foundBook (from Google API) to the database
   const addFoundBookToDatabase = async () => {
       console.log("This is the book: ", book, "and its image: ", book.imageSrc);
     try {
@@ -99,11 +121,8 @@ export const BooksProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       let data = await response.json();
       let foundBookAdded = data;
-      console.log(foundBookAdded, " is book added");
-      // foundBookAdded.then(() => {setBook(foundBookAdded)})
       setBook(foundBookAdded);
     } catch (err) {
       console.log("Something went wrong: ", err.message);
@@ -111,6 +130,7 @@ export const BooksProvider = ({ children }) => {
 
   };
 
+  // add or modify book in the books database
   const addOrModifyBook = async (book, toEdit) => {
       try {
         const response = await fetch(
@@ -145,7 +165,6 @@ export const BooksProvider = ({ children }) => {
             },
           }
         );
-        // console.log(response);
         let data = await response.json();
         let createdBook = data.data;
         setBook(createdBook);
@@ -154,89 +173,35 @@ export const BooksProvider = ({ children }) => {
       }
   };
 
-  // add to the database a book that was manually created by the user with the Form
-  // useEffect(() => {
-  //   const addBookToDatabase = async () => {
-  //     try {
-  //       const response = await fetch("/api/add-book", {
-  //         method: "POST",
-  //         body: JSON.stringify({
-  //           isbn: formElements.isbn?.value,
-  //           title: formElements.title?.value,
-  //           subtitle: formElements.subtitle.value,
-  //           authors: formElements.author?.value,
-  //           translators: formElements.translator.value,
-  //           publisher: formElements.publisher.value,
-  //           collection: formElements.collection.value,
-  //           yearOfPublication: formElements.yearOfPublication.value,
-  //           firstYearOfPub: formElements.firstYearOfPub.value,
-  //           language: formElements.language.value,
-  //           country: formElements.country.value,
-  //           price: formElements.price.value,
-  //           imageSrc: formElements.imageSrc.value,
-  //           pages: formElements.pages.value,
-  //           format: formElements.format.value,
-  //           description: formElements.description.value,
-  //           stars: formElements.stars.value,
-  //           comments: formElements.comment.value,
-  //           quotes: formElements.quotes.value,
-  //         }),
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //       // console.log(response);
-  //       let data = await response.json();
-  //       let createdBook = data.data;
-  //       setBook(createdBook);
-
-  //     } catch (err) {
-  //       console.log(err.message);
-  //     }
-  //   };
-  
-  //   if (formElements) {
-  //     addBookToDatabase();
-  //   }
-  // }, [formElements]);
-
   // retrieve books from database, using options (all books, with start and limit, by category, by tag)
   useEffect(() => {
     const retrieveBooks = async () => {
+      let response = null;
       try {
-        const response = await fetch("/api/get-books");
+        response = await fetch("/api/get-books");
+        // if (type === "") {
+        //   response = await fetch(`/api/get-books`)
+        // } else {
+        //   response = await fetch(`/api/get-books?start=${start}&limit=${limit}&type=${type}&filter=${filter}`);
+            console.log("type: ", type, " et filter: ", filter);
+        // }
+        if (!response.ok) {
+          throw new Error(`Error! Status: ${response.status}`);
+        }
         let data = await response.json();
-        // console.log(data.books, " set books here");
+
+        
         setBooks(data.books);
+        // console.log(data.books.length, " est la longueur et books est : ", data.books)
+        setResultsLength(data.books.length);
       } catch (err) {
         console.log(err.message);
       };
     };
     retrieveBooks();
 
-  }, [book]);
-
-  // const handleToggleAction = (e, kind) => {
-  //   // let kind = null;
-  //   e.stopPropagation();
-  //   switch (kind) {
-  //     case "inWishlist":
-  //       setInWishlist(!inWishlist);
-  //       break;
-  //     case "reading":
-  //       setReading(!reading);
-  //       break;
-  //     case "isRead":
-  //       setIsRead(!isRead);
-  //       break;
-  //     case "inUserLibrary":
-  //       setInUserLibrary(!inUserLibrary);
-  //       break;
-  //     default:
-  //       console.log("Kind not set.");
-  //   }
-  // };
+    // il y avait book dans le dependency array, je l'ai enlevé et ça ne semble rien affecter...
+  }, [start, limit, type, filter]);
 
   return (
     <BooksContext.Provider
@@ -245,16 +210,13 @@ export const BooksProvider = ({ children }) => {
         setFoundBooks,
         searchQuery,
         setSearchQuery,
-        // addBookToDatabase,
         selectBook,
         book,
         setBook,
-        // handleToggleAction,
         addOrModifyUserBook,
         searchBook,
         setBookIsbn,
         bookIsbn,
-        // setFormElements,
         books,
         addFoundBookToDatabase,
         // openForm,
@@ -267,6 +229,7 @@ export const BooksProvider = ({ children }) => {
         setLimit,
         start,
         setStart,
+        deleteBookFromUserLibrary,
       }}
     >
       {children}

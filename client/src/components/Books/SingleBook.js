@@ -86,6 +86,7 @@ const Coverwrapper = styled.figure`
 
 const Cover = styled.img` 
     width: 100%;
+    border-radius: 5px;
 `;
 
 const BookDetails = styled.div` 

@@ -21,8 +21,9 @@ export const UsersProvider = ({ children }) => {
       if (!currentUserId || !currentUserPassword) {
         return;
       }
-      // console.log("Quand est-ce que c'est appelé? ", currentUserId, currentUserPassword);
+
       try {
+        console.log("infos : ", currentUserPassword, currentUserId)
         const response = await fetch(`/api/login`, {
           method: "POST",
           body: JSON.stringify({
@@ -42,9 +43,10 @@ export const UsersProvider = ({ children }) => {
         setCurrentUserProfile(data.user);
         history.push("/");
       } catch (err) {
+        setCurrentUserId(null);
+        setCurrentUserPassword(null);
         setStatus("error");
         setErrorMsg("User not found");
-        // console.log("Something went wrong: ", err.message);
       }
     };
 

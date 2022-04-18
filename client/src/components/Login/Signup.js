@@ -7,9 +7,12 @@ import { UsersContext } from "../UsersContext";
 import Login from "./Login";
 
 const Signup = () => {
-    const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
+    const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, currentUserProfile, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
     let history = useHistory();
     const [userEdited, setUserEdited] = useState({});
+
+
+    console.log("voici le user profile ", currentUserProfile);
 
     const formatField = (field) => {
       return field ? field : "";
@@ -28,12 +31,13 @@ const Signup = () => {
             // console.log(response);
             let data = await response.json();
             console.log(data.data, " est la donnée")
+            setCurrentUserProfile(data.data);
             // console.log(data.data);
         } catch (err) {
-
+            console.log(err.message);
         }
     }
-
+    // console.log("voici le user profile ", currentUserProfile)
     const setInfoField = (field, e) => {
          let tempUser = { ...userEdited };
          if (!tempUser.info) {
@@ -50,6 +54,7 @@ const Signup = () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleSignup();
+            history.push("/login");
           }}
         >
           <SignupColumn>

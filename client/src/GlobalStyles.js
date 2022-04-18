@@ -2,11 +2,6 @@ import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   :root {
-    --color-cadmium-red: #D80026;
-    --color-alabama-crimson: #AA001E;
-    --color-orange: #F79D00;
-    --color-selective-yellow: #FDBB01;
-    --color-desert-sand: #E3C4A6;
     --font-heading: 'Esteban', sans-serif;
     --font-body: 'Montserrat Alternates', sans-serif;
     --padding-page: 24px;
@@ -42,11 +37,12 @@ export default createGlobalStyle`
   footer, header, hgroup, menu, nav, section {
       display: block;
   }
+ 
   body {
     max-width: 1440px;
     height: 100vh;
-      line-height: 1;
-      margin: 0 auto;
+    line-height: 1;
+    margin: 0 auto;
   }
   ol, ul {
       list-style: none;

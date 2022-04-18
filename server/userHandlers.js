@@ -323,7 +323,7 @@ const addOrModifyUserBook = async (req, res) => {
 const removeBookFromUserLibrary = async (req, res) => {
   const userId = req.params._id;
   const { isbn } = req.body;
-
+  console.log("voici mon req.body.isbn", req.body.isbn)
   try {
     await client.connect();
     console.log("connected");
@@ -337,7 +337,7 @@ const removeBookFromUserLibrary = async (req, res) => {
     if (!bookFound) {
       return res.status(404).json({ status: 404, message: "Book not found" });
     }
-    console.log(userLibrary.indexOf(bookFound));
+    console.log("index of book found: ", userLibrary.indexOf(bookFound));
     let bookFoundIndex = userLibrary.indexOf(bookFound);
     // remove book from user library
     userLibrary.splice(bookFoundIndex, 1);
@@ -367,7 +367,6 @@ const loginUser = async (req, res) => {
       existingUser.password = "";
       res.status(200).json({ status: 200, user: existingUser });
     }
-
   } catch (err) {
     console.log("Something went wrong: ", err.message);
   } finally {
