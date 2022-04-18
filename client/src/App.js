@@ -11,6 +11,7 @@ import AddBookForm from "./components/Header/AddBookForm";
 import UserLibrary from "./components/Books/UserLibrary";
 import CloudinaryUpdloadWidget from "./components/CloudinaryUploadWidget";
 import LoginForm from "./components/Login/LoginForm";
+import Signup from "./components/Login/Signup";
 const App = () => {
 
  
@@ -30,6 +31,9 @@ const App = () => {
           </Route>
           <Route path="/login">
             <LoginForm />
+          </Route>
+          <Route path="/signup">
+            <Signup />
           </Route>
           <Route path="/books">
             <UserLibrary />

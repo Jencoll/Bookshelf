@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { FormWrapper, BookInfoForm, FormTitle, Label, Input } from "../Header/AddBookForm";
 import { UsersContext } from "../UsersContext";
 
@@ -10,58 +10,22 @@ const LoginForm = () => {
     let history = useHistory();
 
     console.log(status);
-/*
-    const loginUser = async (e) => {
-      e.preventDefault();
-      if (!currentUserId || !currentUserPassword) {
-        return;
-      }
-      console.log(
-        "Quand est-ce que c'est appelé? ",
-        currentUserId,
-        currentUserPassword
-      );
-      try {
-        const response = await fetch(`/api/login`, {
-          method: "POST",
-          body: JSON.stringify({
-            _id: e.target.elements.username.value,
-            password: e.target.elements.password.value,
-          }),
-          headers: {
-            Accepts: "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.status !== 200) {
-          throw new Error("Cannot fetch data.");
-        }
-        let data = await response.json();
-        setStatus("success");
-        setCurrentUserProfile(data.user);
-        history.push("/");
-      } catch (err) {
-        setStatus("error");
-        setErrorMsg("User not found");
-        // console.log("Something went wrong: ", err.message);
-      }
-    };
-*/
-
 
     return (
       <LoginFormWrapper>
         <FormTitle>Log in</FormTitle>
-        <UserLoginForm onSubmit={(e) => {
+        <UserLoginForm
+          onSubmit={(e) => {
             e.preventDefault();
             setCurrentUserId(e.target.elements.username.value);
             setCurrentUserPassword(e.target.elements.password.value);
             history.push("/");
-        }}>
+          }}
+        >
           <FieldSet>
             <Label htmlFor="username">Username</Label>
             <Input
-            //   value=""
+              //   value=""
               type="text"
               name="username"
               required
@@ -70,7 +34,7 @@ const LoginForm = () => {
           <FieldSet>
             <Label htmlFor="password">Password</Label>
             <Input
-            //   value=""
+              //   value=""
               type="password"
               name="password"
               required
@@ -78,6 +42,7 @@ const LoginForm = () => {
           </FieldSet>
           <LoginButton type="submit">Log in</LoginButton>
           {status === "error" && <ErrorParagraph>{errorMsg}</ErrorParagraph>}
+          <CreateAccountLink to="/signup">Create an account</CreateAccountLink>
         </UserLoginForm>
       </LoginFormWrapper>
     );
@@ -87,7 +52,7 @@ const LoginFormWrapper = styled(FormWrapper)`
     align-items: center;
 `;
 
-const UserLoginForm = styled.form`
+export const UserLoginForm = styled.form`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -119,19 +84,19 @@ const UserLoginForm = styled.form`
   }
 `;
 
-const FieldSet = styled.fieldset`
+export const FieldSet = styled.fieldset`
     display: flex;
     align-items: center;
     margin: 24px 0;
 
 `;
 
-const LoginInput = styled.input`
-    border: none;
+// const LoginInput = styled.input`
+//     border: none;
 
-`;
+// `;
 
-const LoginButton = styled.button`
+export const LoginButton = styled.button`
     width: 50%;
     height: 40px;
     margin: 24px auto;
@@ -150,5 +115,9 @@ const ErrorParagraph = styled.p`
   text-transform: uppercase;
   text-shadow: 1px 1px var(--primary-color);
 `;
+
+const CreateAccountLink = styled(Link)`
+    text-align: center;
+`;  
 
 export default LoginForm;

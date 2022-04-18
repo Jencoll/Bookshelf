@@ -106,7 +106,8 @@ const getUsers = async (req, res) => {
 // add a user
 const addUser = async (req, res) => {
    const {
-     _id: username,
+     _id,
+     password,
      info: {
        avatarUrl,
        firstName,
@@ -126,7 +127,7 @@ const addUser = async (req, res) => {
      contacts,
    } = req.body;
 
-  if (!firstName || !lastName || !email || !city || !language) {
+  if (!_id || !password || !firstName || !lastName || !email) {
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   };
 
@@ -135,7 +136,8 @@ const addUser = async (req, res) => {
     const existingUser = await userCollection.findOne({ "info.email": email });
     if (!existingUser) {
       let newUser = {
-        _id: username,
+        _id,
+        password,
         info: {
           avatarUrl, 
           firstName, 
@@ -159,7 +161,7 @@ const addUser = async (req, res) => {
         .status(201)
         .json({
           status: 201,
-          data: user,
+          data: newUser,
           message: "User created successfully.",
         });
     } else {
