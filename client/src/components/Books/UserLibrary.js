@@ -4,11 +4,18 @@ import { UsersContext } from "../UsersContext";
 import { BooksContext } from "../BooksContext";
 import BookThumbnail from "./BookThumbnail";
 
-const UserLibrary = () => {
+const UserLibrary = ({resetFilter}) => {
   const { currentUserProfile } = useContext(UsersContext);
-  const { books } = useContext(BooksContext);
+  const { books, setType, filter } = useContext(BooksContext);
   const userBooks = currentUserProfile?.userLibrary;
   const [displayBooks, setDisplayBooks] = useState([]);
+
+  useEffect(() => {
+    console.log("resetFilter = ", resetFilter, "    filter = ", filter);
+    if (resetFilter) {
+      setType("");
+    }
+  }, []);
 
   useEffect(() => {
 

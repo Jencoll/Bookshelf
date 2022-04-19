@@ -5,10 +5,10 @@ import { BooksContext } from "../BooksContext";
 import { UsersContext } from "../UsersContext";
 
 const Category = ({ category }) => {
-  const { books, setType, setFilter } = useContext(BooksContext);
+  const { books, type, setType, setFilter, filter } = useContext(BooksContext);
   const { currentUserProfile } = useContext(UsersContext);
   const userLibrary = currentUserProfile?.userLibrary;
-  const { type, filter } = useParams();
+  //const { type, filter } = useParams();
   let match = null;
   let history = useHistory();
 
@@ -67,7 +67,9 @@ const Category = ({ category }) => {
       {/* <CategoryLink
         to={`/books/${category}`} */}
       <CategoryBtn
+        selected={(category === "All" && type === "") || (type !== "" && category === filter)}
         onClick={() => {
+          setType("category");
           setFilter(category);
         }}
       >
@@ -103,7 +105,7 @@ const CategoryBtn = styled.button`
   font-weight: 500;
   letter-spacing: 1.2px;
   font-size: 17px;
-  background-color: #da544b;
+  background-color: ${(props) => props.selected ? "#222222" : "#da544b"};
   border-radius: 5px;
   border: none;
   text-transform: uppercase;

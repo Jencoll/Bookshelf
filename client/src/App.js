@@ -35,7 +35,7 @@ const App = () => {
             <Signup />
           </Route>
           <Route path="/books">
-            <UserLibrary />
+            <UserLibrary resetFilter={true} />
           </Route>
           <Route path="/book/:isbn">
             <SingleBook />
