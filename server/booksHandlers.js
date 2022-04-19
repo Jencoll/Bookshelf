@@ -90,7 +90,7 @@ const googleBookToBook = (googleBook) => {
 };
 
 // get an array of books with many options in the query (to filter the books depending on the option chosen)
-const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
+const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) => {
   // start = parseInt(req.query.start);
   // limit = parseInt(req.query.limit);
   let range = start + limit;
@@ -99,9 +99,23 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
     await client.connect();
     console.log("connected");
     let matchedBooks = null;
+    const userCollection = await db.collection("users"); 
+    const existingUser = await userCollection.findOne({ _id: userId });
+    if (!existingUser) {
+      return res.status(404).json({ status: 404, message: "User not found." });
+    }
+    let userLibrary = existingUser.userLibrary;
+
+
+
+
     switch (type) {
       case "category": 
-        matchedBooks = await booksCollection.find( {category: filter} ).toArray();
+        let filteredUserLibrary = userLibrary.filter(b => b.category === filter);
+        console.log(filteredUserLibrary, " est la liste filtrée");
+        let allBooks = await booksCollection.find().toArray();
+        
+        matchedBooks = allBooks.filter(b => filteredUserLibrary.find(bk => bk.isbn === b.isbn));
         break;
       case "wishlist":
         matchedBooks = await booksCollection.find({ wishlist: filter }).toArray();
@@ -116,11 +130,6 @@ const getBooks = async ({ query: { start, limit, type, filter } }, res) => {
         matchedBooks = await booksCollection.find().toArray();
         break;
     }
-    // const allBooks = await booksCollection.find().toArray();
-    // let length = allBooks.length; 
-    // console.log(allBooks, length);
-    // res.status(200).json({ status: 200, "number of books": length, books: allBooks });
-    // console.log("les matches sont: ", matchedBooks)
     if (matchedBooks.length > 24 && matchedBooks.length < 100 && !start && !limit) {
       res.status(200).json({ status: 200, books: matchedBooks.slice(0, 99) });
     } else if (start && limit) {

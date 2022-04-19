@@ -178,13 +178,16 @@ export const BooksProvider = ({ children }) => {
     const retrieveBooks = async () => {
       let response = null;
       try {
-        response = await fetch("/api/get-books");
-        // if (type === "") {
-        //   response = await fetch(`/api/get-books`)
-        // } else {
-        //   response = await fetch(`/api/get-books?start=${start}&limit=${limit}&type=${type}&filter=${filter}`);
+        if (type === "" || filter === "All") {
+          response = await fetch(
+            `/api/get-books?userId=${currentUserId}&start=${start}&limit=${limit}`
+          );
+        } else {
+          response = await fetch(
+            `/api/get-books?userId=${currentUserId}&start=${start}&limit=${limit}&type=${type}&filter=${filter}`
+          );
             console.log("type: ", type, " et filter: ", filter);
-        // }
+        }
         if (!response.ok) {
           throw new Error(`Error! Status: ${response.status}`);
         }
@@ -192,7 +195,6 @@ export const BooksProvider = ({ children }) => {
 
         
         setBooks(data.books);
-        // console.log(data.books.length, " est la longueur et books est : ", data.books)
         setResultsLength(data.books.length);
       } catch (err) {
         console.log(err.message);

@@ -40,7 +40,7 @@ const Category = ({ category }) => {
 //     // console.log("une catégorie? ", match?.category)
 //   });
 
-  console.log(filter, " est le bon filtre");
+//   console.log(filter, " est le bon filtre");
   // category && match?.category && ( )
 
   // const handleCategory = () => {
@@ -66,13 +66,13 @@ const Category = ({ category }) => {
     <CategoryTag>
       {/* <CategoryLink
         to={`/books/${category}`} */}
-      <button
+      <CategoryBtn
         onClick={() => {
           setFilter(category);
         }}
       >
-        {category}
-      </button>
+        {category !== "" ? category : "No category"}
+      </CategoryBtn>
 
       {/* {category} */}
       {/* </CategoryLink> */}
@@ -86,16 +86,13 @@ const Category = ({ category }) => {
 
 const CategoryTag = styled.li`
   position: relative;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
   width: 150px;
   height: 40px;
   background-color: #da544b;
   border-radius: 5px;
 `;
 
-const CategoryLink = styled(Link)`
+const CategoryBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,8 +102,22 @@ const CategoryLink = styled(Link)`
   color: #fff;
   font-weight: 500;
   letter-spacing: 1.2px;
-  font-size: 18px;
-  /* text-transform: uppercase; */
-  `;
+  font-size: 17px;
+  background-color: #da544b;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+
+  &:hover {
+    font-weight: 500;
+    border: 3px solid #c2d6cf;
+  }
+
+  &:active {
+    background-color: #9bbbae;
+    color: #fff;
+    font-weight: 600;
+  }
+`;
 
 export default Category;

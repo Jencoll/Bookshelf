@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const { MongoClient } = require("mongodb");
 const { default: axios } = require("axios");
 const { MONGO_URI, key } = process.env;
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const client = new MongoClient(MONGO_URI, {
   useNewUrlParser: true,
@@ -103,7 +105,7 @@ const getUsers = async (req, res) => {
 // };
 
 
-// add a user
+// create a user
 const addUser = async (req, res) => {
    const {
      _id,
@@ -126,6 +128,7 @@ const addUser = async (req, res) => {
      wishlist,
      contacts,
    } = req.body;
+
 
   if (!_id || !password || !firstName || !lastName || !email) {
     return res.status(400).json({ status: 400, message: "Incomplete request" });

@@ -13,7 +13,7 @@ const UserLibrary = () => {
   useEffect(() => {
 
     console.log(currentUserProfile?.userLibrary, " sont les livres de l'utilisateur")
-    
+
 
     if (userBooks && books) {
         // console.log(books, " sont les livres")
@@ -45,7 +45,7 @@ const UserLibrary = () => {
 
 const LibraryWrapper = styled.div`
   position: relative;
-  /* left: 125px; */
+  left: 125px;
   /* width: calc(100% - 400px); */
   width: 100%;
   height: calc(100% - 70px);
