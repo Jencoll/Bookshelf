@@ -29,11 +29,12 @@ const Homepage = () => {
 
     userLibrary?.forEach((b) => {
       categories.push(b.category);
-    })
+    });
 
-    let uniqueCategories = [...new Set(categories)];
-    // console.log("Et enfin les catégories uniques : ", uniqueCategories)
+    let uniqueCategories = [...new Set(categories)].filter(cat => cat && cat !== "");
 
+    uniqueCategories.push("No category");
+  
     return (
       <Homewrapper>
         <Type>Categories</Type>
@@ -42,7 +43,7 @@ const Homepage = () => {
             <Category category={category} key={category} />
         ))}
         </Categorylist>
-
+        <UserLibrary />
       </Homewrapper>
     );
 }

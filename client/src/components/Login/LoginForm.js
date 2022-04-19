@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { FormWrapper, BookInfoForm, FormTitle, Label, Input } from "../Header/AddBookForm";
 import { UsersContext } from "../UsersContext";
@@ -11,6 +11,13 @@ const LoginForm = () => {
 
     console.log(status);
 
+    useEffect(() => {
+        if (status === "success") {
+            history.push("/");
+        }
+
+    }, [status]);
+
     return (
       <LoginFormWrapper>
         <FormTitle>Log in</FormTitle>
@@ -19,7 +26,6 @@ const LoginForm = () => {
             e.preventDefault();
             setCurrentUserId(e.target.elements.username.value);
             setCurrentUserPassword(e.target.elements.password.value);
-            // history.push("/");
           }}
         >
           <FieldSet>

@@ -23,22 +23,22 @@ const Category = ({ category }) => {
   //    }
   //  }, [type, filter, books]);
 
-  books.map((book) => {
-    match = userLibrary.find((b) => b.isbn === book.isbn);
+//   books.map((book) => {
+//     match = userLibrary.find((b) => b.isbn === book.isbn);
 
-    if (match && match.category !== "undefined") {
-      console.log("voici mon livre : ", match, " du livre : ", book);
-      setFilter(match.category);
-      history.push(`/books/${category}`);
-    } else {
-      setFilter("No category");
-    }
+//     if (match && match.category !== "undefined") {
+//       console.log("voici mon livre : ", match, " du livre : ", book);
+//       setFilter(match.category);
+//       history.push(`/books/${category}`);
+//     } else {
+//       setFilter("No category");
+//     }
 
-    // console.log(filter, " est le filtre");
+//     // console.log(filter, " est le filtre");
 
-    console.log("voici mon livre : ", match, " du livre : ", book);
-    // console.log("une catégorie? ", match?.category)
-  });
+//     console.log("voici mon livre : ", match, " du livre : ", book);
+//     // console.log("une catégorie? ", match?.category)
+//   });
 
   console.log(filter, " est le bon filtre");
   // category && match?.category && ( )

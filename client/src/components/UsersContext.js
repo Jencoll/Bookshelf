@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import usePersistedState from "./usePersistedState";
 
 export const UsersContext = createContext();
@@ -7,14 +6,11 @@ export const UsersContext = createContext();
 export const UsersProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = usePersistedState(null, "current-user");
   const [currentUserPassword, setCurrentUserPassword] = usePersistedState(null, "password");
-  //  const [currentUserId, setCurrentUserId] = useState(null);
-  //  const [currentUserPassword, setCurrentUserPassword] = useState(null);
   const [currentUserProfile, setCurrentUserProfile] = useState(null);
   const [onlineContacts, setOnlineContacts] = useState([]);
   const [contacts, setContacts] = useState(null);
   const [status, setStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  let history = useHistory();
 
   useEffect(() => {
     const loginUser = async () => {
@@ -37,11 +33,10 @@ export const UsersProvider = ({ children }) => {
         });
         if (response.status !== 200) {
           throw new Error("Cannot fetch data.");
-        }
-        let data = await response.json();
-        setStatus("success");
-        setCurrentUserProfile(data.user);
-        history.push("/");
+        } 
+          let data = await response.json();
+          setStatus("success");
+          setCurrentUserProfile(data.user);        
       } catch (err) {
         setCurrentUserId(null);
         setCurrentUserPassword(null);
@@ -51,6 +46,7 @@ export const UsersProvider = ({ children }) => {
     };
 
     loginUser();
+
   }, [currentUserId, currentUserPassword]);
 
   // useEffect(() => {

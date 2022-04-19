@@ -13,6 +13,8 @@ const UserLibrary = () => {
   useEffect(() => {
 
     console.log(currentUserProfile?.userLibrary, " sont les livres de l'utilisateur")
+    
+
     if (userBooks && books) {
         // console.log(books, " sont les livres")
       let db = userBooks
@@ -50,7 +52,7 @@ const LibraryWrapper = styled.div`
   padding: 24px;
 
   @media (min-width: 770px) {
-    left: 125px;
+    /* left: 125px; */
   }
 
   @media (min-width: 1200px) {
