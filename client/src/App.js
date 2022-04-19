@@ -26,7 +26,7 @@ const App = () => {
           <Route exact path="/">
             {/* <CloudinaryUpdloadWidget /> */}
             {/* <UserLibrary /> */}
-            <Homepage />
+            <Homepage resetFilter={true} />
           </Route>
           <Route path="/login">
             <LoginForm />

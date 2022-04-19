@@ -23,10 +23,6 @@ export const CloudinaryProvider = ({ children }) => {
           result.info?.files &&
           result.info?.files.length > 0
         ) {
-          console.log(
-            "On a enfin un fichier: ",
-            result.info.files[0].uploadInfo.secure_url
-          );
           setFileUrlUploaded(result.info?.files[0].uploadInfo.secure_url);
         } else if (error) {
           console.log("An error occurred during the image upload: ", error);
@@ -40,24 +36,11 @@ export const CloudinaryProvider = ({ children }) => {
     cloudinaryWidget?.open();
   };
 
-  // useEffect(() => {
-  //   console.log("Le fichier qui a été uploadé est : ", fileUrlUploaded);
-  // }, [fileUrlUploaded]);
-
   return (
     <CloudinaryContext.Provider
-      value={{ fileUrlUploaded, openUpload, cloudinaryWidget }}
+      value={{ fileUrlUploaded, openUpload, setFileUrlUploaded, cloudinaryWidget }}
     >
       {children}
     </CloudinaryContext.Provider>
   );
 };
-
-// return <Button onClick={openUpload}>Upload your image</Button>;
-// const CloudinaryUpdloadWidget = () => {
-// };
-// const Button = styled.button`
-//     width: 200px;
-//     height: 30px;
-// `;
-// export default CloudinaryUpdloadWidget;

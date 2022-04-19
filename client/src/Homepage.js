@@ -5,15 +5,20 @@ import { BooksContext } from "./components/BooksContext";
 import { UsersContext } from "./components/UsersContext";
 import { useParams } from "react-router-dom";
 import Category from "./components/Books/Category";
-import GenericWelcome from "./GenericWelcome";
 
-const Homepage = () => {
+const Homepage = ({ resetFilter }) => {
   const { books, setType, setFilter } = useContext(BooksContext);
   const { currentUserProfile } = useContext(UsersContext);
   const { type, filter } = useParams();
   const userLibrary = currentUserProfile?.userLibrary;
   let categories = [];
   let uniqueCategories = [];
+
+  useEffect(() => {
+    if (resetFilter) {
+      setType("");
+    }
+  }, []);
   // useEffect(() => {
   //   if (!type || !filter) {
   //       setType("");
@@ -41,9 +46,9 @@ const Homepage = () => {
     <Homewrapper>
      
     
-      <Type>{currentUserProfile ? "Categories" : "Create your online bookshelf"}</Type>
       {currentUserProfile ? ( 
       <>
+      <Type>{currentUserProfile ? "Categories" : "Create your online bookshelf"}</Type>
       <Categorylist>
         {uniqueCategories.map((category) => (
           <Category category={category} key={category} />
@@ -55,7 +60,6 @@ const Homepage = () => {
         <GenericMessage>
           
         </GenericMessage>
-        // <GenericWelcome />
       )}
      
       
@@ -72,8 +76,8 @@ const Homewrapper = styled.div`
   /* justify-content: center; */
   padding: 0 12px 24px 12px;
   top: 70px;
-  left: 125px;
   width: calc(100% - 125px);
+  /* left: 125px; */
   height: calc(100% - 70px);
 `;
 
@@ -90,6 +94,7 @@ const Categorylist = styled.ul`
 `;
 
 const GenericMessage = styled.div`
+  position: relative;
   width: 100%;
   height: 70%;
   padding: 24px;
@@ -99,6 +104,7 @@ const GenericMessage = styled.div`
   border-radius: 10px;
   box-shadow: 3px 5px 6px #c2d6cf;
   margin-top: 30px;
+  left: 125px;
 `;
 
 export default Homepage;

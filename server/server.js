@@ -10,12 +10,12 @@ const PORT = 8000;
 // users handlers
 const {
   getUsers,
-  getUser,
+  // getUser,
   addUser,
   modifyUser,
   deleteUser,
   loginUser,
-  getRandOnlineUsers,
+  // getRandOnlineUsers,
   // getCurrentUser,
   addOrModifyUserBook,
   removeBookFromUserLibrary,
@@ -31,11 +31,6 @@ const {
   editBook,
 } = require("./booksHandlers");
 
-// user personal library handlers
-const {
-  getUserLibrary,
-  createUserLibrary,
-} = require("./userLibrariesHandlers");
 const app = express();
 
 app.use(morgan("tiny"));
@@ -73,15 +68,6 @@ app.delete("/api/delete-book"); // delete a book from the bookshelves(not sure i
 | Google Books API db endpoints |
 --------------------------*/
 app.get("/api/search-book", searchBook);
-
-/*-------------------
-| user libraries db endpoints |
---------------------*/
-app.get("/api/get-user-libraries"); // get a list of user libraries
-app.get("/api/get-user-library", getUserLibrary); // get a user's personal library
-app.post("/api/create-user-library", createUserLibrary); // create a user's personal library
-app.patch("/api/modify-user-library"); // modify one or many elements in the user's library
-app.delete("/api/delete-user-library"); // delete a user's library when he/she deletes his/her account
 
  /*--------------------
   | catch-all endpoint |

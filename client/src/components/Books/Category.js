@@ -23,49 +23,9 @@ const Category = ({ category }) => {
   //    }
   //  }, [type, filter, books]);
 
-//   books.map((book) => {
-//     match = userLibrary.find((b) => b.isbn === book.isbn);
-
-//     if (match && match.category !== "undefined") {
-//       console.log("voici mon livre : ", match, " du livre : ", book);
-//       setFilter(match.category);
-//       history.push(`/books/${category}`);
-//     } else {
-//       setFilter("No category");
-//     }
-
-//     // console.log(filter, " est le filtre");
-
-//     console.log("voici mon livre : ", match, " du livre : ", book);
-//     // console.log("une catégorie? ", match?.category)
-//   });
-
-//   console.log(filter, " est le bon filtre");
-  // category && match?.category && ( )
-
-  // const handleCategory = () => {
-  //     if (match?.category === category) {
-  //         setFilter(category);
-  //         history.push(`/books/${category}`);
-  //     }
-  // }
-  // useEffect(() => {
-
-  //     const handleCategory = () => {
-  //       if (match?.category === category) {
-  //         setFilter(category);
-  //         history.push(`/books/${category}`);
-  //       }
-  //     };
-
-  //     handleCategory();
-
-  // }, [filter])
 
   return (
     <CategoryTag>
-      {/* <CategoryLink
-        to={`/books/${category}`} */}
       <CategoryBtn
         selected={(category === "All" && type === "") || (type !== "" && category === filter)}
         onClick={() => {
@@ -75,14 +35,8 @@ const Category = ({ category }) => {
       >
         {category !== "" ? category : "No category"}
       </CategoryBtn>
-
-      {/* {category} */}
-      {/* </CategoryLink> */}
     </CategoryTag>
 
-    // <button onClick={() => {}}>{category}</button>
-
-    // au clic de la catégorie, on affiche les livres (Thumbnails) de cette catégorie
   );
 };
 
@@ -105,7 +59,7 @@ const CategoryBtn = styled.button`
   font-weight: 500;
   letter-spacing: 1.2px;
   font-size: 17px;
-  background-color: ${(props) => props.selected ? "#222222" : "#da544b"};
+  background-color: ${(props) => (props.selected ? "#9bbbae" : "#da544b")};
   border-radius: 5px;
   border: none;
   text-transform: uppercase;

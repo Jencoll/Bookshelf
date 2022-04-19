@@ -1,15 +1,22 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { UsersContext } from "../UsersContext";
 
 const Menu = () => {
-  
+   const { currentUserProfile } = useContext(UsersContext);
+
   return (
     <MenuWrapper>
       <MenuLink exact to="/">
         Home
       </MenuLink>
-      <MenuLink to="/books">Books</MenuLink>
-      <MenuLink to="/contacts">Contacts</MenuLink>
+      {currentUserProfile && 
+      <>
+        <MenuLink to="/books">Books</MenuLink>
+        <MenuLink to="/contacts">Contacts</MenuLink>
+      </>
+      }
     </MenuWrapper>
   );
 };

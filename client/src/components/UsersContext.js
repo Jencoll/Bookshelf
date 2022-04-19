@@ -19,7 +19,6 @@ export const UsersProvider = ({ children }) => {
       }
 
       try {
-        console.log("infos : ", currentUserPassword, currentUserId)
         const response = await fetch(`/api/login`, {
           method: "POST",
           body: JSON.stringify({
@@ -41,7 +40,7 @@ export const UsersProvider = ({ children }) => {
         setCurrentUserId(null);
         setCurrentUserPassword(null);
         setStatus("error");
-        setErrorMsg("User not found");
+        setErrorMsg("Credentials don't match");
       }
     };
 
@@ -49,9 +48,6 @@ export const UsersProvider = ({ children }) => {
 
   }, [currentUserId, currentUserPassword]);
 
-  // useEffect(() => {
-
-  // }, []);
 
   return (
     <UsersContext.Provider

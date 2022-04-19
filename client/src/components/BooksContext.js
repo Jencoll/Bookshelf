@@ -20,6 +20,8 @@ export const BooksProvider = ({ children }) => {
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(100);
   const [resultsLength, setResultsLength] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [errorMsgBooks, setErrorMsgBooks] = useState(false);
 
   //   search books from Google API (for now)
   const searchBook = async () => {
@@ -29,6 +31,7 @@ export const BooksProvider = ({ children }) => {
       setFoundBooks(data.books);
     } catch (err) {
       console.log("Something went wrong: ", err.message);
+      setErrorMsgBooks(true);
     }
   };
 
@@ -79,9 +82,7 @@ export const BooksProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error(`Error! Status: ${response.status}`);
       }
-      // console.log(response)
       let data = await response.json();
-      // console.log("voici la data: ", data);
       setCurrentUserProfile(data.user);
     } catch (err) {
       console.log("Error: ", err.message);
@@ -176,6 +177,7 @@ export const BooksProvider = ({ children }) => {
   // retrieve books from database, using options (all books, with start and limit, by category, by tag)
   useEffect(() => {
     const retrieveBooks = async () => {
+      setLoading(true);
       let response = null;
       try {
         if (type === "" || filter === "All") {
@@ -186,7 +188,7 @@ export const BooksProvider = ({ children }) => {
           response = await fetch(
             `/api/get-books?userId=${currentUserId}&start=${start}&limit=${limit}&type=${type}&filter=${filter}`
           );
-            console.log("type: ", type, " et filter: ", filter);
+            // console.log("type: ", type, " et filter: ", filter);
         }
         if (!response.ok) {
           throw new Error(`Error! Status: ${response.status}`);
@@ -196,9 +198,11 @@ export const BooksProvider = ({ children }) => {
         
         setBooks(data.books);
         setResultsLength(data.books.length);
+        // setLoading(false);
       } catch (err) {
         console.log(err.message);
       };
+      setLoading(false);
     };
     retrieveBooks();
 
@@ -221,6 +225,9 @@ export const BooksProvider = ({ children }) => {
         bookIsbn,
         books,
         addFoundBookToDatabase,
+        loading,
+        errorMsgBooks,
+        setErrorMsgBooks,
         // openForm,
         addOrModifyBook,
         type,

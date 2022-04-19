@@ -5,6 +5,7 @@ import { BooksContext } from "../BooksContext";
 import { UsersContext } from "../UsersContext";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
 import BookActions from "./BookActions";
+import Spinner from "../StateHandling/Spinner";
 
 const SingleBook = () => {
     const {isbn} = useParams();
@@ -61,7 +62,7 @@ const SingleBook = () => {
             </BookDetails>
           </SingleBookWrapper>
         ) : (
-          <div>Loading</div>
+          <Spinner />
         )}
       </>
     );

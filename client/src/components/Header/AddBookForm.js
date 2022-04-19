@@ -35,6 +35,8 @@ const AddBookForm = ({ toEdit }) => {
     userBookEdited.isbn = isbnRef.current.value;
     await addOrModifyUserBook(userBookEdited);
     setBook(bookEdited);
+    setBookEdited({});
+    setFileUrlUploaded(null);
     history.push(`/book/${bookEdited.isbn}`);
   };
 

@@ -3,37 +3,34 @@ import { useContext, useEffect, useState } from "react";
 import { UsersContext } from "../UsersContext";
 import { BooksContext } from "../BooksContext";
 import BookThumbnail from "./BookThumbnail";
+import Spinner from "../StateHandling/Spinner";
 
-const UserLibrary = ({resetFilter}) => {
+const UserLibrary = ({resetFilter }) => {
   const { currentUserProfile } = useContext(UsersContext);
-  const { books, setType, filter } = useContext(BooksContext);
+  const { books, setType, filter, loading } = useContext(BooksContext);
   const userBooks = currentUserProfile?.userLibrary;
   const [displayBooks, setDisplayBooks] = useState([]);
 
   useEffect(() => {
-    console.log("resetFilter = ", resetFilter, "    filter = ", filter);
     if (resetFilter) {
       setType("");
     }
   }, []);
 
   useEffect(() => {
-
-    console.log(currentUserProfile?.userLibrary, " sont les livres de l'utilisateur")
-
-
     if (userBooks && books) {
-        // console.log(books, " sont les livres")
       let db = userBooks
         .map((userBook) => {
-          // console.log(userBook.category, " est la catégorie du livre", " et isbn est ", userBook.isbn)
           return books.find((b) => b.isbn === userBook.isbn);
         })
         .filter((b) => b !== undefined);
-
       setDisplayBooks(db);
     }
   }, [currentUserProfile, userBooks, books]);
+
+  if (loading) {
+    return <Spinner />
+  };
 
   return (
     <LibraryWrapper>
@@ -44,26 +41,21 @@ const UserLibrary = ({resetFilter}) => {
           ))}
         </BookList>
       )}
-
-      {/* {currentUserProfile.userLibrary} */}
     </LibraryWrapper>
   );
 };
 
 const LibraryWrapper = styled.div`
   position: relative;
-  left: 125px;
-  /* width: calc(100% - 400px); */
   width: 100%;
   height: calc(100% - 70px);
   padding: 24px;
 
   @media (min-width: 770px) {
-    /* left: 125px; */
+    left: 125px;
   }
 
   @media (min-width: 1200px) {
-    /* width: calc(100% - 400px); */
     width: calc(100% - 125px);
   }
 `;

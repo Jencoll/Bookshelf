@@ -7,7 +7,7 @@ import { UsersContext } from "../UsersContext";
 
 const Login = () => {
   const { currentUserProfile, 
-    setCurrentUserProfile, currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword } = useContext(UsersContext);
+    setCurrentUserProfile, currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setStatus } = useContext(UsersContext);
   let history = useHistory();
     // on click, a modal is displayed to show a form for the login process or the sign up process, in the form, there will be a link to another form if the user account is not created yet
 
@@ -15,6 +15,8 @@ const Login = () => {
       e.preventDefault();
       setCurrentUserId(null);
       setCurrentUserProfile(null);
+      setCurrentUserPassword(null);
+      setStatus("logout");
       history.push("/");
     }
 

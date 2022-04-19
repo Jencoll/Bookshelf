@@ -5,7 +5,6 @@ import { FormWrapper, BookInfoForm, FormTitle, Label, Input } from "../Header/Ad
 import { UsersContext } from "../UsersContext";
 
 const LoginForm = () => {
-    // afficher texte du bouton et du titre en conséquence de ce qu'on veut (créer compte ou login)
     const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
     let history = useHistory();
 
@@ -99,9 +98,27 @@ export const FieldSet = styled.fieldset`
 `;
 
 export const LoginButton = styled.button`
-    width: 50%;
-    height: 40px;
-    margin: 24px auto;
+  width: 50%;
+  height: 40px;
+  margin: 24px auto;
+  background-color: #9bbbae;
+  border: 3px solid #c2d6cf;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #c2d6cf;
+    border: 3px solid #9bbbae;
+  }
+
+  &:active {
+    transform: scale(0.98) translate(2px);
+    background-color: #9bbbae;
+  }
 `;
 
 const ErrorParagraph = styled.p`

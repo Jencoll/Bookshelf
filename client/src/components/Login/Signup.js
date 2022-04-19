@@ -1,19 +1,33 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { FormWrapper, BookInfoForm, FormTitle, Label, Input, Column } from "../Header/AddBookForm";
 import { UserLoginForm, FieldSet, LoginButton } from "./LoginForm";
 import { UsersContext } from "../UsersContext";
+import { CloudinaryContext } from "../CloudinaryUploadWidget";
 import Login from "./Login";
 
 const Signup = () => {
     const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, currentUserProfile, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
+    const { fileUrlUploaded, setFileUrlUploaded, openUpload } =
+    useContext(CloudinaryContext);
     let history = useHistory();
     const [userEdited, setUserEdited] = useState({});
 
 
     console.log("voici le user profile ", currentUserProfile);
 
+     useEffect(() => {
+       if (fileUrlUploaded) {
+         let clonedUserEdited = {...userEdited};
+         if (!clonedUserEdited.info) {
+             clonedUserEdited.info = {};
+         }
+         clonedUserEdited.info.avatarUrl = fileUrlUploaded;
+         setUserEdited(clonedUserEdited);
+       }
+     }, [fileUrlUploaded]);
+    
     const formatField = (field) => {
       return field ? field : "";
     };
@@ -28,16 +42,12 @@ const Signup = () => {
                 "Content-Type": "application/json",
               },
             });
-            // console.log(response);
-            let data = await response.json();
-            console.log(data.data, " est la donnée")
-            setCurrentUserProfile(data.data);
-            // console.log(data.data);
+            await response.json();
+            setFileUrlUploaded(null);
         } catch (err) {
             console.log(err.message);
         }
     }
-    // console.log("voici le user profile ", currentUserProfile)
     const setInfoField = (field, e) => {
          let tempUser = { ...userEdited };
          if (!tempUser.info) {
@@ -175,6 +185,10 @@ const Signup = () => {
                 name="avatarUrl"
                 placeholder="Paste image url"
               ></Input>
+              <button onClick={(e) => {
+                e.preventDefault();
+                openUpload();
+              }}>Upload</button>
             </FieldSet>
             <LoginButton>Sign up</LoginButton>
           </SignupColumn>

@@ -31,17 +31,6 @@ const googleBookToBook = (googleBook) => {
 
   let isbn = ii ? ii.identifier : "not found";
 
-  // industryIdentifiers?.map((industryIdentifier) => {
-  //   if (industryIdentifier.type === "ISBN_13") {
-  //     return (isbn = industryIdentifier.identifier);
-  //   } else if (industryIdentifier.type === "ISBN_10") {
-  //     return (isbn = industryIdentifier.identifier);
-  //   } else {
-  //     // modifier le : pour un tiret dans le ISBN
-  //     return (isbn = industryIdentifier.identifier);
-  //   }
-  // });
-
   // setting images options
   let imageLinks = googleBook.volumeInfo?.imageLinks;
   let imageUrl = null;
@@ -64,7 +53,8 @@ const googleBookToBook = (googleBook) => {
     console.log("No image provided.");
   }
 
-  // return a book format from Google API (create a function that converts the response to a book format)
+  // return a book format from Google API 
+  // (create a function that converts the response to a book format)
   return {
     isbn,
     title: googleBook.volumeInfo.title,
@@ -106,15 +96,11 @@ const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) 
     }
     let userLibrary = existingUser.userLibrary;
 
-
-
-
     switch (type) {
       case "category": 
         let filteredUserLibrary = userLibrary.filter(b => b.category === filter);
         console.log(filteredUserLibrary, " est la liste filtrée");
         let allBooks = await booksCollection.find().toArray();
-        
         matchedBooks = allBooks.filter(b => filteredUserLibrary.find(bk => bk.isbn === b.isbn));
         break;
       case "wishlist":
@@ -382,6 +368,9 @@ const searchBook = async (req, res) => {
   // set language restrictions to allow other languages than just English, when there are translations
   console.log("voici mon req.query: ", req.query);
   try {
+    // const existingBookInDb = await booksCollection.findOne(req.query);
+    // console.log("est-ce que j'obtiens quelque chose? ", existingBookInDb)
+    // return;
     let response = await axios.get(
       `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=20&key=${key}`
     );

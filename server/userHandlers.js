@@ -83,27 +83,6 @@ const getUsers = async (req, res) => {
 
 
 
-// generate a list of random online users
-// const getRandOnlineUsers = async (req, res) => {
-  
-//   try {
-//     await client.connect();
-//     console.log("connected");
-//     const allUsers = await userCollection.find().toArray();
-//     if (allUsers.length < 5) {
-//       res.status(200).json({ status: 200, onlineUsers: allUsers });
-//     } else {
-//       let randomIndex = Math.random(Math.floor() * allUsers.length - 5);
-//       res.status(200).json({ status: 200, onlineUsers: allUsers.slice(randomIndex, 5) });
-//     }; 
-//   } catch (err) {
-//     console.log("Something went wrong: ", err.message);
-//   } finally {
-//     client.close();
-//     console.log("disconnected");
-//   }
-// };
-
 
 // create a user
 const addUser = async (req, res) => {
@@ -134,20 +113,24 @@ const addUser = async (req, res) => {
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   };
 
+
+
   try {
     await client.connect();
     const existingUser = await userCollection.findOne({ "info.email": email });
     if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      console.log(hashedPassword)
       let newUser = {
         _id,
-        password,
+        password: hashedPassword,
         info: {
-          avatarUrl, 
-          firstName, 
+          avatarUrl,
+          firstName,
           lastName,
           email,
           city,
-          province, 
+          province,
           country,
           language,
         },
@@ -355,17 +338,17 @@ const removeBookFromUserLibrary = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     await client.connect();
     console.log("connected");
     const existingUser = await userCollection.findOne({ _id: req.body._id });
     if (!existingUser) {
-      return res.status(404).json({ status: 404, message: "Invalid username or password." });
+      return res.status(404).json({ status: 404, message: "Invalid username." });
     };
-
-    if (existingUser.password !== req.body.password) {
-      return res.status(404).json({ status: 404, message: "Invalid username or password." });
+    if ((!await bcrypt.compare(req.body.password, existingUser.password)) 
+    && existingUser.password !== req.body.password) {
+      return res.status(404).json({ status: 404, message: "Invalid password." });
     } else {
       existingUser.password = "";
       res.status(200).json({ status: 200, user: existingUser });

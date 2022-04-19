@@ -2,10 +2,15 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { BooksContext } from "../BooksContext";
-import Action from "./Action";
-import BookActionIcon from "./BookActionIcon";
 import { ActionBtn } from "../Header/Header";
-import { BiBookAdd, BiBookReader, BiBookAlt, BiBookHeart } from "react-icons/bi";
+import {
+  BiBookAdd,
+  BiBookReader,
+  BiBookAlt,
+  BiBookHeart,
+  BiEditAlt,
+} from "react-icons/bi";
+import { AiOutlineDelete } from "react-icons/ai";
 
 
 
@@ -21,8 +26,8 @@ const BookActions = () => {
     
     return (
       <ActionsWrapper>
+        {/* Add book to user library */}
         <ActionBtndiv>
-          {/* Add book to user library */}
           <ActionBtn
             onClick={() => {
               addFoundBookToDatabase();
@@ -45,49 +50,51 @@ const BookActions = () => {
           </ActionBtn>
           <span>Library</span>
         </ActionBtndiv>
+
+        {/* set book to is reading */}
         <ActionBtndiv>
-          {/* set book to is reading */}
           <ActionBtn>
             <BiBookReader />
           </ActionBtn>
           <span>Reading</span>
         </ActionBtndiv>
+        {/* set book to read */}
         <ActionBtndiv>
-          {/* set book to read */}
           <ActionBtn>
             <BiBookAlt />
           </ActionBtn>
           <span>Read</span>
         </ActionBtndiv>
+        {/* add book to wishlist */}
         <ActionBtndiv>
-          {/* add book to wishlist */}
           <ActionBtn>
             <BiBookHeart />
           </ActionBtn>
           <span>Wishlist</span>
+        </ActionBtndiv>
+        {/* edit book info */}
+        <ActionBtndiv>
           <ActionBtn
             onClick={() => {
               history.push(`/modify-book-form`);
             }}
           >
-            Edit
+            <BiEditAlt />
           </ActionBtn>
-          <ActionBtn onClick={() => {
-            deleteBookFromUserLibrary({isbn: bookIsbn});
-            history.push("/books");
-          }}>Delete</ActionBtn>
+          <span>Edit</span>
         </ActionBtndiv>
-        {/* <Action onClick={(e) => handleToggleAction(e, "inUserLibrary")}> */}
-        {/* <BookActionIcon kind="addToLibrary" /> */}
-        {/* </Action> */}
-        {/* // <Action onClick={(e) => handleToggleAction(e, "reading")}> */}
-        {/* </Action> */}
-        {/* <Action onClick={(e) => handleToggleAction(e, "isRead")}>
-          <BookActionIcon kind="read" />
-        </Action>
-        <Action onClick={(e) => handleToggleAction(e, "inWishlist")}>
-          <BookActionIcon kind="addToWishlist" />
-        </Action> */}
+        {/* delete book from user library */}
+        <ActionBtndiv>
+          <ActionBtn
+            onClick={() => {
+              deleteBookFromUserLibrary({ isbn: bookIsbn });
+              history.push("/books");
+            }}
+          >
+            <AiOutlineDelete />
+          </ActionBtn>
+          <span>Delete</span>
+        </ActionBtndiv>
       </ActionsWrapper>
     );
 };

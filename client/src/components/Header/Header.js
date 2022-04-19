@@ -6,22 +6,24 @@ import Searchbar from "../Search/Searchbar";
 import { BiBookAdd } from "react-icons/bi";
 import SearchResult from "../Search/SearchResult";
 import { BooksContext } from "../BooksContext";
+import { UsersContext } from "../UsersContext";
 
 const Header = () => {
-  const { foundBooks, setFoundBooks, selectBook, searchQuery, setSearchQuery } = useContext(BooksContext);
+  const {
+    foundBooks,
+    setFoundBooks,
+    errorMsgBooks,
+    setErrorMsgBooks,
+    selectBook,
+    searchQuery,
+    setSearchQuery,
+  } = useContext(BooksContext);
+  const { currentUserProfile } = useContext(UsersContext);
   const [isClosed, setIsClosed] = useState(false);
   let history = useHistory();
   let booksRef = useRef(null);
   
-  // does not work properly
   const handleToggleList = (e) => {
-    // let list = document.getElementById("list");
-    // if (list && e.target !== list) {
-    //   setIsClosed();
-    //   list.style.display = "none";
-    //   setSearchQuery("");
-    //   setFoundBooks(null);
-    // }
     if (booksRef.current && !booksRef.current.contains(e.target)) {
         setSearchQuery("");
         setFoundBooks(null);
@@ -29,8 +31,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("click", handleToggleList)
-  
+    window.addEventListener("click", handleToggleList);
+
     return () => {
       window.removeEventListener("click", handleToggleList);
     }
@@ -41,29 +43,30 @@ const Header = () => {
     <Headerwrapper>
       <TitleLink to="/">Home</TitleLink>
       <BookActionWrapper>
-        {/* onclick, opens a modal form where the user is asked to enter manually
-        or with scanned image the information about the book */}
-        <ActionBtn
-          onClick={(e) => {
-            e.stopPropagation();
-            history.push("/add-book-form");
-          }}
-        >
-          <BiBookAdd />
-        </ActionBtn>
+        {currentUserProfile ? (
+          <ActionBtn
+            onClick={(e) => {
+              e.stopPropagation();
+              history.push("/add-book-form");
+            }}
+          >
+            <BiBookAdd />
+          </ActionBtn>
+        ) : (
+          <ActionBtn>
+            <BiBookAdd />
+          </ActionBtn>
+        )}
         <Searchbar />
         {/* as foundBooks is an empty array that always exists, it will always display, but we can ask it not to display if its length is more than 0 */}
-        {foundBooks && foundBooks.length > 0 && (
-          <BookList
-            ref={booksRef}
-            id="list"
-            enabled
-          >
+        {currentUserProfile && foundBooks && foundBooks.length > 0 && (
+          <BookList ref={booksRef} id="list" enabled>
             {foundBooks.map((foundBook) => (
               <SearchResult foundBook={foundBook} key={foundBook.isbn} />
             ))}
           </BookList>
         )}
+        {errorMsgBooks && <ErrorMsg>Sorry! No book found.</ErrorMsg>}
       </BookActionWrapper>
       <LoginBox />
     </Headerwrapper>
@@ -108,6 +111,7 @@ const TitleLink = styled(Link)`
 
 const BookActionWrapper = styled.div` 
     display: flex;
+    align-items: center;
 `;
 
 export const ActionBtn = styled.button`
@@ -123,6 +127,14 @@ export const ActionBtn = styled.button`
   border: 0.5px solid #000;
   border-radius: 5px;
   cursor: pointer;
+`;
+
+const ErrorMsg = styled.p`
+  color: red;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding-bottom: 2px;
+  text-shadow: 1px 1.5px 0px red;
 `;
 
 const BookList = styled.ul`

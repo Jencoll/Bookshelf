@@ -4,6 +4,7 @@ import { IconContext } from "react-icons";
 import { BiSearchAlt } from "react-icons/bi";
 import { ActionBtn } from "../Header/Header";
 import { BooksContext } from "../BooksContext";
+import { UsersContext } from "../UsersContext";
 
 const Searchbar = () => {
   const {
@@ -11,6 +12,7 @@ const Searchbar = () => {
     setSearchQuery,
     searchBook,
   } = useContext(BooksContext);
+  const { currentUserProfile } = useContext(UsersContext);
 
   const handleUserInput = (e) => {
     setSearchQuery(e.target.value);
