@@ -173,10 +173,8 @@ export const BooksProvider = ({ children }) => {
         let data = await response.json();
         let createdBook = data.data;
         setBook(createdBook);
-        
       } catch (err) {
         console.log(err.message);
-        throw err;
       }
   };
 
