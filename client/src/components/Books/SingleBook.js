@@ -69,15 +69,24 @@ const SingleBook = () => {
 
 };
 
-const SingleBookWrapper = styled.div`  
-    position: absolute;
-    position: relative;
-    display: flex;
-    justify-content: space-evenly;
+const SingleBookWrapper = styled.div`
+  position: absolute;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 2em;
+
+  @media (min-width: 770px) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0px;
     left: 125px;
-    /* width: calc(100% - 400px); */
     width: calc(100% - 125px);
-    padding: 2em;
+  }
 `;
 
 const Coverwrapper = styled.figure` 

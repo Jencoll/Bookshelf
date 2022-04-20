@@ -19,16 +19,6 @@ const Homepage = ({ resetFilter }) => {
       setType("");
     }
   }, []);
-  // useEffect(() => {
-  //   if (!type || !filter) {
-  //       setType("");
-  //       setFilter("");
-  //   } else {
-  //       setType(type);
-  //       setFilter(filter);
-  //   }
-
-  // }, [type, filter, books]);
 
   if (currentUserProfile) {
     userLibrary?.forEach((b) => {
@@ -44,8 +34,6 @@ const Homepage = ({ resetFilter }) => {
 
   return (
     <Homewrapper>
-     
-    
       {currentUserProfile ? ( 
       <>
       <Type>{currentUserProfile ? "Categories" : "Create your online bookshelf"}</Type>
@@ -76,9 +64,13 @@ const Homewrapper = styled.div`
   /* justify-content: center; */
   padding: 0 12px 24px 12px;
   top: 70px;
-  width: calc(100% - 125px);
+  width: 100%;
   /* left: 125px; */
   height: calc(100% - 70px);
+
+  @media (min-width: 770px) {
+    width: calc(100% - 125px);
+  }
 `;
 
 const Type = styled.h3`
@@ -104,7 +96,10 @@ const GenericMessage = styled.div`
   border-radius: 10px;
   box-shadow: 3px 5px 6px #c2d6cf;
   margin-top: 30px;
-  left: 125px;
+
+  @media (min-width: 770px) {
+    left: 125px; // Do not remove!
+  }
 `;
 
 export default Homepage;

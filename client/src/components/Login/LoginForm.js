@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useState, useContext, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { FormWrapper, BookInfoForm, FormTitle, Label, Input } from "../Header/AddBookForm";
+import { FormWrapper, FormTitle, BookInfoForm, Label, Input } from "../Header/AddBookForm";
 import { UsersContext } from "../UsersContext";
 
 const LoginForm = () => {
-    const { currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setCurrentUserProfile, status, setStatus, setErrorMsg, errorMsg } = useContext(UsersContext);
+    const { setCurrentUserId, setCurrentUserPassword, setCurrentUserProfile, status, errorMsg } = useContext(UsersContext);
     let history = useHistory();
 
     console.log(status);
@@ -30,7 +30,6 @@ const LoginForm = () => {
           <FieldSet>
             <Label htmlFor="username">Username</Label>
             <Input
-              //   value=""
               type="text"
               name="username"
               required
@@ -39,7 +38,6 @@ const LoginForm = () => {
           <FieldSet>
             <Label htmlFor="password">Password</Label>
             <Input
-              //   value=""
               type="password"
               name="password"
               required
@@ -53,8 +51,18 @@ const LoginForm = () => {
     );
 };
 
-const LoginFormWrapper = styled(FormWrapper)`
-    align-items: center;
+const LoginFormWrapper = styled.div`
+  align-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 70px);
+  padding: 24px;
+
+  @media (min-width: 770px) {
+    left: 125px;
+    width: calc(100% - 125px);
+  }
 `;
 
 export const UserLoginForm = styled.form`
@@ -94,7 +102,6 @@ export const FieldSet = styled.fieldset`
     display: flex;
     align-items: center;
     margin: 24px 0;
-
 `;
 
 export const LoginButton = styled.button`

@@ -6,23 +6,35 @@ const { MongoClient } = require("mongodb");
 const { default: axios } = require("axios");
 const { MONGO_URI, key } = process.env;
 
-const client = new MongoClient(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const db = client.db("bookshelf");
-
-// Endpoint for accessing bookshelves collection
-const booksCollection = db.collection("books");
+/* book format
+ {
+    isbn: "isbn",
+    title: "title",
+    subtitle: "subtitle",
+    authors: ["author1", "author2"],
+    translators: ["translator1", "translator2"],
+    publisher: "publisher name",
+    collection: "collection name",
+    yearOfPublication: year,
+    firstYearOfPub: year,
+    language: "language",
+    country: "country of publication",
+    price: "$XX.XX", // if possible, try localize the format
+    imageSrc: "img url for book cover",
+    pages: number of pages,
+    format: "pocket", "hard cover", etc.,
+    description: "description of the book; provided by Google Books API when searching a book, it can also be provided by the user in a textarea",
+    stars: number of stars,
+    comments: [{"comment1"}, {"comment2"}], // in the FE, user's comment has to be differentiated from other users' comments
+    quotes: [{"quote1"}, {"quote2"}],
+ }
+ */
 
 // A function to convert Google Book API response into our book format
 const googleBookToBook = (googleBook) => {
   let industryIdentifiers = googleBook.volumeInfo.industryIdentifiers;
-  // setting isbn
-  // let isbn = "";
 
-  // forEach ou for ordinaire
+  // setting the isbn format
   let ii = industryIdentifiers.find(x => x.type === "ISBN_13");
   if (!ii)
     ii = industryIdentifiers.find((x) => x.type === "ISBN_10");
@@ -84,7 +96,12 @@ const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) 
   // start = parseInt(req.query.start);
   // limit = parseInt(req.query.limit);
   let range = start + limit;
-
+  const client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db("bookshelf");
+  const booksCollection = db.collection("books");
   try {
     await client.connect();
     console.log("connected");
@@ -98,8 +115,7 @@ const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) 
 
     switch (type) {
       case "category": 
-        let filteredUserLibrary = userLibrary.filter(b => b.category === filter);
-        console.log(filteredUserLibrary, " est la liste filtrée");
+        let filteredUserLibrary = userLibrary.filter(b => (b.category === filter) || (filter === "" && !b.category));
         let allBooks = await booksCollection.find().toArray();
         matchedBooks = allBooks.filter(b => filteredUserLibrary.find(bk => bk.isbn === b.isbn));
         break;
@@ -134,6 +150,8 @@ const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) 
     } else {
       res.status(400).json({ status: 400, message: "Bad request", books: matchedBooks });
     }
+
+    client.close();
   } catch (err) {
     console.log("Something went wrong: ", err.message);
   } finally {
@@ -146,6 +164,12 @@ const getBooks = async ({ query: { userId, start, limit, type, filter } }, res) 
 // get a book by its isbn
 const getBook = async (req, res) => {
   let { isbn } = req.params;
+  const client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db("bookshelf");
+  const booksCollection = db.collection("books");
   try {
     await client.connect();
     console.log("connected");
@@ -166,24 +190,25 @@ const getBook = async (req, res) => {
             status: 200,
             book: googleBookToBook(bookData.data.items[0]),
           });
-      }
-
-    }
-
-     
+      };
+    };
   } catch (err) {
     console.log("Something went wrong: ", err.stack);
   } finally {
-    // client.close();
+    client.close();
     console.log("disconnected");
   }
 };
 
 // add a book in the database
 const addBook = async (req, res) => {
-  // use a switch to add a book whether manually or by search in the database and/or in Google Books API
-  // in fact, the search in the database should be performed first, and then, if no book is found, the search is performed in the Google Books API (does it make sense?)
-  // if it is by search in the database, then the user can write in input the author name, the book title or the ISBN number (so another switch here)
+
+  const client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db("bookshelf");
+  const booksCollection = db.collection("books");
   const {
     isbn,
     title,
@@ -247,8 +272,8 @@ const addBook = async (req, res) => {
         message: "Book created successfully",
       });
     } else {
-      res.status(200).json({
-        status: 200,
+      res.status(400).json({
+        status: 400,
         message: "Book already exists",
         data: existingBook,
       });
@@ -261,30 +286,15 @@ const addBook = async (req, res) => {
   }
 };
 
+// Endpoint to modify book information
 const editBook = async (req, res) => {
-  // const isbn = req.params.isbn;
-  const {
-    isbn,
-    // title,
-    // subtitle,
-    // authors,
-    // translators,
-    // publisher,
-    // collection,
-    // yearOfPublication,
-    // firstYearOfPub,
-    // language,
-    // country,
-    // price,
-    // imageSrc,
-    // pages,
-    // format,
-    // description,
-    // stars,
-    // comments,
-    // quotes,
-  } = req.body;
-  console.log("mon req.body est ", req.body);
+  const client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db("bookshelf");
+  const booksCollection = db.collection("books");
+  const { isbn } = req.body;
   if (!isbn) {
     return res.status(400).json({ status: 400, message: "Incomplete request" });
   }
@@ -316,8 +326,15 @@ const editBook = async (req, res) => {
   }
 };
 
+// Endpoint for deleting a book
 const deleteBook = async (req, res) => {
   const { isbn } = req.body;
+  const client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db("bookshelf");
+  const booksCollection = db.collection("books");
   try {
     await client.connect();
     console.log("connected");
@@ -334,43 +351,15 @@ const deleteBook = async (req, res) => {
     client.close();
     console.log("disconnected");
   }
-}
-
-/* book format
- {
-    isbn: "isbn",
-    title: "title",
-    subtitle: "subtitle",
-    authors: ["author1", "author2"],
-    translators: ["translator1", "translator2"],
-    publisher: "publisher name",
-    collection: "collection name",
-    yearOfPublication: year,
-    firstYearOfPub: year,
-    language: "language",
-    country: "country of publication",
-    price: "$XX.XX", // if possible, try localize the format
-    imageSrc: "img url for book cover",
-    pages: number of pages,
-    format: "pocket", "hard cover", etc.,
-    description: "description of the book; provided by Google Books API when searching a book, it can also be provided by the user in a textarea",
-    stars: number of stars,
-    comments: [{"comment1"}, {"comment2"}], // in the FE, user's comment has to be differentiated from other users' comments
-    quotes: [{"quote1"}, {"quote2"}],
- }
-
- */
-
+};
 
 // Endpoint for performing a search request to Google Books API
 const searchBook = async (req, res) => {
   //&langRestrict=${language}
   // set language restrictions to allow other languages than just English, when there are translations
-  console.log("voici mon req.query: ", req.query);
+  // in fact, the search in the database should be performed first, and then, if no book is found, the search is performed in the Google Books API (does it make sense?)
+  // if it is by search in the database, then the user can write in input the author name, the book title or the ISBN number (so another switch here)
   try {
-    // const existingBookInDb = await booksCollection.findOne(req.query);
-    // console.log("est-ce que j'obtiens quelque chose? ", existingBookInDb)
-    // return;
     let response = await axios.get(
       `https://www.googleapis.com/books/v1/volumes?q=${req.query.q}&maxResults=20&key=${key}`
     );

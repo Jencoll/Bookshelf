@@ -8,12 +8,10 @@ import SingleBook from "./components/Books/SingleBook";
 import Homepage from "./Homepage";
 import AddBookForm from "./components/Header/AddBookForm";
 import UserLibrary from "./components/Books/UserLibrary";
-import CloudinaryUpdloadWidget from "./components/CloudinaryUploadWidget";
 import LoginForm from "./components/Login/LoginForm";
 import Signup from "./components/Login/Signup";
-const App = () => {
 
- 
+const App = () => {
 
   return (
     <BrowserRouter>
@@ -24,8 +22,6 @@ const App = () => {
         <Contacts />
         <Switch>
           <Route exact path="/">
-            {/* <CloudinaryUpdloadWidget /> */}
-            {/* <UserLibrary /> */}
             <Homepage resetFilter={true} />
           </Route>
           <Route path="/login">
@@ -50,9 +46,7 @@ const App = () => {
       </Main>
     </BrowserRouter>
   );
-  
 };
-
 
 const Main = styled.div`
   position: relative;

@@ -29,6 +29,11 @@ export const BooksProvider = ({ children }) => {
       const response = await fetch(`/api/search-book?q=${searchQuery}`);
       let data = await response.json();
       setFoundBooks(data.books);
+      if (response.status !== 200) {
+        setErrorMsgBooks(true);
+      } else {
+        setErrorMsgBooks(false);
+      }
     } catch (err) {
       console.log("Something went wrong: ", err.message);
       setErrorMsgBooks(true);
@@ -87,7 +92,7 @@ export const BooksProvider = ({ children }) => {
     } catch (err) {
       console.log("Error: ", err.message);
     }
-  }
+  };
 
   // add a foundBook (from Google API) to the database
   const addFoundBookToDatabase = async () => {
@@ -128,7 +133,6 @@ export const BooksProvider = ({ children }) => {
     } catch (err) {
       console.log("Something went wrong: ", err.message);
     }  
-
   };
 
   // add or modify book in the books database
@@ -169,8 +173,10 @@ export const BooksProvider = ({ children }) => {
         let data = await response.json();
         let createdBook = data.data;
         setBook(createdBook);
+        
       } catch (err) {
         console.log(err.message);
+        throw err;
       }
   };
 
@@ -188,17 +194,13 @@ export const BooksProvider = ({ children }) => {
           response = await fetch(
             `/api/get-books?userId=${currentUserId}&start=${start}&limit=${limit}&type=${type}&filter=${filter}`
           );
-            // console.log("type: ", type, " et filter: ", filter);
         }
         if (!response.ok) {
           throw new Error(`Error! Status: ${response.status}`);
         }
         let data = await response.json();
-
-        
         setBooks(data.books);
         setResultsLength(data.books.length);
-        // setLoading(false);
       } catch (err) {
         console.log(err.message);
       };
@@ -206,7 +208,6 @@ export const BooksProvider = ({ children }) => {
     };
     retrieveBooks();
 
-    // il y avait book dans le dependency array, je l'ai enlevé et ça ne semble rien affecter...
   }, [start, limit, type, filter]);
 
   return (

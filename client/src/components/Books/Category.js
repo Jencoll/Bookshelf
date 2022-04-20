@@ -1,28 +1,9 @@
 import styled from "styled-components";
-import { useContext, useEffect } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useContext } from "react";
 import { BooksContext } from "../BooksContext";
-import { UsersContext } from "../UsersContext";
 
 const Category = ({ category }) => {
-  const { books, type, setType, setFilter, filter } = useContext(BooksContext);
-  const { currentUserProfile } = useContext(UsersContext);
-  const userLibrary = currentUserProfile?.userLibrary;
-  //const { type, filter } = useParams();
-  let match = null;
-  let history = useHistory();
-
-  // reset type and filter to display all books
-  //  useEffect(() => {
-  //    if (!type || !filter) {
-  //      setType("");
-  //      setFilter("");
-  //    } else {
-  //      setType(type);
-  //      setFilter(filter);
-  //    }
-  //  }, [type, filter, books]);
-
+  const { type, setType, setFilter, filter } = useContext(BooksContext);
 
   return (
     <CategoryTag>

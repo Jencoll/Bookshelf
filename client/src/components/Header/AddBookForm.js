@@ -4,14 +4,14 @@ import { useHistory, useParams } from "react-router-dom";
 import { BiBookAdd } from "react-icons/bi";
 import { ActionBtn } from "./Header";
 import { BooksContext } from "../BooksContext";
-import openUpload from "../CloudinaryUploadWidget";
 import { CloudinaryContext } from "../CloudinaryUploadWidget";
 import { UsersContext } from "../UsersContext";
 import Spinner from "../StateHandling/Spinner";
+import { LoginButton } from "../Login/LoginForm";
 
 const AddBookForm = ({ toEdit }) => {
   const { addOrModifyUserBook, book, setBook, addOrModifyBook } = useContext(BooksContext);
-  const { currentUserProfile, setCurrentUserProfile } = useContext(UsersContext);
+  const { currentUserProfile } = useContext(UsersContext);
   const { fileUrlUploaded, setFileUrlUploaded, openUpload } = useContext(CloudinaryContext);
   const [bookEdited, setBookEdited] = useState(toEdit ? book : {});
   const userBook = currentUserProfile?.userLibrary.find(b => b.isbn === book?.isbn);
@@ -19,7 +19,12 @@ const AddBookForm = ({ toEdit }) => {
   let history = useHistory();
   const isbnRef = useRef();
 
-
+  useEffect(() => {
+    if (!toEdit) {
+      setBookEdited({});
+    }  
+  }, [toEdit])
+  
   useEffect(() => {
     if (fileUrlUploaded) {
       setBookEdited({ ...bookEdited, imageSrc: fileUrlUploaded });
@@ -31,13 +36,13 @@ const AddBookForm = ({ toEdit }) => {
   }
 
   const handleSubmit = async () => {    
-    await addOrModifyBook(bookEdited, toEdit);
-    userBookEdited.isbn = isbnRef.current.value;
-    await addOrModifyUserBook(userBookEdited);
-    setBook(bookEdited);
-    setBookEdited({});
-    setFileUrlUploaded(null);
-    history.push(`/book/${bookEdited.isbn}`);
+      await addOrModifyBook(bookEdited, toEdit);
+      userBookEdited.isbn = isbnRef.current.value;
+      await addOrModifyUserBook(userBookEdited);
+      setBook(bookEdited);
+      setBookEdited({});
+      setFileUrlUploaded(null);
+      history.push(`/book/${bookEdited.isbn}`);
   };
 
   if (!bookEdited || !userBookEdited) {
@@ -222,12 +227,11 @@ const AddBookForm = ({ toEdit }) => {
               onChange={(e) => {
                 setBookEdited({ ...bookEdited, imageSrc: e.target.value });
               }}
-              // onClick={openUpload}
               name="imageSrc"
               type="text"
               placeholder="Paste image url"
             ></Input>
-            <button onClick={openUpload}>Upload</button>
+            <ImgBtn onClick={openUpload}>Upload</ImgBtn>
           </Infodiv>
           <Infodiv>
             <Label htmlFor="description">Description</Label>
@@ -293,7 +297,6 @@ const AddBookForm = ({ toEdit }) => {
               name="price"
             ></Input>
           </Infodiv>
-
         </Column2>
       </BookInfoForm>
       {/* form to modify user book information (in userLibrary) */}
@@ -319,11 +322,14 @@ const AddBookForm = ({ toEdit }) => {
           </Infodiv>
         </UserBookForm>
         <Btndiv>
-          <ActionText>Add book to the library</ActionText>
+          <ActionText>
+            {toEdit
+              ? "Edit book"
+              : "Add book"}
+          </ActionText>
           <ActionBtn
             onClick={() => {
               handleSubmit();
-              // history.push(`/book/${book.isbn}`);
             }}
           >
             <BiBookAdd />
@@ -356,6 +362,12 @@ export const BookInfoForm = styled.form`
   @media (min-width: 1200px) {
     min-height: 600px;
   }
+`;
+
+const ImgBtn = styled(LoginButton)`
+  width: fit-content;
+  margin: 0;
+  margin-left: 12px;
 `;
 
 export const FormTitle = styled.h2`
@@ -397,7 +409,6 @@ const Infodiv = styled.fieldset`
   min-width: 320px;
   max-width: 400px;
 `;
-
 
 export const Label = styled.label`
   position: absolute;

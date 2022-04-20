@@ -29,7 +29,7 @@ const Searchbar = () => {
           required
           onChange={(e) => handleUserInput(e)}
         ></Searchinput>
-        <ActionBtn onClick={(e) => {
+        <ActionBtn disabled={!currentUserProfile} onClick={(e) => {
           e.preventDefault();
           searchBook();
         }}>

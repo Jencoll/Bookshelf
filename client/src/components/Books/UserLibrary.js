@@ -11,6 +11,8 @@ const UserLibrary = ({resetFilter }) => {
   const userBooks = currentUserProfile?.userLibrary;
   const [displayBooks, setDisplayBooks] = useState([]);
 
+
+  console.log("Here are the displaybooks", displayBooks);
   useEffect(() => {
     if (resetFilter) {
       setType("");
@@ -24,6 +26,7 @@ const UserLibrary = ({resetFilter }) => {
           return books.find((b) => b.isbn === userBook.isbn);
         })
         .filter((b) => b !== undefined);
+        console.log("here is db", db, userBooks, books);
       setDisplayBooks(db);
     }
   }, [currentUserProfile, userBooks, books]);
@@ -53,11 +56,12 @@ const LibraryWrapper = styled.div`
 
   @media (min-width: 770px) {
     left: 125px;
-  }
-
-  @media (min-width: 1200px) {
     width: calc(100% - 125px);
   }
+
+  /* @media (min-width: 1200px) {
+    width: calc(100% - 125px);
+  } */
 `;
 
 const BookList = styled.ul`

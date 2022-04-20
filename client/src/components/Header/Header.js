@@ -43,20 +43,21 @@ const Header = () => {
     <Headerwrapper>
       <TitleLink to="/">Home</TitleLink>
       <BookActionWrapper>
-        {currentUserProfile ? (
-          <ActionBtn
-            onClick={(e) => {
-              e.stopPropagation();
-              history.push("/add-book-form");
-            }}
-          >
-            <BiBookAdd />
-          </ActionBtn>
-        ) : (
+        {/* {currentUserProfile ? ( */}
+        <ActionBtn
+          disabled={!currentUserProfile}
+          onClick={(e) => {
+            e.stopPropagation();
+            history.push("/add-book-form");
+          }}
+        >
+          <BiBookAdd style={{ color: "#9BBBAE" }} />
+        </ActionBtn>
+        {/* ) : (
           <ActionBtn>
             <BiBookAdd />
           </ActionBtn>
-        )}
+        )} */}
         <Searchbar />
         {/* as foundBooks is an empty array that always exists, it will always display, but we can ask it not to display if its length is more than 0 */}
         {currentUserProfile && foundBooks && foundBooks.length > 0 && (
@@ -124,7 +125,7 @@ export const ActionBtn = styled.button`
   height: 36px;
   width: 36px;
   padding: 6px;
-  border: 0.5px solid #000;
+  border: 2px solid #9bbbae;
   border-radius: 5px;
   cursor: pointer;
 `;

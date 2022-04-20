@@ -12,11 +12,8 @@ import {
 } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 
-
-
 const BookActions = () => {
     const {
-      // handleToggleAction,
       addFoundBookToDatabase,
       addOrModifyUserBook,
       bookIsbn,
@@ -98,7 +95,6 @@ const BookActions = () => {
       </ActionsWrapper>
     );
 };
-
 
 const ActionsWrapper = styled.div`
     display: flex;

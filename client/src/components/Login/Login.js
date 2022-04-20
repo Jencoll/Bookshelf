@@ -6,10 +6,8 @@ import { ActionBtn } from "../Header/Header";
 import { UsersContext } from "../UsersContext";
 
 const Login = () => {
-  const { currentUserProfile, 
-    setCurrentUserProfile, currentUserId, setCurrentUserId, currentUserPassword, setCurrentUserPassword, setStatus } = useContext(UsersContext);
+  const { setCurrentUserProfile, currentUserId, setCurrentUserId, setCurrentUserPassword, setStatus } = useContext(UsersContext);
   let history = useHistory();
-    // on click, a modal is displayed to show a form for the login process or the sign up process, in the form, there will be a link to another form if the user account is not created yet
 
     const handleLogInOut = (e) => {
       e.preventDefault();
@@ -19,7 +17,6 @@ const Login = () => {
       setStatus("logout");
       history.push("/");
     }
-
 
     // when a user is not logged in, login appears; otherwise, it's logout
     return (

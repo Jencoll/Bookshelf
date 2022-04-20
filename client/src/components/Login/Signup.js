@@ -97,7 +97,7 @@ const Signup = () => {
               <Input
                 value={formatField(userEdited.info?.firstName)}
                 onChange={(e) => {
-                    setInfoField("firstName", e);
+                  setInfoField("firstName", e);
                 }}
                 type="text"
                 name="firstName"
@@ -185,10 +185,14 @@ const Signup = () => {
                 name="avatarUrl"
                 placeholder="Paste image url"
               ></Input>
-              <button onClick={(e) => {
-                e.preventDefault();
-                openUpload();
-              }}>Upload</button>
+              <UploadBtn
+                onClick={(e) => {
+                  e.preventDefault();
+                  openUpload();
+                }}
+              >
+                Upload
+              </UploadBtn>
             </FieldSet>
             <LoginButton>Sign up</LoginButton>
           </SignupColumn>
@@ -196,7 +200,6 @@ const Signup = () => {
       </SignupFormWrapper>
     );
 };
-
 
 const SignupFormWrapper = styled(FormWrapper)`
     height: fit-content;
@@ -214,6 +217,12 @@ const SignupForm = styled(UserLoginForm)`
 const SignupColumn = styled(Column)`
     height: fit-content;
     min-height: auto;
+`;
+
+const UploadBtn = styled(LoginButton)`
+  width: fit-content;
+  margin: 0;
+  margin-left: 12px;
 `;
 
 
