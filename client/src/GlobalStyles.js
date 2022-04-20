@@ -40,7 +40,8 @@ export default createGlobalStyle`
  
   body {
     max-width: 1440px;
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     line-height: 1;
     margin: 0 auto;
   }
@@ -81,5 +82,9 @@ input {
     border: 2px solid #333;
     border-radius: 4px;
     padding: 0 12px;
+  }
+
+  span {
+    font-family: var(--font-body);
   }
 `;

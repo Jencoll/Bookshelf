@@ -28,7 +28,7 @@ const Login = () => {
                 handleLogInOut(e);
               }}
             >
-              <BiLogOutCircle />
+              <BiLogOutCircle style={{ color: "#386C5F" }} />
             </ActionBtn>
             <Span>Logout</Span>
           </Btndiv>
@@ -39,7 +39,7 @@ const Login = () => {
                 history.push("/login");
               }}
             >
-              <BiLogInCircle />
+              <BiLogInCircle style={{ color: "#386C5F" }} />
             </ActionBtn>
             <Span>Login</Span>
           </Btndiv>

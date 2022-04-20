@@ -14,13 +14,13 @@ import Signup from "./components/Login/Signup";
 const App = () => {
 
   return (
-    <BrowserRouter>
+    <BrowserRouter style={{ height: "100%" }} >
       <GlobalStyles />
+      <Header />
       <Main>
-        <Header />
         <Menu />
         <Contacts />
-        <Switch>
+        <Switch style={{ height: "100%" }}>
           <Route exact path="/">
             <Homepage resetFilter={true} />
           </Route>
@@ -50,7 +50,8 @@ const App = () => {
 
 const Main = styled.div`
   position: relative;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   box-shadow: 2px -1px 11px #e5e5e5;
 `;
 

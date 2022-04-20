@@ -1,14 +1,12 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { FormWrapper, FormTitle, BookInfoForm, Label, Input } from "../Header/AddBookForm";
 import { UsersContext } from "../UsersContext";
 
 const LoginForm = () => {
-    const { setCurrentUserId, setCurrentUserPassword, setCurrentUserProfile, status, errorMsg } = useContext(UsersContext);
+    const { setCurrentUserId, setCurrentUserPassword, status, errorMsg } = useContext(UsersContext);
     let history = useHistory();
-
-    console.log(status);
 
     useEffect(() => {
         if (status === "success") {

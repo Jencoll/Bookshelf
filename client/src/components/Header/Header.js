@@ -51,7 +51,7 @@ const Header = () => {
             history.push("/add-book-form");
           }}
         >
-          <BiBookAdd style={{ color: "#9BBBAE" }} />
+          <BiBookAdd style={{ color: "#386C5F" }} />
         </ActionBtn>
         {/* ) : (
           <ActionBtn>
@@ -79,7 +79,7 @@ const Headerwrapper = styled.header`
   overflow: hidden;
   display: flex;
   flex-direction: column-reverse;
-  width: calc(100%);
+  max-width: calc(1440px - 125px);
   height: 140px;
   /* line-height: 70px; */
   align-items: center;

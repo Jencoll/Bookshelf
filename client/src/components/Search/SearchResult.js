@@ -1,19 +1,16 @@
 import styled from "styled-components";
-import { Link, useHistory } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
+import { useContext } from "react";
 import { BooksContext } from "../BooksContext";
 
-const SearchResult = ({ foundBook, setIsClosed }) => {
-  // const [author, setAuthor] = useState("");
-  const { setSelectBook, selectBook, setSearchQuery, setFoundBooks } = useContext(BooksContext);
-  // console.log(foundBook.isbn);
+const SearchResult = ({ foundBook }) => {
+  const { setSearchQuery, setFoundBooks } = useContext(BooksContext);
   let history = useHistory();
-  console.log(foundBook, "is found book")
+
   return (
     <Result
       onClick={() => {
         history.push(`/book/${foundBook.isbn}`);
-        console.log("this is the isbn: ", foundBook.isbn);
         setSearchQuery("");
         setFoundBooks(null);
       }}
@@ -47,24 +44,6 @@ const Result = styled.li`
   &:hover > div {
     display: flex;
   }
-
-  /* &::before {
-    content: "bonjour";
-    position: absolute;
-    display: none;
-    left: -55px;
-    background-color: green;
-    width: 50px;
-  }
-  &:hover::before {
-    display: block;
-  } */
-`;
-
-const ResultLink = styled(Link)`
-    text-decoration: none;
-    color: #000;
-    font-weight: 500;
 `;
 
 const Bookdiv = styled.div`
@@ -78,9 +57,6 @@ const Bookdiv = styled.div`
     width: 200px;
     height: 300px;
     background-color: #fff;
-
-    /* z-index: 5; */
-
 `;
 
 const Cover = styled.img`

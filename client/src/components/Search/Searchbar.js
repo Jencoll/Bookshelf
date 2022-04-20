@@ -29,12 +29,15 @@ const Searchbar = () => {
           required
           onChange={(e) => handleUserInput(e)}
         ></Searchinput>
-        <ActionBtn disabled={!currentUserProfile} onClick={(e) => {
-          e.preventDefault();
-          searchBook();
-        }}>
+        <ActionBtn
+          disabled={!currentUserProfile}
+          onClick={(e) => {
+            e.preventDefault();
+            searchBook();
+          }}
+        >
           <IconContext.Provider value={{ size: "1.5em" }}>
-            <BiSearchAlt />
+            <BiSearchAlt style={{ color: "#386C5F" }} />
           </IconContext.Provider>
         </ActionBtn>
       </Searchform>

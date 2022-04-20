@@ -48,7 +48,6 @@ const getUsers = async (req, res) => {
   });
   const db = client.db("bookshelf");
   const userCollection = db.collection("users");
-  console.log(req.query); // query selon le type de requête (nom, prénom)
   try {
     await client.connect();
     console.log("Connected.");
@@ -315,7 +314,6 @@ const removeBookFromUserLibrary = async (req, res) => {
   });
   const db = client.db("bookshelf");
   const userCollection = db.collection("users");
-  console.log("voici mon req.body.isbn", req.body.isbn)
   try {
     await client.connect();
     console.log("connected");
@@ -329,7 +327,6 @@ const removeBookFromUserLibrary = async (req, res) => {
     if (!bookFound) {
       return res.status(404).json({ status: 404, message: "Book not found" });
     }
-    console.log("index of book found: ", userLibrary.indexOf(bookFound));
     let bookFoundIndex = userLibrary.indexOf(bookFound);
     // remove book from user library
     userLibrary.splice(bookFoundIndex, 1);

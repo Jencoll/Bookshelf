@@ -45,14 +45,15 @@ app.use(express.json());
 ------------------*/
 app.post("/api/login", loginUser); // get and validate login user info
 app.get("/api/get-users", getUsers); // get a list of all users
-// app.get("/api/get-user/:_id", getUser); // get a user by its ID
-// app.get("/api/get-online-users", getRandOnlineUsers); // get a random list of online users
-app.get("/api/get-current-user/:_id", getCurrentUser); // get the current user profile (with his/her first name as handle)
 app.post("/api/add-user", addUser); // create a user
+app.put("/api/add-or-modify-user-book/:_id", addOrModifyUserBook); // with user ID
+app.get("/api/get-current-user/:_id", getCurrentUser); // get the current user profile (with his/her first name as handle)
+app.patch("/api/remove-book-from-user-library/:_id", removeBookFromUserLibrary);
 app.patch("/api/modify-user/:_id", modifyUser); // modify user information
 app.delete("/api/delete-user/:_id", deleteUser); // delete a user from the list of users
-app.put("/api/add-or-modify-user-book/:_id", addOrModifyUserBook); // with user ID
-app.patch("/api/remove-book-from-user-library/:_id", removeBookFromUserLibrary);
+// Strech goals
+// app.get("/api/get-user/:_id", getUser); // get a user by its ID
+// app.get("/api/get-online-users", getRandOnlineUsers); // get a random list of online users
 // app.post("/api/add-bookshelf/:_id", addUserBookshelf); 
 
 /*-------------------

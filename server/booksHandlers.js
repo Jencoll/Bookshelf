@@ -305,7 +305,6 @@ const editBook = async (req, res) => {
     const existingBook = await booksCollection.findOne({ isbn });
     if (existingBook) {
       const book = await booksCollection.updateOne({ isbn }, { $set: req.body });
-      console.log(book);
       res.status(200).json({
         status: 200,
         data: existingBook,

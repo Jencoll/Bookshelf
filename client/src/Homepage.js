@@ -50,8 +50,6 @@ const Homepage = ({ resetFilter }) => {
         </GenericMessage>
       )}
      
-      
-     
     </Homewrapper>
   );
 };
@@ -65,8 +63,9 @@ const Homewrapper = styled.div`
   padding: 0 12px 24px 12px;
   top: 70px;
   width: 100%;
-  /* left: 125px; */
-  height: calc(100% - 70px);
+  /* height: calc(100% - 70px); */
+  height: 100vh;
+  /* min-height: calc(100% - 70px); */
 
   @media (min-width: 770px) {
     width: calc(100% - 125px);
@@ -96,6 +95,7 @@ const GenericMessage = styled.div`
   border-radius: 10px;
   box-shadow: 3px 5px 6px #c2d6cf;
   margin-top: 30px;
+  top: -70px;
 
   @media (min-width: 770px) {
     left: 125px; // Do not remove!

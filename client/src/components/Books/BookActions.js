@@ -43,7 +43,7 @@ const BookActions = () => {
               //   display messages : in the library already or book added (and redirect to the bookshelf)
             }}
           >
-            <BiBookAdd />
+            <BiBookAdd style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Library</span>
         </ActionBtndiv>
@@ -51,21 +51,21 @@ const BookActions = () => {
         {/* set book to is reading */}
         <ActionBtndiv>
           <ActionBtn>
-            <BiBookReader />
+            <BiBookReader style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Reading</span>
         </ActionBtndiv>
         {/* set book to read */}
         <ActionBtndiv>
           <ActionBtn>
-            <BiBookAlt />
+            <BiBookAlt style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Read</span>
         </ActionBtndiv>
         {/* add book to wishlist */}
         <ActionBtndiv>
           <ActionBtn>
-            <BiBookHeart />
+            <BiBookHeart style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Wishlist</span>
         </ActionBtndiv>
@@ -76,7 +76,7 @@ const BookActions = () => {
               history.push(`/modify-book-form`);
             }}
           >
-            <BiEditAlt />
+            <BiEditAlt style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Edit</span>
         </ActionBtndiv>
@@ -88,7 +88,7 @@ const BookActions = () => {
               history.push("/books");
             }}
           >
-            <AiOutlineDelete />
+            <AiOutlineDelete style={{ color: "#386C5F" }} />
           </ActionBtn>
           <span>Delete</span>
         </ActionBtndiv>
@@ -116,7 +116,7 @@ const ActionBtndiv = styled.div`
     span {
         width: 40px;
         line-height: 1;
-        font-size: 14px;
+        font-size: 12px;
         
     }
 `;
