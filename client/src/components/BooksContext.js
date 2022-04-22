@@ -96,7 +96,6 @@ export const BooksProvider = ({ children }) => {
 
   // add a foundBook (from Google API) to the database
   const addFoundBookToDatabase = async () => {
-      console.log("This is the book: ", book, "and its image: ", book.imageSrc);
     try {
       const response = await fetch("/api/add-book", {
         method: "POST",

@@ -43,7 +43,6 @@ const Header = () => {
     <Headerwrapper>
       <TitleLink to="/">Home</TitleLink>
       <BookActionWrapper>
-        {/* {currentUserProfile ? ( */}
         <ActionBtn
           disabled={!currentUserProfile}
           onClick={(e) => {
@@ -53,11 +52,6 @@ const Header = () => {
         >
           <BiBookAdd style={{ color: "#386C5F" }} />
         </ActionBtn>
-        {/* ) : (
-          <ActionBtn>
-            <BiBookAdd />
-          </ActionBtn>
-        )} */}
         <Searchbar />
         {/* as foundBooks is an empty array that always exists, it will always display, but we can ask it not to display if its length is more than 0 */}
         {currentUserProfile && foundBooks && foundBooks.length > 0 && (

@@ -59,12 +59,11 @@ const Homewrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: center; */
   padding: 0 12px 24px 12px;
   top: 70px;
   width: 100%;
-  /* height: calc(100% - 70px); */
   height: 100vh;
+  /* height: calc(100% - 70px); */
   /* min-height: calc(100% - 70px); */
 
   @media (min-width: 770px) {
@@ -79,9 +78,11 @@ const Type = styled.h3`
 
 const Categorylist = styled.ul`
   display: flex;
+  flex-wrap: wrap;
   width: 75%;
   gap: 16px;
   margin-top: 16px;
+  margin-left: 50px;
 `;
 
 const GenericMessage = styled.div`

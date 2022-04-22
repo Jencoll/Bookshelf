@@ -68,7 +68,7 @@ const SingleBookWrapper = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
   width: 100%;
   padding: 2em;
 
