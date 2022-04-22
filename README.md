@@ -37,7 +37,7 @@ Users should be able to:
 - Solution URL: (https://github.com/Jencoll/Bookshelf)
 - Live Site URL: not yet available
 
-![books] (/../client/src/assets/Books.png)
+![books] (./client/src/assets/Books.png)
 
 ## My process
 
