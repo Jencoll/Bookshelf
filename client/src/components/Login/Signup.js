@@ -14,9 +14,6 @@ const Signup = () => {
     let history = useHistory();
     const [userEdited, setUserEdited] = useState({});
 
-
-    console.log("voici le user profile ", currentUserProfile);
-
      useEffect(() => {
        if (fileUrlUploaded) {
          let clonedUserEdited = {...userEdited};
