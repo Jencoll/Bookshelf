@@ -35,8 +35,8 @@ Users should be able to:
 ### Links
 
 - Solution URL: (https://github.com/Jencoll/Bookshelf)
-- Live Site URL: not yet available
 
+### Screenshot
 <img src="./client/src/assets/signup.png" alt="sign up page" style="width: 400px; height: auto">
 <img src="./client/src/assets/Books.png" alt="Books page" style="width: 400px; height: auto">
 <img src="./client/src/assets/add-book.png" alt="Add a book manually" style="width: 400px; height: auto">
